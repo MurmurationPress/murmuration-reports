@@ -15,6 +15,6 @@ Reports-only runs independently. MWC-only retains the aliases but explains how t
 
 Remove the bridge in the **next MWC release after the transition release**. Reassign shortcuts through Obsidian's Hotkeys settings before upgrading. Neither plugin edits hotkey files. Release notes in both repositories must name the transition and removal versions once scheduled.
 
-Reports must be released and available before the transition MWC release. The general Reports release itself is blocked until Stage 2 and export qualification are complete. Stage 1 review/merge is not permission to release either transition prematurely.
+Reports 0.1.0 includes the manager and completed acceptance/export qualification. Reports must be released and available before the transition MWC release. The MWC bridge remains for its agreed transition release; publishing Reports does not publish or otherwise modify MWC.
 
 Definition identity is its vault path. A rename/move never rewrites markers or receipts, relocates outputs, or generates. A stale former-path marker/receipt requires explicit adoption/repair when the former definition is absent. The same rule applies after a move made while disabled. No prior identity is guessed and no orphan asset scan runs. Editing an output destination leaves the old asset intact.

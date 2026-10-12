@@ -52,6 +52,6 @@ Savings are **14,580 raw / 4,778 summed-gzip bytes**, with no relocation. JavaSc
 
 The older 705,732-byte investigation used revision `7799412`, not current main. Subsequent MWC changes include native CSS relocation and code reductions. The current 682,304-byte baseline reproduces #266. See MWC's committed bundle history for details.
 
-## Remaining gate
+## Historical release gate
 
-Stage 2 must implement the Reports manager, guided creation/editing with source-preserving YAML changes, saved-output previews, catalogue refresh bounds and focused interaction validation. No general Reports release or transition MWC release is authorised here. Obsidian APIs do not provide multi-file transactions or external-sync locks; interrupted writes may require receipt/asset recovery as documented.
+At this Stage 1 checkpoint, manager implementation and release qualification were pending. They have since completed for 0.1.0; see [manager validation](stage-2-validation.md) and [release preparation](releasing.md). Obsidian APIs do not provide multi-file transactions or external-sync locks; interrupted writes may require receipt/asset recovery as documented.

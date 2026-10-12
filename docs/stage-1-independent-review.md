@@ -14,7 +14,7 @@ Focused reproductions are in `tests/ReviewSafety.test.ts` and `tests/AdapterLife
 
 ## Limits and release gate
 
-No SDK multi-file transaction, exclusive create, atomic compare-delete or external-sync lock is claimed. An SDK rejection after a write is ambiguous; retained files/backups require inspection. Conditional restoration of confirmed replacements remains best effort against external writers. No mobile or Windows live UI qualification is claimed. Both PRs remain open, and Stage 2 plus general release qualification remain required.
+No SDK multi-file transaction, exclusive create, atomic compare-delete or external-sync lock is claimed. An SDK rejection after a write is ambiguous; retained files/backups require inspection. Conditional restoration of confirmed replacements remains best effort against external writers. No mobile or Windows live UI qualification is claimed. At this review point, both PRs were open and manager/release qualification was pending. Both implementation stages have since merged; local acceptance and release qualification have passed for 0.1.0.
 
 ## Reproduced evidence
 

@@ -51,8 +51,8 @@ JavaScript is 136,177 raw / 41,962 gzip bytes larger than reviewed Stage 1. Pinn
 
 No manager code or dependency is added to MWC. MWC's merged tree is exactly the measured transition tree: JS 667,724 / 188,600 gzip; styles 63,555 / 10,217; manifest 277 / 185; installed total 731,556 / 199,002. Its 720,896-byte JS ceiling retains **53,172 bytes** headroom; result is 1,972 below the 669,696 warning threshold. Installing both plugins adds Reports' assets; combined installation is not a size saving.
 
-## Limits and release gates
+## Limits and subsequent release approval
 
-No release or live-vault installation was performed. Stage 2 remains a review PR. General release requires review/merge approval and deliberate release qualification/packaging; Reports must be available before the transition MWC release. The bridge remains for one transition release and is removed in the following MWC release.
+No release or live-vault installation was performed during these implementation checks. Stage 2 subsequently passed local acceptance and merged as `0e39f1b3ba199c15744770e62463a94daff5b5af`; the initial 0.1.0 GitHub release is approved. Final release validation repeats the tests, build and packaging checks. Reports must be available before the transition MWC release. The bridge remains for one transition release and is removed in the following MWC release.
 
 No mobile or Windows live UI claim; Windows CI establishes build/test portability only. Reader-specific EPUB/Word visual qualification remains unverified. Source-preserving editing deliberately refuses ambiguous YAML structures and overlapping reconciliation; drafts are session memory, not persisted after tab close/unload. Explicit saves/generation conservatively reject unreadable declaration frontmatter and can require retry after unrelated concurrent Markdown edits. SDK external-writer and multi-file/crash-atomic limits from Stage 1 remain unchanged. No orphan scan or automatic generation is introduced.

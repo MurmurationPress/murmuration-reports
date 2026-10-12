@@ -46,5 +46,5 @@ for (const unwanted of ["main.js.map", "metafile.json"]) {
   await assert.rejects(access(unwanted));
 }
 console.log(
-  "Packaging, MIT attribution, dependency boundaries and version mapping pass. General release remains gated on Stage 2 and export qualification.",
+  "Packaging, MIT attribution, dependency boundaries and version mapping pass.",
 );
