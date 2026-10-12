@@ -7,6 +7,7 @@ await mkdir(".test-build", { recursive: true });
 await build({
   entryPoints: tests.map((p) => "tests/" + p),
   bundle: true,
+  external:["yaml"],
   platform: "node",
   format: "esm",
   target: "node20",

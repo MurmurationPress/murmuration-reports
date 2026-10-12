@@ -75,9 +75,16 @@ function appFixture() {
     workspace: {
       getActiveFile: () => new TFile("Definitions/Report.md"),
       openLinkText: async () => {},
+      detachLeavesOfType: () => {},
     },
-    metadataCache: { getFileCache: () => ({}) },
+    metadataCache: {
+      getFileCache: () => ({}),
+      on: () => ({ off: () => {} }),
+      offref: () => {},
+    },
     vault: {
+      offref: () => {},
+      on: () => ({ off: () => {} }),
       getMarkdownFiles: () => v.documents().map((d) => new TFile(d.path)),
       getAbstractFileByPath: (p: string) =>
         v.files.has(p) ? new TFile(p) : v.folders.has(p) ? {} : null,

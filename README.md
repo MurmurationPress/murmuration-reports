@@ -2,9 +2,11 @@
 
 Persistent SVG charts and Markdown state tables from ordinary vault properties. Sources and Markdown definitions remain authoritative. Saved outputs display and compile without Murmuration Reports or Murmuration Writing Companion (MWC).
 
-This is **Stage 1**, an unreleased desktop implementation. The Reports manager, guided definition creation/editing, saved previews and bounded catalogue refresh belong to Stage 2. The first general release is gated on both stages and export qualification. Do not publish this stage as a complete product.
+This is the unreleased **Stage 2 review implementation**. The Reports manager provides guided creation and source-preserving editing, saved previews and bounded catalogue refresh. Stage 2 review and release qualification remain required before a general release.
 
 ## Commands
+
+- **Open Reports** (also available on the ribbon): find, create, edit, preview and explicitly regenerate reports in a reusable workspace tab.
 
 - **Generate active report definition**: open a definition note and explicitly generate its output.
 - **Generate all report definitions**: sequential generation with structured per-report results; one invalid report does not prevent independent valid reports.
@@ -20,8 +22,10 @@ Generation rejects changed assets/receipts, competing definitions, canonical-not
 
 ## Development
 
-Use Node 22 or newer: `npm ci`, `npm test`, `npm run build`, `npm run release:check`. Production has no bundled third-party runtime packages and only Obsidian is external. No Node API is used by plugin code. Native Obsidian modals need no custom stylesheet.
+Use Node 22 or newer: `npm ci`, `npm test`, `npm run build`, `npm run release:check`. Production bundles pinned YAML 2.9.1 for source-preserving editing; its ISC notice is included in main.js and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Only Obsidian is external. No Node API is used by plugin code. Manager styles are scoped.
 
-Install built `main.js` and `manifest.json` only into a disposable test vault. Production assets are ignored in Git. Ubuntu/Windows CI checks types, tests, build/dependency boundaries, versions and MIT attribution. There is intentionally no automatic release workflow yet.
+Install built `main.js`, `styles.css` and `manifest.json` only into a disposable test vault. Production assets are ignored in Git. Ubuntu/Windows CI checks types, tests, build/dependency boundaries, versions and MIT attribution. There is intentionally no automatic release workflow yet.
 
 Desktop-only support is declared. Linux live validation does not establish mobile or Windows live interaction support; Windows CI is a separate check. See [validation](docs/validation.md), [migration](docs/migration.md), [capability contract](docs/capability.md) and [provenance](docs/provenance.md).
+
+See [manager behaviour and editing limits](docs/manager.md) and [Stage 2 validation](docs/stage-2-validation.md).

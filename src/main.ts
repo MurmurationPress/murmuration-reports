@@ -1,3 +1,5 @@
+import { ManagerService } from "./manager/ManagerService";
+import { ReportsView, REPORTS_VIEW } from "./manager/ReportsView";
 import { Notice, Plugin, Modal } from "obsidian";
 import { GenerationCoordinator } from "./reports/GenerationCoordinator";
 import { reportVault } from "./obsidian/VaultAdapter";
@@ -17,9 +19,57 @@ export default class MurmurationReports extends Plugin {
       mutationQueueFor(this.app as typeof this.app & MutationQueueHost),
     ));
     let loaded = true;
+    const manager = new ManagerService(
+      this.app,
+      coordinator,
+      mutationQueueFor(this.app as typeof this.app & MutationQueueHost),
+    );
+    this.registerView(REPORTS_VIEW, (leaf) => new ReportsView(leaf, manager));
+    let opening: Promise<void> | undefined;
+    const openReports = (): Promise<void> => {
+      if (opening) return opening;
+      const task = (async () => {
+        if (!loaded) return;
+        let leaf = this.app.workspace.getLeavesOfType(REPORTS_VIEW)[0];
+        if (!leaf) {
+          leaf = this.app.workspace.getLeaf("tab");
+          await leaf.setViewState({ type: REPORTS_VIEW, active: true });
+        }
+        await leaf.loadIfDeferred();
+        if (!loaded) {
+          leaf.detach();
+          return;
+        }
+        await this.app.workspace.revealLeaf(leaf);
+      })();
+      opening = task;
+      void task
+        .finally(() => {
+          if (opening === task) opening = undefined;
+        })
+        .catch((error) => {
+          if (loaded) new Notice(String(error));
+        });
+      return task;
+    };
+    this.addCommand({
+      id: "open-reports",
+      name: "Open Reports",
+      callback: () => {
+        void openReports().catch(() => {});
+      },
+    });
+    this.addRibbonIcon("bar-chart-3", "Open Reports", () => {
+      void openReports().catch(() => {});
+    });
+    this.register(() => {
+      manager.dispose();
+      this.app.workspace.detachLeavesOfType(REPORTS_VIEW);
+    });
     const dialogs = new Set<Modal>();
     const showResults = (results: readonly ReportResult[]) => {
       if (!loaded) return;
+      manager.recordMany(results);
       const modal = new ResultsModal(this.app, results, () =>
         dialogs.delete(modal),
       );

@@ -23,6 +23,16 @@ await build({
   },
 });
 process.env.MURMURATION_REPORTS_EXPORT_ROOT = root;
+if (process.argv[3]) {
+  const fixture = path.resolve(process.argv[3]);
+  if (
+    !(
+      await readFile(path.join(fixture, ".murmuration-reports-fixture"), "utf8")
+    ).includes("Disposable synthetic")
+  )
+    throw Error("Only a marked disposable manager fixture is accepted");
+  process.env.MURMURATION_REPORTS_MANAGER_FIXTURE = fixture;
+}
 process.env.MURMURATION_REPORTS_CODEX_SOURCE = execFileSync(
   "git",
   ["rev-parse", "HEAD"],
