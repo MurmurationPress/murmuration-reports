@@ -23,6 +23,10 @@ export class MemoryVault implements ReportVault {
   files = new Map<string, string>();
   folders = new Set<string>(["Definitions", "Data Ω"]);
   mutations: { path: string; content: string }[] = [];
+  versions = new Map<string, number>();
+  version(path: string) {
+    return this.versions.get(path) ?? 0;
+  }
   hook: ((operation: string, path: string) => void) | null = null;
   constructor(definition: Record<string, unknown> = chart) {
     this.note("Definitions/Report.md", definition);
@@ -31,6 +35,7 @@ export class MemoryVault implements ReportVault {
   }
   note(path: string, fm: Record<string, unknown>): void {
     this.files.set(path, JSON.stringify(fm));
+    this.versions.set(path, this.version(path) + 1);
   }
   documents(): ReportDocument[] {
     return [...this.files]
@@ -63,8 +68,13 @@ export class MemoryVault implements ReportVault {
     if (!this.files.has(path)) throw Error(`${path} missing`);
     return this.files.get(path)!;
   }
-  async create(path: string, content: string): Promise<void> {
+  async create(
+    path: string,
+    content: string,
+    guard?: () => void,
+  ): Promise<void> {
     this.hook?.("create", path);
+    guard?.();
     if (this.kind(path)) throw Error("exists");
     this.files.set(path, content);
     this.mutations.push({ path, content });
@@ -74,16 +84,14 @@ export class MemoryVault implements ReportVault {
     path: string,
     expected: string,
     content: string,
+    guard?: () => void,
   ): Promise<void> {
     this.hook?.("replace", path);
+    guard?.();
     if (this.files.get(path) !== expected) throw Error("concurrent content");
     this.files.set(path, content);
     this.mutations.push({ path, content });
     this.hook?.("replaced", path);
-  }
-  async removeCreated(path: string, expected: string): Promise<void> {
-    if (this.files.get(path) !== expected) throw Error("concurrent cleanup");
-    this.files.delete(path);
   }
   async createFolder(path: string): Promise<void> {
     if (this.kind(path)) throw Error("exists");

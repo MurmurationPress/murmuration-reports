@@ -16,6 +16,8 @@ import {
   serialiseReceipt,
   tableMarker,
 } from "./OutputOwnership";
+import { safePath, pathKey, within } from "./PathSafety";
+import type { MutationQueue } from "../obsidian/MutationQueue";
 
 export interface ReportDocument {
   readonly path: string;
@@ -26,12 +28,21 @@ export interface ReportVault {
   readDocument(path: string): Promise<ReportDocument>;
   kind(path: string): "file" | "folder" | null;
   read(path: string): Promise<string>;
-  /** Create fails if the destination exists. */
-  create(path: string, content: string): Promise<void>;
+  /** Check both indexed and on-disk existence. Obsidian has no exclusive-create primitive. */
+  create(path: string, content: string, guard?: () => void): Promise<void>;
   /** Compare and replace using Vault.process; cannot lock external sync or multiple files. */
-  replace(path: string, expected: string, content: string): Promise<void>;
-  removeCreated(path: string, expected: string): Promise<void>;
+  replace(
+    path: string,
+    expected: string,
+    content: string,
+    guard?: () => void,
+  ): Promise<void>;
   createFolder(path: string): Promise<void>;
+  validateAdoptionContent?(
+    content: string,
+    type: DerivedArtefactDefinition["artefactType"],
+  ): void;
+  version?(path: string): number;
 }
 export interface ReportResult {
   readonly definitionPath: string;
@@ -55,28 +66,30 @@ interface Plan {
   content: string;
   observations: number;
   snapshots: Map<string, string>;
+  versions: Map<string, number>;
   inventory: string;
   output: string | null;
   receipt: string | null;
 }
 class Blocked extends Error {}
+class UnconfirmedWrite extends Error {
+  constructor(
+    readonly path: string,
+    readonly previous: string | null,
+    error: unknown,
+  ) {
+    super(`${path}: write did not confirm completion (${errorText(error)}).`);
+  }
+}
 const errorText = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
-function safePath(path: unknown): path is string {
-  return (
-    typeof path === "string" &&
-    !!path &&
-    !path.startsWith("/") &&
-    !path.includes("\\") &&
-    !/[\x00-\x1f]/.test(path) &&
-    path.split("/").every((p) => !!p && p !== "." && p !== "..")
-  );
-}
 export class GenerationCoordinator {
-  private tail: Promise<unknown> = Promise.resolve();
   private disposed = false;
   private inspections = new WeakSet<AdoptionInspection>();
-  constructor(private readonly vault: ReportVault) {}
+  constructor(
+    private readonly vault: ReportVault,
+    private readonly queue: MutationQueue = { tail: Promise.resolve() },
+  ) {}
   dispose(): void {
     this.disposed = true;
   }
@@ -85,35 +98,59 @@ export class GenerationCoordinator {
       throw new Blocked("Reports was disabled; no further writes are allowed.");
   }
   private serial<T>(task: () => Promise<T>): Promise<T> {
-    const result = this.tail.then(() => {
+    const result = this.queue.tail.then(() => {
       this.active();
       return task();
     });
-    this.tail = result.catch(() => undefined);
+    this.queue.tail = result.catch(() => undefined);
     return result;
   }
-  private inventory(source: string): string {
+  private inventory(output: string): string {
     return JSON.stringify(
       this.vault
         .documents()
+        .filter((d) => pathKey(d.path) !== pathKey(output))
         .map((d) => d.path)
         .sort(),
     );
   }
   private async freshDocuments(
     snapshots?: Map<string, string>,
+    versions?: Map<string, number>,
   ): Promise<ReportDocument[]> {
     const result: ReportDocument[] = [];
     for (const item of this.vault.documents()) {
-      if (snapshots && !snapshots.has(item.path))
-        snapshots.set(item.path, await this.vault.read(item.path));
+      if (snapshots) await this.snapshot(item.path, snapshots, versions!);
       try {
         result.push(await this.vault.readDocument(item.path));
-      } catch {
+      } catch (error) {
+        if (snapshots)
+          throw new Blocked(
+            `${item.path}: cannot establish safe declarations (${errorText(error)}). Repair frontmatter before generation.`,
+          );
         result.push(item);
-      } // Preserve known invalid definitions; their own generation reports errors.
+      } // Discovery retains known invalid definitions. Mutation planning fails closed.
     }
     return result;
+  }
+  private async snapshot(
+    path: string,
+    snapshots: Map<string, string>,
+    versions: Map<string, number>,
+  ): Promise<void> {
+    if (snapshots.has(path)) return;
+    versions.set(path, this.vault.version?.(path) ?? 0);
+    snapshots.set(path, await this.vault.read(path));
+  }
+  private inputsUnchanged(p: Plan): void {
+    for (const [path, version] of p.versions)
+      if (
+        pathKey(path) !== pathKey(p.definition.output) &&
+        (this.vault.version?.(path) ?? 0) !== version
+      )
+        throw new Blocked(
+          `${path} changed while generation was pending; retry.`,
+        );
   }
   private async optional(path: string): Promise<string | null> {
     if (this.vault.kind(path) === "folder")
@@ -124,7 +161,8 @@ export class GenerationCoordinator {
     this.active();
     if (!safePath(path)) throw new Blocked("Invalid definition path.");
     const snapshots = new Map<string, string>();
-    snapshots.set(path, await this.vault.read(path));
+    const versions = new Map<string, number>();
+    await this.snapshot(path, snapshots, versions);
     const document = await this.vault.readDocument(path);
     const definition = parseDerivedArtefactDefinition(
       document.frontmatter ?? {},
@@ -133,22 +171,25 @@ export class GenerationCoordinator {
       throw new Blocked("Invalid source or output path.");
     if (this.vault.kind(definition.source) !== "folder")
       throw new Blocked(`Source folder is missing: ${definition.source}`);
-    const inventory = this.inventory(definition.source);
+    const inventory = this.inventory(definition.output);
     // Explicit commands scan fresh frontmatter, never trusting a lagging metadata cache for collisions.
-    const documents = await this.freshDocuments(snapshots);
+    const documents = await this.freshDocuments(snapshots, versions);
     const definitions = documents.filter((d) =>
       isDerivedArtefactDefinition(d.frontmatter),
     );
     const sources = [definition.source];
     for (const item of definitions) {
-      if (!snapshots.has(item.path))
-        snapshots.set(item.path, await this.vault.read(item.path));
+      await this.snapshot(item.path, snapshots, versions);
       const fm = (await this.vault.readDocument(item.path)).frontmatter ?? {};
       // Protect usable source/output declarations even if another definition is invalid.
-      const source = typeof fm.source === 'string' ? fm.source.trim() : null;
-      const output = typeof fm.output === 'string' ? fm.output.trim() : null;
+      const source = typeof fm.source === "string" ? fm.source.trim() : null;
+      const output = typeof fm.output === "string" ? fm.output.trim() : null;
       if (safePath(source)) sources.push(source);
-      if (item.path !== path && output === definition.output)
+      if (
+        item.path !== path &&
+        typeof output === "string" &&
+        pathKey(output) === pathKey(definition.output)
+      )
         throw new Blocked(
           `Competing definition ${item.path} declares ${definition.output}.`,
         );
@@ -156,24 +197,26 @@ export class GenerationCoordinator {
     if (
       documents.some(
         (d) =>
-          d.path === definition.output &&
+          pathKey(d.path) === pathKey(definition.output) &&
           (d.path === path || isDerivedArtefactDefinition(d.frontmatter)),
       ) ||
-      sources.some((source) => definition.output.startsWith(`${source}/`))
+      sources.some((source) => within(definition.output, source))
     )
       throw new Blocked("Output collides with a source or definition.");
     if (
       definition.artefactType === "line-chart" &&
       documents.some(
-        (d) => d.path === definition.output.replace(/\.svg$/i, ".md"),
+        (d) =>
+          pathKey(d.path) ===
+          pathKey(definition.output.replace(/\.svg$/i, ".md")),
       )
     )
       throw new Blocked("SVG output collides with a Markdown note.");
     for (const suffix of ["", ".murmuration-report.json"]) {
       const target = definition.output + suffix;
       if (
-        sources.some((source) => target.startsWith(`${source}/`)) ||
-        definitions.some((d) => d.path === target)
+        sources.some((source) => within(target, source)) ||
+        definitions.some((d) => pathKey(d.path) === pathKey(target))
       )
         throw new Blocked(
           "Output metadata collides with a source or definition.",
@@ -190,8 +233,7 @@ export class GenerationCoordinator {
     for (const item of documents
       .filter((d) => d.path.startsWith(`${definition.source}/`))
       .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))) {
-      const raw = await this.vault.read(item.path);
-      if (!snapshots.has(item.path)) snapshots.set(item.path, raw);
+      await this.snapshot(item.path, snapshots, versions);
       records.push({
         path: item.path,
         frontmatter:
@@ -216,6 +258,7 @@ export class GenerationCoordinator {
       content,
       observations,
       snapshots,
+      versions,
       inventory,
       output,
       receipt,
@@ -223,8 +266,9 @@ export class GenerationCoordinator {
   }
   private async recheck(p: Plan): Promise<void> {
     this.active();
+    this.inputsUnchanged(p);
     if (
-      this.inventory(p.definition.source) !== p.inventory ||
+      this.inventory(p.definition.output) !== p.inventory ||
       this.vault.kind(p.definition.source) !== "folder"
     )
       throw new Blocked("Source or definition inventory changed; retry.");
@@ -243,6 +287,10 @@ export class GenerationCoordinator {
   }
   private async owner(p: Plan, repair = false): Promise<string | null> {
     const marker = p.output === null ? null : markerOwner(p.output);
+    if (marker && p.definition.artefactType !== "state-table")
+      throw new Blocked(
+        "A state-table ownership marker conflicts with the SVG output type.",
+      );
     let owner = marker;
     if (p.receipt !== null) {
       let r: OutputReceipt;
@@ -281,9 +329,13 @@ export class GenerationCoordinator {
           "No existing output to adopt. Generate a new output instead.",
         );
       const previousOwner = await this.owner(p, true);
+      this.vault.validateAdoptionContent?.(p.output, p.definition.artefactType);
       if (
         p.definition.artefactType === "line-chart" &&
-        !/^\s*(?:<\?xml[^>]*>\s*)?<svg\b[\s\S]*<\/svg>\s*$/.test(p.output)
+        !this.vault.validateAdoptionContent &&
+        !/^\s*(?:<\?xml[^>]*>\s*)?<svg\b[\s\S]*(?:<\/svg>|\/>)\s*$/.test(
+          p.output,
+        )
       )
         throw new Blocked(
           "The existing output is not a supported SVG document.",
@@ -364,7 +416,7 @@ export class GenerationCoordinator {
       counter = 1;
     while (this.vault.kind(path)) path = `${base}.${counter++}`;
     this.active();
-    await this.vault.create(path, content);
+    await this.vault.create(path, content, () => this.active());
     if ((await this.vault.read(path)) !== content)
       throw new Error(`Recovery copy verification failed: ${path}`);
     return path;
@@ -373,10 +425,18 @@ export class GenerationCoordinator {
     path: string,
     previous: string | null,
     next: string,
+    committed: () => void,
+    guard: () => void,
   ): Promise<void> {
-    this.active();
-    if (previous === null) await this.vault.create(path, next);
-    else await this.vault.replace(path, previous, next);
+    guard();
+    try {
+      if (previous === null) await this.vault.create(path, next, guard);
+      else await this.vault.replace(path, previous, next, guard);
+    } catch (error) {
+      if (error instanceof Blocked) throw error;
+      throw new UnconfirmedWrite(path, previous, error);
+    }
+    committed();
     if ((await this.vault.read(path)) !== next)
       throw new Error(`Write verification failed: ${path}`);
   }
@@ -387,8 +447,8 @@ export class GenerationCoordinator {
     let p: Plan | undefined,
       recoveryPath: string | undefined,
       receiptRecoveryPath: string | undefined,
-      outputAttempted = false,
-      receiptAttempted = false;
+      outputCommitted = false,
+      receiptCommitted = false;
     try {
       p = await this.plan(path);
       const owner = await this.owner(p, !!adoption);
@@ -429,15 +489,47 @@ export class GenerationCoordinator {
         );
         await this.recheck(p);
       }
+      // Hashing is asynchronous: recheck again after it, before handing off a write.
+      await this.recheck(p);
+      const guard = () => {
+        this.active();
+        this.inputsUnchanged(p!);
+        if (
+          this.inventory(p!.definition.output) !== p!.inventory ||
+          this.vault.kind(p!.definitionPath) !== "file" ||
+          this.vault.kind(p!.definition.source) !== "folder"
+        )
+          throw new Blocked(
+            "Source or definition structure changed before writing.",
+          );
+        if (owner && owner !== path && this.vault.kind(owner) !== null)
+          throw new Blocked(
+            "Former owner reappeared before writing; inspect again.",
+          );
+      };
       if (p.content !== p.output) {
-        outputAttempted = true;
-        await this.write(p.definition.output, p.output, p.content);
+        await this.write(
+          p.definition.output,
+          p.output,
+          p.content,
+          () => {
+            outputCommitted = true;
+          },
+          guard,
+        );
       }
       if ((await this.vault.read(p.definition.output)) !== p.content)
         throw new Blocked("Output changed before receipt write.");
       if (r !== p.receipt) {
-        receiptAttempted = true;
-        await this.write(receiptPath(p.definition.output), p.receipt, r);
+        await this.write(
+          receiptPath(p.definition.output),
+          p.receipt,
+          r,
+          () => {
+            receiptCommitted = true;
+          },
+          guard,
+        );
       }
       if (
         (await this.vault.read(p.definition.output)) !== p.content ||
@@ -466,10 +558,43 @@ export class GenerationCoordinator {
         (value): value is string => !!value,
       );
       const details: string[] = [];
-      // Best-effort conditional compensation, never overwrite a concurrent edit.
-      if (p && (outputAttempted || receiptAttempted)) {
+      // Only API-confirmed writes are eligible. Identical bytes do not prove ownership
+      // after an operation rejected, and Obsidian cannot compare-and-delete new files.
+      let compensate = true;
+      if (error instanceof Blocked && (outputCommitted || receiptCommitted)) {
+        compensate = false;
+        details.push(
+          "A guard failed after a confirmed write. Files and recovery copies are retained; inspect the output and receipt before retry.",
+        );
+      }
+      if (error instanceof UnconfirmedWrite) {
+        try {
+          if ((await this.optional(error.path)) !== error.previous) {
+            compensate = false;
+            details.push(
+              `${error.path}: retained because completion/ownership is uncertain; inspect before retry.`,
+            );
+          }
+        } catch {
+          compensate = false;
+          details.push(
+            `${error.path}: completion is uncertain; inspect before retry.`,
+          );
+        }
+      }
+      if (
+        p &&
+        ((outputCommitted && p.output === null) ||
+          (receiptCommitted && p.receipt === null))
+      ) {
+        compensate = false;
+        details.push(
+          "New files are retained after failure; no atomic compare-and-delete API is available. Inspect the output and receipt before retry.",
+        );
+      }
+      if (p && compensate && (outputCommitted || receiptCommitted)) {
         const pairs: [string, string | null, string][] = [];
-        if (receiptAttempted)
+        if (receiptCommitted && p.receipt !== null)
           pairs.push([
             receiptPath(p.definition.output),
             p.receipt,
@@ -480,7 +605,7 @@ export class GenerationCoordinator {
               digest: await digest(p.content),
             }),
           ]);
-        if (outputAttempted)
+        if (outputCommitted && p.output !== null)
           pairs.push([p.definition.output, p.output, p.content]);
         for (const [target, previous, written] of pairs) {
           try {
@@ -488,9 +613,7 @@ export class GenerationCoordinator {
               this.vault.kind(target) === "file" &&
               (await this.vault.read(target)) === written
             ) {
-              if (previous === null)
-                await this.vault.removeCreated(target, written);
-              else await this.vault.replace(target, written, previous);
+              await this.vault.replace(target, written, previous!);
             }
           } catch (restoreError) {
             details.push(

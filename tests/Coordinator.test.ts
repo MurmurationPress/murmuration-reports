@@ -173,25 +173,67 @@ test("competing definitions block both jobs and adoption", async () => {
   await rejects(g.inspectAdoption(path), /Competing/);
   equal(v.mutations.length, 0);
 });
-test('trimmed declarations and lagging metadata caches cannot hide competitors', async()=>{
-  const v=new MemoryVault();v.note('Definitions/Other.md',{...chart,output:' '+chart.output+' '});
-  const actual=v.documents.bind(v);v.documents=()=>actual().map(d=>({...d,frontmatter:undefined}));
-  const results=await new GenerationCoordinator(v).generateAll();equal(results.length,2);equal(results.every(r=>r.status==='blocked'),true);equal(v.mutations.length,0);
+test("trimmed declarations and lagging metadata caches cannot hide competitors", async () => {
+  const v = new MemoryVault();
+  v.note("Definitions/Other.md", {
+    ...chart,
+    output: " " + chart.output + " ",
+  });
+  const actual = v.documents.bind(v);
+  v.documents = () => actual().map((d) => ({ ...d, frontmatter: undefined }));
+  const results = await new GenerationCoordinator(v).generateAll();
+  equal(results.length, 2);
+  equal(
+    results.every((r) => r.status === "blocked"),
+    true,
+  );
+  equal(v.mutations.length, 0);
 });
-test('non-canonical encoding and marker substrings never establish ownership', async()=>{
-  await rejects(Promise.resolve().then(()=>markerOwner('\n'+tableMarker(path).replace('%2F','%2f')+'\n')));
-  const v=new MemoryVault(table);v.files.set(table.output,'unrelated '+tableMarker(path));equal((await new GenerationCoordinator(v).generate(path)).status,'failed');equal(v.mutations.length,0);
+test("non-canonical encoding and marker substrings never establish ownership", async () => {
+  await rejects(
+    Promise.resolve().then(() =>
+      markerOwner("\n" + tableMarker(path).replace("%2F", "%2f") + "\n"),
+    ),
+  );
+  const v = new MemoryVault(table);
+  v.files.set(table.output, "unrelated " + tableMarker(path));
+  equal((await new GenerationCoordinator(v).generate(path)).status, "failed");
+  equal(v.mutations.length, 0);
 });
-test('receipt failure after write restores the old pair with both recovery copies', async()=>{
-  const v=new MemoryVault();const g=new GenerationCoordinator(v);await g.generate(path);
-  const output=v.files.get(chart.output),receipt=v.files.get(receiptPath(chart.output));v.note('Data Ω/B.md',{date:'2029-02-01',value:6});let fail=true;
-  v.hook=(op,p)=>{if(op==='replaced'&&p===receiptPath(chart.output)&&fail){fail=false;throw Error('receipt post-write failure');}};
-  const r=await g.generate(path);equal(r.status,'failed');equal(v.files.get(chart.output),output);equal(v.files.get(receiptPath(chart.output)),receipt);equal(r.recoveryPaths!.length,2);
+test("unconfirmed receipt write retains the pair and both original recovery copies", async () => {
+  const v = new MemoryVault();
+  const g = new GenerationCoordinator(v);
+  await g.generate(path);
+  const output = v.files.get(chart.output),
+    receipt = v.files.get(receiptPath(chart.output));
+  v.note("Data Ω/B.md", { date: "2029-02-01", value: 6 });
+  let fail = true;
+  v.hook = (op, p) => {
+    if (op === "replaced" && p === receiptPath(chart.output) && fail) {
+      fail = false;
+      throw Error("receipt post-write failure");
+    }
+  };
+  const r = await g.generate(path);
+  equal(r.status, "failed");
+  equal(v.files.get(r.recoveryPaths![0]), output);
+  equal(v.files.get(r.recoveryPaths![1]), receipt);
+  equal(r.recoveryPaths!.length, 2);
+  match(r.message, /uncertain/);
 });
-test('unverified recovery copy prevents replacement', async()=>{
-  const v=new MemoryVault();const g=new GenerationCoordinator(v);await g.generate(path);const old=v.files.get(chart.output);v.note('Data Ω/B.md',{date:'2029-02-01',value:7});
-  v.hook=(op,p)=>{if(op==='created'&&p.includes('backup'))v.files.set(p,'incomplete backup');};
-  const r=await g.generate(path);equal(r.status,'failed');equal(v.files.get(chart.output),old);
+test("unverified recovery copy prevents replacement", async () => {
+  const v = new MemoryVault();
+  const g = new GenerationCoordinator(v);
+  await g.generate(path);
+  const old = v.files.get(chart.output);
+  v.note("Data Ω/B.md", { date: "2029-02-01", value: 7 });
+  v.hook = (op, p) => {
+    if (op === "created" && p.includes("backup"))
+      v.files.set(p, "incomplete backup");
+  };
+  const r = await g.generate(path);
+  equal(r.status, "failed");
+  equal(v.files.get(chart.output), old);
 });
 test("invalid other definition still protects its declared output and source", async () => {
   const v = new MemoryVault();
@@ -278,7 +320,7 @@ test("receipt failure compensates output and retains original recovery", async (
   equal(v.files.get(receiptPath(chart.output)), receipt);
   equal(v.files.get(result.recoveryPaths![0]), old);
 });
-test("failed first receipt removes only the newly generated output", async () => {
+test("failed first receipt retains new files instead of attempting unsafe deletion", async () => {
   const v = new MemoryVault();
   v.hook = (op, p) => {
     if (op === "create" && p === receiptPath(chart.output))
@@ -286,10 +328,11 @@ test("failed first receipt removes only the newly generated output", async () =>
   };
   const result = await new GenerationCoordinator(v).generate(path);
   equal(result.status, "failed");
-  equal(v.files.has(chart.output), false);
+  equal(v.files.has(chart.output), true);
+  match(result.message, /retained/);
   equal(v.files.has(receiptPath(chart.output)), false);
 });
-test("output failure after write is conditionally compensated", async () => {
+test("unconfirmed output failure preserves the old recovery copy without guessing rollback ownership", async () => {
   const v = new MemoryVault();
   const g = new GenerationCoordinator(v);
   await g.generate(path);
@@ -302,8 +345,10 @@ test("output failure after write is conditionally compensated", async () => {
       throw Error("post-write failure");
     }
   };
-  equal((await g.generate(path)).status, "failed");
-  equal(v.files.get(chart.output), old);
+  const result = await g.generate(path);
+  equal(result.status, "failed");
+  equal(v.files.get(result.recoveryPaths![0]), old);
+  match(result.message, /uncertain/);
 });
 test("failed compensation exposes a verified recovery copy", async () => {
   const v = new MemoryVault();

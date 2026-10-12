@@ -1,3 +1,4 @@
+import { safePath } from "./PathSafety";
 export const receiptPath = (output: string): string =>
   `${output}.murmuration-report.json`;
 export const tableMarker = (definition: string): string =>
@@ -22,8 +23,8 @@ export function parseReceipt(raw: string): OutputReceipt {
   const r = value as Record<string, unknown>;
   if (
     r.version !== 1 ||
-    typeof r.definitionPath !== "string" ||
-    typeof r.outputPath !== "string" ||
+    !safePath(r.definitionPath) ||
+    !safePath(r.outputPath) ||
     typeof r.digest !== "string" ||
     !/^[a-f0-9]{64}$/.test(r.digest)
   )
@@ -31,10 +32,11 @@ export function parseReceipt(raw: string): OutputReceipt {
   return r as unknown as OutputReceipt;
 }
 export function markerOwner(content: string): string | null {
-  const occurrences = content.match(/mwc-derived-artefact:state-table/g) ?? [];
+  const occurrences =
+    content.match(/<!--\s*mwc-derived-artefact:state-table\b/g) ?? [];
   if (!occurrences.length) return null;
   const match =
-    /\n(<!-- mwc-derived-artefact:state-table definition=([^\s<>]+) -->)\n$/.exec(
+    /(?:^|\r?\n)(<!-- mwc-derived-artefact:state-table definition=([^\s<>]+) -->)(?:\r?\n)?$/.exec(
       content,
     );
   if (occurrences.length !== 1 || !match)
@@ -45,7 +47,7 @@ export function markerOwner(content: string): string | null {
   } catch {
     throw new Error("Malformed table ownership marker.");
   }
-  if (match[1] !== tableMarker(owner))
+  if (!safePath(owner) || match[1] !== tableMarker(owner))
     throw new Error("Non-canonical table ownership marker.");
   return owner;
 }

@@ -3,6 +3,7 @@ import { readFile, mkdtemp } from "node:fs/promises";
 import path from "node:path";
 import { build } from "esbuild";
 import { pathToFileURL } from "node:url";
+import { execFileSync } from "node:child_process";
 if (!process.argv[2])
   throw Error("Usage: node scripts/verify-exports.mjs CODEX_PRESS_CHECKOUT");
 const root = await mkdtemp("/tmp/murmuration-reports-exports-");
@@ -22,4 +23,9 @@ await build({
   },
 });
 process.env.MURMURATION_REPORTS_EXPORT_ROOT = root;
+process.env.MURMURATION_REPORTS_CODEX_SOURCE = execFileSync(
+  "git",
+  ["rev-parse", "HEAD"],
+  { cwd: path.resolve(process.argv[2]), encoding: "utf8" },
+).trim();
 await import(pathToFileURL(path.join(root, "run.mjs")));

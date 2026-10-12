@@ -7,6 +7,7 @@ export class ResultsModal extends Modal {
   constructor(
     app: App,
     private readonly results: readonly ReportResult[],
+    private readonly onClosedCallback?: () => void,
   ) {
     super(app);
   }
@@ -31,6 +32,7 @@ export class ResultsModal extends Modal {
   }
   onClose(): void {
     this.contentEl.empty();
+    this.onClosedCallback?.();
   }
 }
 export class AdoptionModal extends Modal {

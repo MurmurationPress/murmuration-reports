@@ -142,7 +142,7 @@ async function launch() {
   };
   for (let i = 0; i < 150; i++) {
     const ready = await ev(
-      `const trust=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Trust author'));if(trust)trust.click();return app.workspace.layoutReady;`,
+      `const trust=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Trust author'));if(trust)trust.click();return !!app.workspace?.layoutReady;`,
     );
     if (ready) {
       await ev(`app.setting.close();return true;`);
@@ -215,7 +215,9 @@ async function open(p) {
   await pause(150);
 }
 async function stop() {
-  try { await ev(`setTimeout(()=>window.close(),50);return true;`); } catch {}
+  try {
+    await ev(`setTimeout(()=>window.close(),50);return true;`);
+  } catch {}
   await pause(500);
   ws?.close();
   child?.kill("SIGTERM");
@@ -230,6 +232,9 @@ try {
   )
     await pause(100);
   assert(await ev("return app.murmurationReports?.version===1;"));
+  const apiEvidence = await ev(
+    `return {create:String(app.vault.create),process:String(app.vault.process)};`,
+  );
   await ev(
     `globalThis.reportQuery=selector=>{const search=root=>[...root.querySelectorAll(selector),...[...root.querySelectorAll('*')].flatMap(el=>el.shadowRoot?search(el.shadowRoot):[])];return search(app.workspace.containerEl.ownerDocument);};return true;`,
   );
@@ -245,6 +250,10 @@ try {
   await ev(
     `await app.vault.delete(app.vault.getAbstractFileByPath('Saved reports Ω/Trend.svg.murmuration-report.json'));await app.vault.modify(app.vault.getAbstractFileByPath('Saved reports Ω/Trend.svg'),'<svg><text>Legacy fixture</text></svg>');return true;`,
   );
+  await ev(
+    `await app.vault.modify(app.vault.getAbstractFileByPath('Saved reports Ω/Trend.svg'),'<svg><broken></svg>');let rejected=false;try{await app.plugins.plugins['murmuration-reports'].coordinator.inspectAdoption('Definitions/Trend.md');}catch(error){rejected=String(error).includes('well-formed');}if(!rejected)throw Error('Malformed SVG was accepted');await app.vault.modify(app.vault.getAbstractFileByPath('Saved reports Ω/Trend.svg'),'<svg><text>Legacy fixture</text></svg>');return true;`,
+  );
+  checks.push("native XML parser rejects malformed adoption candidates");
   await command("murmuration-reports:adopt-report-output");
   await waitModal("Adopt output and generate");
   await click("Cancel");
@@ -270,6 +279,41 @@ try {
   assert.equal(await hash("Saved reports Ω/Trend.svg"), assetBefore);
   checks.push(
     "native adoption regenerates byte-compatible SVG with receipt and recovery",
+  );
+  await ev(
+    `globalThis.reviewSource=await app.vault.read(app.vault.getAbstractFileByPath('Data Ω/B.md'));await app.fileManager.processFrontMatter(app.vault.getAbstractFileByPath('Data Ω/B.md'),fm=>fm.value=3);globalThis.reviewEntered=false;globalThis.reviewRelease=null;globalThis.reviewProcess=app.vault.process.bind(app.vault);let first=true;app.vault.process=async(file,callback,options)=>{if(file.path==='Saved reports Ω/Trend.svg'&&first){first=false;reviewEntered=true;await new Promise(resolve=>reviewRelease=resolve);}return reviewProcess(file,callback,options);};globalThis.reviewPending=app.murmurationReports.generateDefinition('Definitions/Trend.md');return true;`,
+  );
+  for (let i = 0; i < 100 && !(await ev("return reviewEntered;")); i++)
+    await pause(50);
+  assert(await ev("return reviewEntered;"));
+  assert(
+    await ev(
+      `await app.vault.modify(app.vault.getAbstractFileByPath('Data Ω/B.md'),reviewSource);reviewRelease();const result=await reviewPending;app.vault.process=reviewProcess;if(result.status!=='blocked')throw Error(JSON.stringify(result));return true;`,
+    ),
+  );
+  assert.equal(await hash("Saved reports Ω/Trend.svg"), assetBefore);
+  checks.push(
+    "saved source change while native write awaits its callback invalidates generation",
+  );
+  await ev(
+    `globalThis.reviewSource=await app.vault.read(app.vault.getAbstractFileByPath('Data Ω/B.md'));await app.fileManager.processFrontMatter(app.vault.getAbstractFileByPath('Data Ω/B.md'),fm=>fm.value=3);globalThis.reviewEntered=false;globalThis.reviewRelease=null;globalThis.reviewWrites=0;globalThis.reviewProcess=app.vault.process.bind(app.vault);let first=true;app.vault.process=async(file,callback,options)=>{if(file.path==='Saved reports Ω/Trend.svg'&&first){first=false;reviewEntered=true;await new Promise(resolve=>reviewRelease=resolve);}return reviewProcess(file,raw=>{const next=callback(raw);if(file.path==='Saved reports Ω/Trend.svg')reviewWrites++;return next;},options);};globalThis.reviewOld=app.murmurationReports.generateDefinition('Definitions/Trend.md');return true;`,
+  );
+  for (let i = 0; i < 100 && !(await ev("return reviewEntered;")); i++)
+    await pause(50);
+  assert(await ev("return reviewEntered;"));
+  await ev(
+    `await app.plugins.disablePluginAndSave('murmuration-reports');await app.plugins.enablePluginAndSave('murmuration-reports');globalThis.reviewSettled=false;globalThis.reviewNext=app.murmurationReports.generateDefinition('Definitions/Trend.md').then(result=>{reviewSettled=true;return result;});return true;`,
+  );
+  await pause(150);
+  assert.equal(await ev("return reviewSettled;"), false);
+  assert(
+    await ev(
+      `reviewRelease();const old=await reviewOld,next=await reviewNext;app.vault.process=reviewProcess;if(old.status!=='blocked'||next.status!=='replaced'||reviewWrites!==1)throw Error(JSON.stringify({old,next,writes:reviewWrites}));await app.vault.modify(app.vault.getAbstractFileByPath('Data Ω/B.md'),reviewSource);const restored=await app.murmurationReports.generateDefinition('Definitions/Trend.md');if(restored.status!=='replaced')throw Error('Source restoration generation failed');return true;`,
+    ),
+  );
+  assert.equal(await hash("Saved reports Ω/Trend.svg"), assetBefore);
+  checks.push(
+    "unload during native conditional write cancels its callback; re-enabled generation waits for the old barrier",
   );
   await ev(
     `await app.plugins.enablePluginAndSave('murmuration-writing-companion');return true;`,
@@ -299,28 +343,52 @@ try {
   await waitModal("Report generation results");
   await click("Close");
   checks.push("MWC-first then Reports re-enable and batch bridge");
-  const tableBefore=await hash('Saved reports Ω/State.md');
-  const tableReceiptBefore=await hash('Saved reports Ω/State.md.murmuration-report.json');
-  await ev(`await app.fileManager.renameFile(app.vault.getAbstractFileByPath('Definitions/State.md'),'Definitions/Moved State.md');return true;`);
+  const tableBefore = await hash("Saved reports Ω/State.md");
+  const tableReceiptBefore = await hash(
+    "Saved reports Ω/State.md.murmuration-report.json",
+  );
+  await ev(
+    `await app.fileManager.renameFile(app.vault.getAbstractFileByPath('Definitions/State.md'),'Definitions/Moved State.md');return true;`,
+  );
   await pause(400);
-  assert.equal(await hash('Saved reports Ω/State.md'),tableBefore);
-  assert.equal(await hash('Saved reports Ω/State.md.murmuration-report.json'),tableReceiptBefore);
-  await open('Definitions/Moved State.md');
-  await command('murmuration-reports:generate-derived-artefact');
-  assert((await waitModal('Report generation results')).includes('blocked'));await click('Close');
-  await command('murmuration-reports:adopt-report-output');await waitModal('Adopt output and generate');await click('Adopt and generate');
-  assert((await waitModal('Report generation results')).includes('replaced'));await click('Close');
-  checks.push('observed definition move preserves assets until explicit path repair');
-  await ev(`await app.plugins.disablePluginAndSave('murmuration-reports');await app.fileManager.renameFile(app.vault.getAbstractFileByPath('Definitions/Moved State.md'),'Definitions/State.md');return true;`);
+  assert.equal(await hash("Saved reports Ω/State.md"), tableBefore);
+  assert.equal(
+    await hash("Saved reports Ω/State.md.murmuration-report.json"),
+    tableReceiptBefore,
+  );
+  await open("Definitions/Moved State.md");
+  await command("murmuration-reports:generate-derived-artefact");
+  assert((await waitModal("Report generation results")).includes("blocked"));
+  await click("Close");
+  await command("murmuration-reports:adopt-report-output");
+  await waitModal("Adopt output and generate");
+  await click("Adopt and generate");
+  assert((await waitModal("Report generation results")).includes("replaced"));
+  await click("Close");
+  checks.push(
+    "observed definition move preserves assets until explicit path repair",
+  );
+  await ev(
+    `await app.plugins.disablePluginAndSave('murmuration-reports');await app.fileManager.renameFile(app.vault.getAbstractFileByPath('Definitions/Moved State.md'),'Definitions/State.md');return true;`,
+  );
   await pause(300);
-  assert.notEqual(await hash('Saved reports Ω/State.md'),tableBefore);
-  await ev(`await app.plugins.enablePluginAndSave('murmuration-reports');return true;`);
-  await open('Definitions/State.md');await command('murmuration-reports:generate-derived-artefact');
-  assert((await waitModal('Report generation results')).includes('blocked'));await click('Close');
-  await command('murmuration-reports:adopt-report-output');await waitModal('Adopt output and generate');await click('Adopt and generate');
-  assert((await waitModal('Report generation results')).includes('replaced'));await click('Close');
-  assert.equal(await hash('Saved reports Ω/State.md'),tableBefore);
-  checks.push('move while disabled is discovered on re-enable without guessing ownership');
+  assert.notEqual(await hash("Saved reports Ω/State.md"), tableBefore);
+  await ev(
+    `await app.plugins.enablePluginAndSave('murmuration-reports');return true;`,
+  );
+  await open("Definitions/State.md");
+  await command("murmuration-reports:generate-derived-artefact");
+  assert((await waitModal("Report generation results")).includes("blocked"));
+  await click("Close");
+  await command("murmuration-reports:adopt-report-output");
+  await waitModal("Adopt output and generate");
+  await click("Adopt and generate");
+  assert((await waitModal("Report generation results")).includes("replaced"));
+  await click("Close");
+  assert.equal(await hash("Saved reports Ω/State.md"), tableBefore);
+  checks.push(
+    "move while disabled is discovered on re-enable without guessing ownership",
+  );
   await ev(
     `await app.plugins.disablePluginAndSave('murmuration-reports');await app.plugins.disablePluginAndSave('murmuration-writing-companion');return true;`,
   );
@@ -336,12 +404,24 @@ try {
     ),
   );
   checks.push("both plugins disabled: native SVG/table embeds render");
-  let savedDisabled=false;
-  for(let i=0;i<50;i++){
-    try {savedDisabled=JSON.parse(await readFile(path.join(vault,'.obsidian/community-plugins.json'),'utf8')).length===0;}catch{}
-    if(savedDisabled)break;await pause(100);
+  let savedDisabled = false;
+  for (let i = 0; i < 50; i++) {
+    try {
+      savedDisabled =
+        JSON.parse(
+          await readFile(
+            path.join(vault, ".obsidian/community-plugins.json"),
+            "utf8",
+          ),
+        ).length === 0;
+    } catch {}
+    if (savedDisabled) break;
+    await pause(100);
   }
-  assert(savedDisabled,'Obsidian did not persist both plugins disabled before restart');
+  assert(
+    savedDisabled,
+    "Obsidian did not persist both plugins disabled before restart",
+  );
   await stop();
   await launch();
   assert.equal(await ev("return !!app.murmurationReports;"), false);
@@ -350,10 +430,21 @@ try {
   assert.equal(await hash("Saved reports Ω/Trend.svg"), assetBefore);
   checks.push("disabled restart preserves sources and assets");
   const environment = await ev("return navigator.userAgent;");
-  const bundles={reports:createHash('sha256').update(await readFile(path.join(reports,'main.js'))).digest('hex'),mwc:createHash('sha256').update(await readFile(path.join(mwc,'main.js'))).digest('hex')};
+  const bundles = {
+    reports: createHash("sha256")
+      .update(await readFile(path.join(reports, "main.js")))
+      .digest("hex"),
+    mwc: createHash("sha256")
+      .update(await readFile(path.join(mwc, "main.js")))
+      .digest("hex"),
+  };
   await writeFile(
     path.join(root, "evidence.json"),
-    JSON.stringify({ checks, environment, bundles, root }, null, 2),
+    JSON.stringify(
+      { checks, environment, bundles, apiEvidence, root },
+      null,
+      2,
+    ),
   );
   console.log(JSON.stringify({ checks, environment, bundles, root }, null, 2));
 } catch (error) {

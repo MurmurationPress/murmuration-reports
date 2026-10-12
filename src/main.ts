@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { Notice, Plugin, Modal } from "obsidian";
 import { GenerationCoordinator } from "./reports/GenerationCoordinator";
 import { reportVault } from "./obsidian/VaultAdapter";
 import {
@@ -7,18 +7,38 @@ import {
 } from "./obsidian/ReportsCapability";
 import { installReportCommands } from "./commands/ReportCommands";
 import { AdoptionModal, ResultsModal } from "./ui/ReportInteractions";
+import { mutationQueueFor, MutationQueueHost } from "./obsidian/MutationQueue";
+import type { ReportResult } from "./reports/GenerationCoordinator";
 export default class MurmurationReports extends Plugin {
   private coordinator!: GenerationCoordinator;
   async onload(): Promise<void> {
-    this.coordinator = new GenerationCoordinator(reportVault(this.app));
-    this.register(() => this.coordinator.dispose());
+    const coordinator = (this.coordinator = new GenerationCoordinator(
+      reportVault(this.app, (ref) => this.registerEvent(ref)),
+      mutationQueueFor(this.app as typeof this.app & MutationQueueHost),
+    ));
+    let loaded = true;
+    const dialogs = new Set<Modal>();
+    const showResults = (results: readonly ReportResult[]) => {
+      if (!loaded) return;
+      const modal = new ResultsModal(this.app, results, () =>
+        dialogs.delete(modal),
+      );
+      dialogs.add(modal);
+      modal.open();
+    };
+    this.register(() => {
+      loaded = false;
+      coordinator.dispose();
+      for (const dialog of dialogs) dialog.close();
+      dialogs.clear();
+    });
     const host = this.app as typeof this.app & CapabilityHost;
     this.register(
       registerCapability(host, {
         version: 1,
-        generateDefinition: (path) => this.coordinator.generate(path),
-        generateAll: () => this.coordinator.generateAll(),
-        showResults: (results) => new ResultsModal(this.app, results).open(),
+        generateDefinition: (path) => coordinator.generate(path),
+        generateAll: () => coordinator.generateAll(),
+        showResults,
       }),
     );
     installReportCommands({
@@ -31,16 +51,20 @@ export default class MurmurationReports extends Plugin {
       notice: (message) => {
         new Notice(message, 10000);
       },
-      showResults: (results) => new ResultsModal(this.app, results).open(),
+      showResults,
       adopt: async (path) => {
-        const inspection = await this.coordinator.inspectAdoption(path);
-        const accepted = await new Promise<boolean>((resolve) =>
-          new AdoptionModal(this.app, inspection, resolve).open(),
-        );
-        if (accepted)
-          new ResultsModal(this.app, [
-            await this.coordinator.adoptAndGenerate(inspection),
-          ]).open();
+        const inspection = await coordinator.inspectAdoption(path);
+        if (!loaded) return;
+        const accepted = await new Promise<boolean>((resolve) => {
+          const modal = new AdoptionModal(this.app, inspection, (value) => {
+            dialogs.delete(modal);
+            resolve(value);
+          });
+          dialogs.add(modal);
+          modal.open();
+        });
+        if (accepted && loaded)
+          showResults([await coordinator.adoptAndGenerate(inspection)]);
       },
     });
   }

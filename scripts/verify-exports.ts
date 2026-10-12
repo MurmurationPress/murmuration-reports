@@ -191,7 +191,7 @@ for (const plan of [
 for (const [p, c] of originals)
   assert.deepEqual(await readFile(path.join(vault, p)), c, p + " changed");
 const evidence = {
-  codexPressSource: "93af44922cdb1b83b6166c4f8429d7d9f5b32c07",
+  codexPressSource: process.env.MURMURATION_REPORTS_CODEX_SOURCE,
   outputs: [pdfResult.outputPath, epubResult.outputPath, docxResult.outputPath],
   checks: [
     "PDF vector chart text and numeric table",
