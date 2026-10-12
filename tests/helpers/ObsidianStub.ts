@@ -1,4 +1,14 @@
+import { parse } from "yaml";
 // Test-only boundary doubles. Never included by the production build.
+export class TFolder {
+  constructor(public path: string) {}
+}
+export class Component {
+  load() {}
+  unload() {}
+}
+export class ItemView {}
+export const MarkdownRenderer = { render: async () => {} };
 export class TFile {
   extension = "md";
   constructor(public path: string) {
@@ -9,7 +19,7 @@ export const getFrontMatterInfo = (raw: string) =>
   raw.startsWith("---\n")
     ? { exists: true, frontmatter: raw.slice(4, raw.indexOf("---", 4)) }
     : { exists: raw.startsWith("{"), frontmatter: raw };
-export const parseYaml = (raw: string) => (raw.trim() ? JSON.parse(raw) : null);
+export const parseYaml = (raw: string) => (raw.trim() ? parse(raw) : null);
 class ElementStub {
   children: ElementStub[] = [];
   listeners = new Map<string, () => void>();
@@ -56,6 +66,8 @@ export class Plugin {
   registerEvent(ref: { off: () => void }) {
     this.register(() => ref.off());
   }
+  registerView(_type: string, _factory: unknown) {}
+  addRibbonIcon(_icon: string, _label: string, _callback: unknown) {}
   addCommand(command: any) {
     this.app.commandMap.set(
       this.manifest.id + ":" + command.id,

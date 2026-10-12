@@ -24,7 +24,7 @@ execFileSync(process.execPath, ["scripts/create-fixture.mjs", vault], {
 });
 await mkdir(profile);
 for (const [id, source, assets] of [
-  ["murmuration-reports", reports, ["main.js", "manifest.json"]],
+  ["murmuration-reports", reports, ["main.js", "manifest.json", "styles.css"]],
   [
     "murmuration-writing-companion",
     mwc,

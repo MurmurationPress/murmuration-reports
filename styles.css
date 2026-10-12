@@ -1,0 +1,16 @@
+.murmuration-reports-manager .mr-toolbar,.murmuration-reports-manager .mr-filters,.murmuration-reports-manager .mr-actions {display:flex;flex-wrap:wrap;align-items:center;gap:var(--size-4-2);margin-bottom:var(--size-4-3)}
+.murmuration-reports-manager .mr-toolbar h2 {margin:0 auto 0 0}
+.murmuration-reports-manager .mr-panes {display:grid;grid-template-columns:minmax(180px,1fr) minmax(0,3fr);gap:var(--size-4-4)}
+.murmuration-reports-manager .mr-list button {display:block;height:auto;width:100%;text-align:left;white-space:normal;margin-bottom:var(--size-4-2)}
+.murmuration-reports-manager .mr-list small {display:block;overflow-wrap:anywhere;color:var(--text-muted)}
+.murmuration-reports-manager .mr-list button[aria-pressed=true] {outline:2px solid var(--interactive-accent)}
+.murmuration-reports-manager .mr-details {min-width:0;overflow-wrap:anywhere}
+.murmuration-reports-manager .mr-field {display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.murmuration-reports-manager .mr-field input {width:100%}
+.murmuration-reports-manager .mr-series-row {display:flex;gap:8px;flex-wrap:wrap;margin-block:8px}
+.murmuration-reports-manager .mr-series-row input {min-width:100px;flex:1}
+.murmuration-reports-manager .mr-preview {overflow:auto}
+.murmuration-reports-manager .mr-preview img {width:100%;height:auto}
+.murmuration-reports-manager .mr-diagnostics,.murmuration-reports-manager .mr-save-feedback {color:var(--text-muted);white-space:pre-wrap}
+.murmuration-reports-manager {container-type:inline-size}
+@container (max-width:600px) {.murmuration-reports-manager .mr-panes {grid-template-columns:1fr}.murmuration-reports-manager .mr-list {max-height:220px;overflow:auto}}

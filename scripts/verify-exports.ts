@@ -25,6 +25,18 @@ const root = process.env.MURMURATION_REPORTS_EXPORT_ROOT!,
   vault = path.join(root, "vault");
 await cp("examples/vault", vault, { recursive: true });
 assert(!(await stat(path.join(vault, ".obsidian")).catch(() => null)));
+const managerFixture = process.env.MURMURATION_REPORTS_MANAGER_FIXTURE;
+if (managerFixture) {
+  await cp(path.join(managerFixture, "Reports"), path.join(vault, "Reports"), {
+    recursive: true,
+  });
+  const bookPath = path.join(vault, "Book/Report.md");
+  await writeFile(
+    bookPath,
+    (await readFile(bookPath, "utf8")) +
+      "\n![[Reports/Outputs/Manager chart Ω.svg]]\n\n![[Reports/Outputs/Manager state Ω.md]]\n",
+  );
+}
 async function inventory(dir: string, prefix = ""): Promise<string[]> {
   const files: string[] = [];
   for (const item of await readdir(dir, { withFileTypes: true })) {
@@ -131,6 +143,10 @@ const pdfText = execFileSync(
 assert(pdfText.includes("Persistent chart"));
 assert(pdfText.includes("Measured value"));
 assert(pdfText.includes("+2.00"));
+if (managerFixture) {
+  assert(pdfText.includes("Manager chart"));
+  assert(pdfText.includes("Saved label"));
+}
 const epub = await createEpubBuildPlanWithAssets(gateway, book, options);
 const epubResult = await executeEpubBuild(epub, fs, runner, {
   keepWorkingDirectoryOnSuccess: true,
@@ -143,6 +159,7 @@ assert(xhtml.includes("Measured value"));
 assert(xhtml.includes("+2.00"));
 assert(xhtml.includes("<table"));
 assert(xhtml.includes("<img"));
+if (managerFixture) assert(xhtml.includes("Saved label"));
 assert(
   execFileSync("unzip", ["-Z1", epubPath], { encoding: "utf8" }).includes(
     ".svg",
@@ -160,6 +177,7 @@ assert(xml.includes("Measured value"));
 assert(xml.includes("+2.00"));
 assert(xml.includes("<w:tbl>"));
 assert(xml.includes("drawing"));
+if (managerFixture) assert(xml.includes("Saved label"));
 assert(
   execFileSync("unzip", ["-Z1", docxPath], { encoding: "utf8" }).includes(
     "word/media/",
@@ -195,6 +213,11 @@ const evidence = {
   outputs: [pdfResult.outputPath, epubResult.outputPath, docxResult.outputPath],
   checks: [
     "PDF vector chart text and numeric table",
+    ...(managerFixture
+      ? [
+          "manager-created charts and edited state tables included in all three exports",
+        ]
+      : []),
     "EPUB SVG and table",
     "DOCX drawing and table",
     "missing chart blocks all three plans",

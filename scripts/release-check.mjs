@@ -17,10 +17,28 @@ assert.equal(m.version, l.version);
 assert.equal(m.version, l.packages[""].version);
 assert.equal(v[m.version], m.minAppVersion);
 assert.equal(m.isDesktopOnly, true);
-assert.deepEqual(r.thirdPartyInputs, []);
+assert(
+  r.thirdPartyInputs.length > 0 &&
+    r.thirdPartyInputs.every((p) => p.startsWith("node_modules/yaml/")),
+);
+
 const js = await readFile("main.js", "utf8");
 const license = await readFile("LICENSE", "utf8");
 assert(js.includes(license.trim()));
+assert(
+  js.includes((await readFile("node_modules/yaml/LICENSE", "utf8")).trim()),
+);
+assert.equal(p.dependencies.yaml, "2.9.1");
+await access("styles.css");
+assert(
+  (await readFile("THIRD_PARTY_NOTICES.md", "utf8")).includes("YAML 2.9.1"),
+);
+assert.equal(
+  r.installed.total.raw,
+  r.rawBytes +
+    Buffer.byteLength(await readFile("styles.css")) +
+    Buffer.byteLength(await readFile("manifest.json")),
+);
 assert(js.includes("d7c2e6e625e98fade7004a064ab081670e607d4e"));
 assert(!js.includes("sourceMappingURL"));
 assert.equal(Buffer.byteLength(js), r.rawBytes);
