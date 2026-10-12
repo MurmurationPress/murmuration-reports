@@ -1,0 +1,9 @@
+{
+  "id": "murmuration-reports",
+  "name": "Murmuration Reports",
+  "version": "0.1.0",
+  "minAppVersion": "1.13.7",
+  "description": "Generate persistent charts and state tables from Markdown properties.",
+  "author": "Murmuration Press",
+  "isDesktopOnly": true
+}
