@@ -49,4 +49,4 @@ Obsidian provides no exclusive create, external-sync lock or crash-atomic multi-
 
 See [release preparation and versioning](docs/releasing.md).
 
-The [first milestone development branch](docs/implementation/first-milestone.md) adds explicit publication layout (fixed Y bounds, captions and dash/marker identity) and named observation-pair tables. These changes are pending implementation PR review; the published 0.1.0 release and existing legacy defaults remain unchanged. See [definitions](docs/definitions.md) for opt-in examples and qualification limits.
+The [first milestone development build](docs/implementation/first-milestone.md) adds explicit publication layout (fixed Y bounds, captions and dash/marker identity) and named observation-pair tables. The [independent implementation review](docs/implementation/independent-review.md) records validation and remaining qualification; the published 0.1.0 release and existing legacy defaults remain unchanged. See [definitions](docs/definitions.md) for opt-in examples and qualification limits.

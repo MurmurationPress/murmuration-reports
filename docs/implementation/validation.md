@@ -1,6 +1,6 @@
 # First milestone implementation validation — 2026-10-13
 
-Implementation remains in **draft PR #13**; do not merge or release. Production candidate `f6f5b75f68ca2de474d08c08121b6f83eb6bea6e` contains the four-feature implementation plus clarified manager guidance. The later evidence/harness changes do not change production behaviour. [Machine-readable ledger](validation-results.json) records source commits, exact bundle/tool/font/input/output hashes, native checks and actual compiler measurements.
+Historical implementation evidence for PR #13; see the subsequent [independent review](independent-review.md) for review results and remaining qualification. Production candidate `f6f5b75f68ca2de474d08c08121b6f83eb6bea6e` contains the four-feature implementation plus clarified manager guidance. The later evidence/harness changes do not change production behaviour. [Machine-readable ledger](validation-results.json) records source commits, exact bundle/tool/font/input/output hashes, native checks and actual compiler measurements.
 
 ## Research review and authorised merge
 
