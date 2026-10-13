@@ -109,6 +109,7 @@ async function launch(trustPlugins = true) {
   const pending = new Map();
   ws.onmessage = (e) => {
     const m = JSON.parse(e.data);
+    if (m.method === "Runtime.consoleAPICalled" && m.params.type === "error") console.error("Native console error",JSON.stringify(m.params.args));
     if (m.method === "Runtime.exceptionThrown")
       console.error("Native exception", JSON.stringify(m.params));
     if (pending.has(m.id)) {
@@ -136,7 +137,7 @@ async function launch(trustPlugins = true) {
   };
   for (let i = 0; i < 150; i++) {
     const ready = await ev(
-      `const trust=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Trust author'));if(trust && ${trustPlugins})trust.click();return !!app.workspace?.layoutReady;`,
+      `const trust=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Trust author'));if(trust && ${trustPlugins} && !globalThis.reportsResearchTrusted){globalThis.reportsResearchTrusted=true;trust.click();}return !!app.workspace?.layoutReady;`,
     );
     if (ready) {
       await ev(String.raw`app.setting.close();return true;`);
@@ -266,21 +267,27 @@ async function report(path) {
 try {
  await launch();
  for(let i=0;i<100 && !(await ev("return !!app.plugins.plugins['codex-press'];"));i++)await pause(100);
- await ev(String.raw`globalThis.reportQuery=selector=>[...document.querySelectorAll(selector)];const plugin=app.plugins.plugins['codex-press'];plugin.settings.svgConverterPath='/tmp/reports-rsvg-reference';plugin.settings.epubValidatorCommand='epubcheck';plugin.settings.epubValidatorArgs='';plugin.settings.outputFolder='Native Output';plugin.settings.keepPdfWorkingFiles=true;plugin.settings.keepEpubWorkingFiles=true;await plugin.saveSettings();return true;`);
+ await ev(String.raw`globalThis.reportQuery=selector=>{const search=root=>[...root.querySelectorAll(selector),...[...root.querySelectorAll('*')].flatMap(el=>el.shadowRoot?search(el.shadowRoot):[])];return search(app.workspace.containerEl.ownerDocument);};const plugin=app.plugins.plugins['codex-press'];plugin.settings.svgConverterPath='/tmp/reports-rsvg-reference';plugin.settings.epubValidatorCommand='epubcheck';plugin.settings.epubValidatorArgs='';plugin.settings.outputFolder='Native Output';plugin.settings.keepPdfWorkingFiles=true;plugin.settings.keepEpubWorkingFiles=true;await plugin.saveSettings();return true;`);
  assert.equal(await ev("return !!app.murmurationReports || !!app.plugins.plugins['murmuration-writing-companion'];"),false);
  const savedHashes=await Promise.all(['Saved reports Ω/Publication.svg','Saved reports Ω/Explicit.md'].map(hash));
  await ev(String.raw`
    await app.vault.createFolder('Publication book');
    await app.vault.create('Publication book.md','---\ntype: book\ntitle: Native publishing reports\nauthor: Synthetic fixture\nlang: en-GB\n---\n');
    await app.vault.create('Publication book/Generated.md','---\ntype: scene\nparent: "[[Publication book]]"\nmanuscript_order_key: I000000000\n---\n# Feature-generated saved reports\n\n![Generated four-series assessment — synthetic fixture](<Saved reports Ω/Publication.svg>){width=4.1in}\n\n![[Saved reports Ω/Explicit.md]]\n');return true;
- `);await pause(700);await open('Publication book/Generated.md');
- const setOption=async(label,value)=>ev(`const s=[...document.querySelectorAll('.modal .setting-item')].find(e=>e.querySelector('.setting-item-name')?.textContent===${JSON.stringify(label)})?.querySelector('select');if(!s)throw Error('Missing compiler setting');s.value=${JSON.stringify(value)};s.dispatchEvent(new Event('change',{bubbles:true}));return true;`);
+ `);
+ let metadataReady=false;
+ for(let i=0;i<200;i++){
+  if(await ev(String.raw`const f=app.vault.getAbstractFileByPath('Publication book.md'),scene=app.vault.getAbstractFileByPath('Publication book/Generated.md');return app.metadataCache.getFileCache(f)?.frontmatter?.type==='book' && app.metadataCache.getFileCache(scene)?.frontmatter?.manuscript_order_key==='I000000000';`)){metadataReady=true;break;}
+  await pause(100);
+ }
+ assert(metadataReady,'Native publishing metadata did not resolve');await open('Publication book/Generated.md');
+ const setOption=async(label,value)=>ev(`const s=reportQuery('.modal .setting-item').find(e=>e.querySelector('.setting-item-name')?.textContent===${JSON.stringify(label)})?.querySelector('select');if(!s)throw Error('Missing compiler setting');s.value=${JSON.stringify(value)};s.dispatchEvent(new Event('change',{bubbles:true}));return true;`);
  for(const format of ['pdf','epub']){
-  await command('codex-press:compile-book');await waitModal('Native publishing reports');await click('Choose output');await waitModal('Choose output');
+  await command('codex-press:compile-book');await pause(300);await waitModal('Native publishing reports');await click('Choose output');await waitModal('Choose output');
   await setOption('Output',format);await setOption('Mode','publish');
   if(format==='pdf'){await setOption('PDF layout','kdp_6x9');await setOption('PDF target','kdp');}
   await click('Review compile');await waitModal('Review compile');
-  const summary=await ev("return document.querySelector('.modal-content').textContent;");assert(!summary.includes('ERROR:'));
+  const summary=await ev("return reportQuery('.modal-content')[0].textContent;");assert(!summary.includes('ERROR:'));
   await click('Confirm');
   const expected=format==='pdf'?'Native Output/Native publishing reports - Publish KDP.pdf':'Native Output/Native publishing reports - Publish.epub';
   let created=false;for(let i=0;i<600;i++){if(await stat(path.join(vault,expected)).catch(()=>null)){created=true;break;}await pause(100);}

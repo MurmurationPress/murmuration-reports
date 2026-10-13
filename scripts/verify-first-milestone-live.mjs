@@ -145,7 +145,7 @@ async function launch(trustPlugins = true) {
   };
   for (let i = 0; i < 150; i++) {
     const ready = await ev(
-      `const trust=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Trust author'));if(trust && ${trustPlugins})trust.click();return !!app.workspace?.layoutReady;`,
+      `const trust=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Trust author'));if(trust && ${trustPlugins} && !globalThis.reportsResearchTrusted){globalThis.reportsResearchTrusted=true;trust.click();}return !!app.workspace?.layoutReady;`,
     );
     if (ready) {
       await ev(String.raw`app.setting.close();return true;`);
