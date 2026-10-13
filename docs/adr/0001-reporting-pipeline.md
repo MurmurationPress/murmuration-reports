@@ -24,19 +24,19 @@ flowchart LR
 
 1. Discovery/validation: adapter supplies path/frontmatter records and diagnostics; distinguish raw malformed input from an explicit missing-value policy. Legacy definitions continue validating the whole source folder.
 2. Selection/transformation: stable ordering, windows, numeric/categorical mappings and named comparisons. Transformations such as binning/aggregation must be declared; no implicit sampling/interpolation. Keep source path/date provenance on selected rows.
-3. Calculations: absolute/percentage delta and target variance first. Supplied uncertainty bounds take precedence; computed SD/SE/CI require declared sample convention, sample count, method and confidence level. No hidden regression/model.
+3. Calculations: absolute delta only in the first milestone; percentage delta and target variance are later designs. Supplied uncertainty bounds take precedence; computed SD/SE/CI require declared sample convention, sample count, method and confidence level. No hidden regression/model.
 4. Presentation: resolved domain, ticks/units/precision, series identity, legend/caption/description, explicit dimensions and print profile. No theme/viewport/current time inputs. Diagnostics for clipping/truncation rather than silent distortion.
 5. Rendering: pure SVG/Markdown string output with deterministic escapes, ordering and formatting; engine adapter consumes the same resolved model, not raw vault queries. Preview shows saved asset or identical planned bytes.
 6. Asset lifecycle: return output path/content/format to coordinator. Existing receipts, adoption, digest verification, canonical-note exclusion and backup/recovery remain authoritative. Never use renderer IDs as ownership. Start with one output per definition; dual-output KPI proposals need explicit partial-failure/recovery semantics first.
 
 ## Options and tradeoffs
 
-- **Custom SVG / selected scale helpers (provisional preference):** low incremental dependencies, controlled serialisation and legacy preservation; Reports owns chart/layout/axis/accessibility maintenance.
+- **Custom SVG (bounded final recommendation, awaiting acceptance):** no new chart/scale dependency, controlled serialisation and legacy preservation; Reports owns chart/layout/axis/accessibility maintenance.
 - **Modular ECharts SVG SSR:** documented string export and broad conventional types; requires fixed dimensions, disabled animation, bounded option adapter, stable IDs and controlled text metrics. Measure actual bundle delta and required notices.
 - **Vega-Lite compiled to Vega SVG:** useful grammar/encoding transforms; additional compiler/runtime and overlapping data semantics increase the review surface. Forbid external data loaders and uncontrolled expressions.
 - **Chart.js:** good interactive ecosystem, but native canvas export lacks established vector parity; bridge would add complexity without solving source semantics.
 
-Plugin release sizes in the survey establish ecosystem scale, not measured engine-only costs. No final engine selection until comparable isolated spike results exist.
+Recommend custom SVG for the four-feature milestone. [Bounded comparison](../research/v0.2.0/renderer-review.md) now includes repeated/fresh-process four-series output, direct conversion and a hypothetical coexistence probe. Standalone/probe sizes are not actual integration costs; actual costs require later implementation measurements. No broader chart-engine decision is implied.
 
 ## Compatibility and migration
 
@@ -48,14 +48,14 @@ Acceptance: replay unchanged legacy examples through the compatibility path; ver
 
 Target identical bytes for identical definition, source snapshot, renderer version and resolved presentation inputs, across repeated process/locale/timezone/theme runs. Freeze endpoint, ordering, precision and dimensions. Asset receipts currently identify ownership and output digest; they are not a complete source-provenance manifest. Decide separately whether a new optional provenance record is useful, without replacing existing receipt safety semantics. Font-identical visual output across platforms requires a font contract; SVG byte identity alone cannot deliver it.
 
-## Review gates and unresolved questions
+## Bounded decision and review gates
 
-- Measure raw/gzip engine deltas, startup and generation costs in isolated builds; agree a numerical budget before adding dependencies.
-- Compare renderer candidates on the same fixtures and publication outputs; record font/ID/animation/resource evidence.
-- Approve percent-change denominator, missing/invalid policy, explicit-pair identity/rename handling and fixed-domain clipping behaviour.
-- Resolve print font distribution/licensing versus portability and accessible text; do not solve it by outlining all text without an equivalent text alternative.
-- Review all P0 recommendations before any implementation PR. Keep v0.2.0 scope bounded to the first reviewed milestone.
+The precise first milestone is **fixed Y bounds, explanatory captions, dash/marker series identification and explicit-pair comparisons**, with the opt-in fields, source-reference contract and unchanged legacy defaults in [first-milestone.md](../research/v0.2.0/first-milestone.md). Both pair observations must be within the source subtree, distinct and strictly date-ordered. References are path-based; missing/renamed/ambiguous paths block generation, never follow guessed identity or substitute a predecessor. No percentage-change convention is accepted.
 
-## Initial experiment update
+Publication target: final labels ≥8pt and essential strokes ≥0.5pt. Design widths are 3.5, 4.1 and 5.5 inches, with a named installed font/fallback and no external font fetch. Current Codex Press ignores authored width and applies a height cap: corrected specimens meet typography targets at measured effective sizes, but those sizes do not honour the width contract. [Publishing evidence/policy](../research/v0.2.0/publishing.md) distinguishes requested width, direct-SVG width and actual compiler placement.
 
-[Isolated measurements](../research/v0.2.0/renderer-spike-results.json) found modular ECharts line/scatter/bar at 533,910 raw / 183,266 gzip bytes and Vega-Lite+Vega at 783,418 / 270,843 bytes for the stated exports; d3-scale linear/log/band is 24,112 / 9,729 bytes. These are standalone costs, not Reports integration deltas. ECharts SVG classes change between repeated instances in one process, even with animation disabled. A class-token and clip-ID/reference remapping diagnostic removes differences in the simple case; a robust adapter still needs XML/CSS-reference-aware deterministic identifiers and broader tests. Vega repeats exactly for this simple example. This strengthens the provisional custom-SVG preference but does not accept a final renderer decision.
+**P0 is not ready for unconditional acceptance:** #4/#5 have sufficient bounded recommendation evidence for review; #10 still needs an explicit disposition of [Codex Press #145](https://github.com/MurmurationPress/codex-press/issues/145) before a supported-width compatibility recommendation is accepted. Resolve the compiler contract in separate work, or explicitly accept a documented narrower compiler-default placement scope and corresponding minimum-size checks. This research makes neither decision on the reviewer's behalf. Do not start implementation merely because these documents are complete.
+
+Before implementation starts: review all P0 recommendations, opt-in/legacy boundaries, source-reference semantics and width/font/overflow policy. Before future implementation merges: meaningful new-behaviour and legacy byte/safety tests, actual implementation bundle checks, generated-output publication matrix and disabled-plugin persistence checks. Before print-quality/release claims: physical greyscale proof and product publishing flows. Broader chart types, KPIs, uncertainty, percentage conventions, EPUB reader/assistive-tech qualification and accessible PDF conformance have separate later acceptance gates.
+
+[Codex Press #144](https://github.com/MurmurationPress/codex-press/issues/144) remains separate accessibility compiler work. Successful conversion/EPUBCheck and visible alternatives do not establish accessible PDF; the observed PDFs remain untagged. This ADR remains **Proposed**, not accepted by a documentation update.

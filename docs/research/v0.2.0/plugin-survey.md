@@ -44,14 +44,13 @@ Charts has a material discrepancy: root LICENSE is AGPL-3.0, while package.json 
 | Vega-Lite → Vega | Declarative compilation and Vega View [toSVG](https://vega.github.io/vega/docs/api/view/); [Vega-Lite BSD-3-Clause](https://github.com/vega/vega-lite/blob/main/LICENSE), [Vega BSD-3-Clause](https://github.com/vega/vega/blob/main/LICENSE) | Compiler + runtime footprint, expression/data-loading controls and font/text measurement require experiments; do not let a second dataflow silently redefine report semantics |
 | Custom SVG + selected D3 helpers | [d3-scale](https://github.com/d3/d3-scale) provides independently importable scale utilities under ISC | Helpers do not supply print layout/accessibility. Measure selected imports and retain notices, rather than bundle all D3 |
 
-**Provisional recommendation:** retain the existing renderer for legacy definitions; prefer a narrow pure SVG presentation pipeline for initial fixed-axis/comparison requirements. Compare that against a modular ECharts SSR spike before accepting the ADR. Vega-Lite is a credible declarative alternative if its extra grammar/runtime materially reduces maintenance. Chart.js is a weaker fit for the mandatory vector-output contract.
+**Bounded recommendation (awaiting review):** retain the existing renderer for legacy definitions; prefer a narrow pure SVG presentation pipeline for initial fixed-axis/comparison requirements. The completed [bounded four-series comparison](renderer-review.md) supports custom SVG with no chart/scale dependency for this milestone; do not require integration of an unselected engine. Vega-Lite is a credible declarative alternative if its extra grammar/runtime materially reduces maintenance. Chart.js is a weaker fit for the mandatory vector-output contract.
 
-## Remaining work before P0 acceptance
+## Bounded acceptance and later work
 
-- Pin candidate engine versions; measure minified raw/gzip delta with Reports' es2018/CJS build settings and transitive licence inventory in an isolated spike, not production dependencies.
-- Generate repeated SVGs in one process and fresh processes; vary locale/timezone/theme/host size; inspect IDs, animations, resources, font metrics and escaping. Byte identity is a target, not yet demonstrated for engines.
-- Exercise fixed/log axes, negative/zero values, long labels, asymmetric error bars, missing data and small page widths; compare resulting PDF/EPUB fixtures.
-- Confirm release-tag versus HEAD export features, documentation contradictions and licence provenance. Investigate upstream test coverage/issue response before relying on a maintainer.
+The first-milestone renderer recommendation is ready for review; no upstream plugin implementation is copied, so unresolved upstream licence declarations and broader export/test coverage do not block custom SVG. The [bounded comparison](renderer-review.md) records exactly the candidate features/outputs tested, conversion results, repeatability limits and size methodology. Do not infer that the original simple specimen qualifies all chart types.
+
+Later engine adoption must still audit exact release code/transitive notices, startup and actual integration cost, broader chart/uncertainty/missing/log-axis cases and all-platform repeatability. These are not prerequisites for implementing the four-feature custom-SVG milestone. P0 publishing acceptance still depends on the compiler-width disposition in [first-milestone.md](first-milestone.md).
 
 ## Initial isolated engine experiment
 

@@ -1,43 +1,66 @@
-# Codex Press publishing compatibility (#10)
+# Bounded publication compatibility review (#10)
 
-Inspected Codex Press commit [`93af44922cdb1b83b6166c4f8429d7d9f5b32c07`](https://github.com/MurmurationPress/codex-press/tree/93af44922cdb1b83b6166c4f8429d7d9f5b32c07), 2026-10-13. No compiler changes. Reports [ADR](../../adr/0001-reporting-pipeline.md) remains proposed.
+Status: **Proposed; authored-width disposition blocks unconditional P0 acceptance.** Reports production code remains at `262f11630da4fd5848ce6e82013c9ad1a0b25b23`; initial research `b1b48e74b86dc84afffe3946588edfa6fd817dba`; revised fixtures/harness `8f47104ca36a66f31554f492640fc56bb0f08f6d`. Codex Press inspected and invoked at [`93af44922cdb1b83b6166c4f8429d7d9f5b32c07`](https://github.com/MurmurationPress/codex-press/tree/93af44922cdb1b83b6166c4f8429d7d9f5b32c07), unchanged.
 
-## Verified pathway
+## Publication widths and sizing policy
 
-- `src/compiler/markdown-transclusion.ts` treats SVG/SVGZ as media; Markdown notes are transcluded as content. Saved reports require neither Reports nor MWC during publication.
-- PDF `src/exporters/pdf/asset-plan.ts` stages SVG, schedules a normalised SVG and invokes `rsvg-convert --format=pdf --output …`; output paths replace image references before Pandoc/XeLaTeX. `pdf-executor.ts` verifies dependencies, normalises/validates SVG resources and retains actionable diagnostics on failure. Width/alt attributes are preserved by planning; image scale is determined by the document width and attributes, not screen viewport.
-- EPUB stages SVG and uses `epub-packaging.ts` through the existing title postprocessor. It normalises SVGZ/XML packaging to ordinary SVG with `image/svg+xml`, updates package references and preserves correct payloads; no report rasterisation is necessary in this path. [Packaging evidence and limitations](https://github.com/MurmurationPress/codex-press/blob/93af44922cdb1b83b6166c4f8429d7d9f5b32c07/docs/epub-packaging.md).
-- PDF tables use `content-filter.ts` and `table-pagination-header.ts`: row packets, measured local-width fitting, breakable wrappers and repeated continuation headings, including top-level callouts. This is not simply a blanket longtable conversion. Oversized rows/nested tables can fail deliberately. [Prior real-tool validation](https://github.com/MurmurationPress/codex-press/blob/93af44922cdb1b83b6166c4f8429d7d9f5b32c07/docs/pdf-table-pagination-validation.md). EPUB uses HTML/CSS table behaviour, requiring reader/reflow verification separately.
+Proposed supported **design** placements: narrow 3.5in (252 PDF pt), normal 4.1in (295.2 pt), wide 5.5in (396 pt), with the inclusive 3.5–5.5in range bounded by these specimen checks. These are image widths, not trim/page widths. Use narrow/normal within KDP 6×9 and wide within A4 when its available body width permits. A callout/multicolumn placement reducing width below 3.5in needs a separately fitted layout and later qualification. Do not apply a 3.5in minimum to EPUB reflow or screen zoom; those need their own reader checks.
 
-## Initial fixture results (observed, not full qualification)
+Targets: **≥8 PDF pt for all chart labels, units, legends and internal captions; ≥0.5 PDF pt for essential axes, series, marker outlines and error-bar strokes**. Decoration must not carry essential information. No colour-only identification. External prose/table text follows the publishing profile, with its own layout review. These are proposed engineering minima, not proof of comfortable physical reading or an accessibility standard.
 
-Research-only [harness](tools/README.md) invoked existing production planners/executors on [fixtures](fixtures/README.md), constructing an assembled synthetic book and stripping source frontmatter. It bypasses vault discovery, manuscript assembly and Obsidian UI. Artifacts were written only to `/tmp/reports-publication-final`, with no source/compiler/vault changes.
+For a 720-unit SVG printed at width W inches, one unit = `72W/720` PDF pt. These are PDF points (72/in), distinct from TeX points (72.27/in). SVG unit sizes alone cannot guarantee final size.
 
-Toolchain: Node 22+, Pandoc 3.1.3; XeTeX 3.141592653-2.6-0.999995 / TeX Live 2023/Debian; rsvg-convert 2.58.0; EPUBCheck 5.3.0. Exact harness results, output hashes and runtime versions are in [publication-results.json](publication-results.json). Runtime tool diagnostics are local artifacts, not committed books.
+| SVG size | At 3.5in | At 4.1in | At 5.5in |
+| --- | ---: | ---: | ---: |
+| Old 18-unit text | 6.30pt | **7.38pt** | 9.90pt |
+| 24-unit text, theoretical design minimum | 8.40pt | 9.84pt | 13.20pt |
+| Revised 32-unit labels | 11.20pt | 13.12pt | 17.60pt |
+| Revised four-series 36-unit labels | 12.60pt | 14.76pt | 19.80pt |
+| 2-unit essential stroke | 0.70pt | 0.82pt | 1.10pt |
+| Revised 3-unit essential stroke | 1.05pt | 1.23pt | 1.65pt |
 
-- PDF publish/KDP 6×9 succeeds, 30 pages, 432×648 pt. All ten SVG conversion tasks run. No planner/executor warnings. All 80 ROW001–ROW080 markers occur exactly once in extracted PDF text; table spans pages 15–30 and every row-bearing page includes its headings. This establishes row completeness/continuation, not complete geometric proof.
-- EPUB publish succeeds. EPUBCheck: zero errors/warnings. Ten standalone SVG payloads are byte-identical to their fixtures; package references use `.svg`, with authored img alt text and nearby descriptive alternatives. Formal validity does not establish reader compatibility/accessibility.
-- Visual spot-check of PDF page 7: fixed-domain line series, markers/dashes, title and two-line explanatory caption fit. Initial long single-line caption exceeded SVG width; the research fixture was corrected and publication rerun. This confirms why layout needs explicit wrapping/overflow rules. Other pages and final physical print remain unqualified.
-- `pdfinfo` reports **Tagged: no**. SVG title/desc cannot be assumed to become accessible PDF figure semantics. Compiler follow-up: [Codex Press #144 — Accessible reporting figures and tables in PDF and EPUB](https://github.com/MurmurationPress/codex-press/issues/144). This asks for a conformance/authoring contract and tagged-PDF feasibility/design, not an unreviewed compiler rewrite. Existing toolchain provisioning/discovery is already tracked in [#96](https://github.com/MurmurationPress/codex-press/issues/96) and [#113](https://github.com/MurmurationPress/codex-press/issues/113).
+The revised specimens use 32-unit labels (36 for the taller four-series figure), 3-unit strokes, wrapped captions, matching legend markers and increased spacing. This larger reserve is necessary under the **current compiler's further height-based reduction**. It is a specimen solution, not a universal production font size: the future layout must compute actual placement/fit, diagnose overflow and never shrink text below the target. Do not convert this into an implicit change to old chart bytes.
 
-## Acceptance matrix to review
+### Confirmed compiler limitation: requested width is not effective width
 
-| Concern | Proposed acceptance | Current evidence / remaining work |
-| --- | --- | --- |
-| Standalone SVG | Valid XML; no script, animation, foreignObject, external href/CSS/font/image resources; fixed viewBox; useful title/desc | Ten synthetic SVGs inspected/converted and EPUB bytes preserved; enforce renderer resource contract later |
-| Reproduction | Identical bytes for same source snapshot/config/renderer across repeated runs; stable dates/order/precision/IDs | Fixture hashes recorded; library repeatability spike partial; locale/timezone/theme matrix pending |
-| PDF vectors | All SVGs convert, labels preserved, no missing/clipped geometry; source bytes untouched | Ten conversions succeed; page 7 visually inspected; full text/bounds/geometry audit pending |
-| Print layout | At supported profile widths, target ≥8pt labels and ≥0.5pt essential line weights; colour-independent distinctions and readable contrast | Targets proposed, not yet approved. At a 4.1-inch body width a 720-unit figure scales 18-unit text to about 7.4pt: revise sizing/layout rather than assume nominal font sizes suffice |
-| Fonts | Agreed distributable/installed font policy, no external fetch, predictable layout; document fallback | Fixture DejaVu Sans + fallback, not embedded. Production system-ui is host-dependent; font policy/licensing remains open |
-| Captions/alternatives | Meaningful short alt + visible caption and detailed text/data table; accessible reading order and units/uncertainty semantics | Fixture title/desc and nearby alternatives; compiler accessibility #144; screen-reader checks pending |
-| EPUB | Correct media types/references, EPUBCheck clean, no runtime resources; usable reflow, zoom and alternatives in representative readers | Packaging/validation pass; reader, assistive-tech and Kindle-specific checks pending |
-| Markdown tables | Stable escaped cells/order/units; row/heading/caption integrity; bounded width/precision; no dropped rows | 80 rows exactly once and repeated PDF headings; column bounds/callout/oversized-row/EPUB reflow fixtures pending |
-| KPI formats | Unknown never styled as success; labelled periods/units/directions; single output ownership initially | Synthetic SVG/Markdown examples; no production KPI support; dual-output policy unresolved |
-| Persistence | Reports/MWC disabled, assets still view/embed/compile; receipts unnecessary for consumption | Existing architectural contract; new fixture live Obsidian check pending |
-| Physical publication | Review actual-size greyscale print proof and representative page widths; no clipping or unreadable text | Pending; PDF success is not print or retailer acceptance |
+`src/exporters/pdf/asset-plan.ts` preserves authored attributes in the plan, but `src/exporters/pdf/lua-filter.ts` `codex_image_latex` replaces ordinary images with `width=0.92\\linewidth,height=0.33\\textheight,keepaspectratio`, ignoring authored width/height. Requested 3.5in and 4.1in produce pixel-identical report-page renders. The revised tall KDP specimens actually measure **2.68320in**, and the four-series specimen **2.42355in**. A4 also uses its own capped placement rather than the requested 5.5in.
 
-## Next fixtures/checks
+Before correction, 24-unit four-series labels measured **5.81652pt** in KDP. Corrected final PDFs now meet typography minima at those smaller actual widths: minimum label **8.58624pt** and essential stroke **0.727065pt**; A4 minimum figure label **11.76672pt**. Passing typography does **not** establish the 3.5–5.5in placement contract. Separate compiler follow-up: [Codex Press #145 — Respect authored report image sizing in PDF within page constraints](https://github.com/MurmurationPress/codex-press/issues/145).
 
-Add log-domain negative cases, supplied SD/SE/CI variants, tiny/large tick magnitudes, one-point/constant series, missing gaps, many/long category labels, unit symbols, long captions, narrower/wider publication profiles, table-in-callout and oversized-cell diagnostics. Produce matched fixtures with candidate engines before final renderer recommendation. Keep invalid cases isolated from the positive specimen book. No future schema should claim these pass until executable behaviour exists and is checked.
+Direct librsvg conversion **does** honour the three requested widths. [44 exact-width checks](direct-width-results.json) cover all eleven SVGs at 3.5/4.1/5.5in with the reference font and 3.5in with the fallback, including measured labels/strokes and text bounds. They establish standalone SVG-to-PDF sizing, not end-to-end Codex Press sizing. P0 #10 needs #145 resolved in separate work, or an explicitly reviewed narrower compiler-default placement contract, before unconditional acceptance. This research does neither on the reviewer's behalf.
 
-The current compiler already provides the basic vector/Markdown pathway. Accessibility design and font/layout/reader qualification remain material work. No new dependency or compiler implementation is introduced here.
+## Practical font and fallback policy
+
+Use the explicit family list **`DejaVu Sans, Liberation Sans, Arial, sans-serif`** for the opt-in publication layout. Reference publishing font: installed DejaVu Sans 2.37 (Debian package 2.37-8); qualified fallback for these specimens: installed Liberation Sans 2.1.5 (package 1:2.1.5-3). Arial/generic sans-serif are viewing fallbacks, **not print-qualified by these checks**. Require the publishing operator to verify the actual resolved font and rerun sizing/overflow checks after substitutions. No reliance on `system-ui` or Obsidian theme fonts for new publication layouts; old default layout remains unchanged.
+
+No font binary, web font, external URL, embedded font dependency or outlined text is introduced. SVG remains self-contained in resources; font resolution is a documented host dependency, so identical SVG bytes do not promise identical visuals on all readers. The converter embeds the selected font subset into the observed PDF, verified in its font resources. Unsupported glyphs/long unbreakable text require a future layout diagnostic or deliberate author shortening; do not silently omit labels. The evidence covers the synthetic Latin/month/unit/math symbols used here, not every script/glyph.
+
+The default local Fontconfig resolver unexpectedly chose an OpenDyslexic-named file when asked for DejaVu Sans. Therefore the research isolated Fontconfig **only for rsvg-convert**, selecting the actual DejaVu or Liberation directory and verifying PDF font names. Applying that configuration to all tools initially hid Latin Modern Mono from XeTeX; the final wrapper scopes it correctly and leaves compiler/source/tool installation unchanged. Exact font hashes/tool versions are in [results](publication-review-results.json).
+
+Font use/redistribution remains subject to exact notices: [DejaVu licence](https://dejavu-fonts.github.io/License.html), [Liberation licence](https://github.com/liberationfonts/liberation-fonts/blob/main/LICENSE), and the installed distribution's copyright files. This policy installs/distributes no font. Any future font bundling requires its own licence/notice decision.
+
+## Verified existing pathway and final digital checks
+
+Markdown transclusion recognises saved SVG/SVGZ as media and saved Markdown as content. PDF stages/normalises SVG and converts via librsvg before Pandoc/XeLaTeX. EPUB normalises package SVG/SVGZ names/media types without rasterising these reports. PDF table filters measure row packets and use breakable wrappers/repeated continuation headings; [existing table evidence](https://github.com/MurmurationPress/codex-press/blob/93af44922cdb1b83b6166c4f8429d7d9f5b32c07/docs/pdf-table-pagination-validation.md) remains distinct from this research.
+
+[Final results](publication-review-results.json), [research commands](tools/README.md). Exact toolchain: Node v24.19.0; Python 3.12.3; PyMuPDF 1.26.5; Pillow 11.3.0; Pandoc 3.1.3; XeTeX 3.141592653-2.6-0.999995 / TeX Live 2023/Debian; librsvg 2.58.0; Fontconfig 2.15.0; EPUBCheck 5.3.0. Research Python packages live in a disposable venv; production dependencies are unchanged. Artifacts remain under `/tmp/reports-p0-verified`; no manuscript or compiled book is committed.
+
+| Run | Digital evidence |
+| --- | --- |
+| Reference requested 3.5in, KDP 6×9 | 32 pages; report-bearing pages 7–31 all rendered/visually reviewed; 11 figures; ≥8.58624pt chart text; no extracted text outside SVG/page bounds; 80 row markers once; continuation headings on pages 15–31 |
+| Reference requested 4.1in, KDP 6×9 | Same effective figure sizes and **pixel-identical report-page renders**, hash-checked against 3.5in; all pages checked. EPUBCheck zero errors/warnings; 11 SVG payloads byte-identical to fixtures |
+| Reference requested 5.5in, A4 | 20 pages; report-bearing pages 7–20 rendered/visually reviewed; ≥11.76672pt figure text; all rows once and headings on pages 13–20 |
+| Liberation fallback requested 3.5in, KDP | 32 pages; report-bearing pages 7–31 rendered/visually reviewed; resolved LiberationSans font resources; same minimum point sizes, all rows and bounds checks |
+
+Review covered every report-bearing page in the matrix using greyscale renders/contact sheets, with full-size chart-page inspection to correct tick/axis spacing, captions, radar label spacing and scorecard borders. Plot/legend dash-and-marker identities remain distinguishable without colour; filled/outlined bars and directly labelled circular plots do too. SVG text-presence and text-bound checks supplement visual review. Essential stroke minima are calculated from the **observed final placement transform**, not requested width. These checks are bounded digital evidence, not a complete mathematical proof of every geometry intersection.
+
+Known limits visible in those pages: prose descriptive alternatives can flow onto the next page; captions **inside** the SVG stay with the plot. Narrow five-column table headers/parameter names wrap and hyphenate heavily without overlap or dropped rows; richer table column-width design is later #8 work. Broad chart/KPI specimens are illustrative layouts, not implemented or semantically qualified report types. Historical [initial results](publication-results.json) belong to commit b1b48e7 and its old fixtures; they must not be mistaken for the current source/output hashes.
+
+## Bounded acceptance and pending qualification
+
+- **Before implementation starts:** explicit P0 review of custom SVG, proposed fields/legacy compatibility, exact pair semantics, minimum-size/font/overflow policy, plus resolution or explicit narrowing of #145's compiler-placement contract. This last item remains a blocker; the corrected specimen typography does not waive it.
+- **Before future implementation merges:** replay old bytes and receipt/safety cases; test all new validation/selection/layout rules; build measurements; render actual implementation outputs at supported widths; review all report pages and saved assets with plugins disabled. No hand-authored specimen proves unimplemented behaviour.
+- **Before print/release claims:** actual-size greyscale physical proof and real publishing/product flows. No physical proof has been performed. Broader chart, uncertainty, KPI, arbitrary glyph, narrow callout, oversized-row and all-reader scenarios have separate later acceptance work.
+- **EPUB/readers/accessibility:** EPUBCheck and exact SVG payloads are digital packaging evidence only. No representative EPUB/Kindle/assistive-technology reader is qualified. [Codex Press #144](https://github.com/MurmurationPress/codex-press/issues/144) remains separate compiler accessibility work. All observed PDFs report **Tagged: no**; accessible PDF output has not been established.
+
+The detailed gate/dependency and explicit-reference contracts are in [first-milestone.md](first-milestone.md). Do not close #10 or mark the ADR Accepted on the strength of this documentation update.
