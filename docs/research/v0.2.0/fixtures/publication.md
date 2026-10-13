@@ -14,6 +14,12 @@ Synthetic data only. Hand-authored visual specifications, not new Reports output
 
 Descriptive alternative: Two series on a fixed minus one to plus one scale. A rises from minus 0.6 to 0.5; B from minus 0.4 to 0.7.
 
+## Four-series identity
+
+![Four distinct series on a fixed signed scale](line-four-series.svg)
+
+Descriptive alternative: Solid circles, dashed squares, dotted triangles and dash-dot diamonds identify four synthetic series. All values stay within −1…+1.
+
 ## Scatter Error
 
 ![scatter error — synthetic reporting example](scatter-error.svg)
@@ -72,15 +78,14 @@ Descriptive alternative: Three synthetic KPIs are warning; fourth metric is unav
 
 Current June-end = 15; explicit previous May = 10; inserted June-middle = 12. Explicit-pair delta remains +5; canonical-predecessor delta becomes +3. This fixture documents the rule and does not execute a future comparison implementation.
 
-| Metric | Current | Previous | Absolute delta | Percentage delta |
-| --- | ---: | ---: | ---: | ---: |
-| Completed pages | 150 | 120 | +30 | +25% |
-| Open defects | 8 | 12 | −4 | −33.33% |
-| Nitrate (mg/L) | 2.4 | 3.0 | −0.6 | −20% |
-| Missing reading | Unavailable | 2 | Unavailable | Unavailable |
-| Zero baseline | 5 | 0 | +5 | Unavailable |
+| Metric | Current | Previous | Absolute delta |
+| --- | ---: | ---: | ---: |
+| Explicit May-to-June | +15.00 | +10.00 | +5.00 |
+| Canonical after insertion | +15.00 | +12.00 | +3.00 |
 
-## Scorecard Markdown alternative
+Both rows are illustrative; the first milestone preserves signed two-decimal table formatting and adds no percentage-change policy.
+
+## Later KPI design specimen (outside first milestone)
 
 | KPI | June / May | Target | Direction | Status |
 | --- | --- | --- | --- | --- |
