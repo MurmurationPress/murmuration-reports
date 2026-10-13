@@ -2,7 +2,7 @@ import { test } from "node:test";
 import { strictEqual as equal, rejects, deepStrictEqual } from "node:assert";
 import { TFile, TFolder } from "./helpers/ObsidianStub";
 import { ManagerService, DefinitionDraft } from "../src/manager/ManagerService";
-import { newDefinition } from "../src/manager/DefinitionEditing";
+import { newDefinition, readEditable } from "../src/manager/DefinitionEditing";
 import {
   digest,
   serialiseReceipt,
@@ -415,4 +415,44 @@ test("new definitions cannot enter another canonical dataset folder", async () =
   } finally {
     f.service.dispose();
   }
+});
+test("guided publication saves preserve opaque options and reject newly requested unknown modes", async () => {
+  const f=fixture();
+  try {
+    const d=await f.service.draft("Definitions/Test.md");
+    d.values.presentation="custom-unimplemented";
+    await rejects(f.service.save(d),/Unsupported requested presentation/);
+    equal(f.writes.length,0);
+    d.values.presentation="publication";d.values.y_min=-1;d.values.y_max=1;d.values.caption="Synthetic explanation.";
+    await f.service.save(d);
+    equal(readEditable(d.original!).data.presentation,"publication");
+    equal((readEditable(d.original!).data.series as any[])[0].extension,"keep");
+    d.values.y_max=-1;await rejects(f.service.save(d),/y_min < y_max/);
+    d.values.y_max=1;d.values.presentation="legacy";await f.service.save(d);
+    equal(readEditable(d.original!).data.y_min,-1);
+    equal(f.counts.generate,0);
+  } finally {f.service.dispose();}
+});
+test("guided editing can enable and change explicit pairs without losing nested extensions", async () => {
+  const f=fixture();
+  try {
+    const d=await f.service.draft("Definitions/Test.md");
+    d.values.artefact_type="state-table";d.values.output="Outputs/State.md";d.values.parameters=[{property:"value",label:"Value"}];
+    d.values.comparison={mode:"explicit-pair",current:"Data/June.md",previous:"Data/May.md",extension:"keep"};
+    await f.service.save(d);
+    (d.values.comparison as any).previous="Data/April.md";await f.service.save(d);
+    equal((readEditable(d.original!).data.comparison as any).extension,"keep");
+    (d.values.comparison as any).current="Outside/June.md";await rejects(f.service.save(d),/must belong to source/);
+    equal(f.counts.generate,0);
+  } finally {f.service.dispose();}
+});
+
+test("guided saves retain an unchanged opaque legacy presentation and caption without activating them", async () => {
+  const f=fixture();
+  try {
+    f.files.set("Definitions/Test.md",newDefinition({...values,presentation:{future:true},y_min:"opaque",caption:{extension:"keep"}}));
+    const d=await f.service.draft("Definitions/Test.md");d.values.title="Changed legacy title";await f.service.save(d);
+    deepStrictEqual(readEditable(d.original!).data.presentation,{future:true});
+    deepStrictEqual(readEditable(d.original!).data.caption,{extension:"keep"});
+  } finally {f.service.dispose();}
 });

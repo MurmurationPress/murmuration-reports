@@ -41,5 +41,10 @@ export function normaliseLineChartData(definition: LineChartDefinition, records:
   const effectiveStart = lowerBounds[lowerBounds.length - 1];
   const selected = points.filter((point) => (!effectiveStart || point.date >= effectiveStart) && point.date <= endpoint);
   if (selected.length === 0) throw new Error("No observations fall within the configured date range.");
+  if (definition.presentation === "publication" && definition.yMin !== undefined && definition.yMax !== undefined) {
+    for (const point of selected) for (const [index, value] of point.values.entries()) {
+      if (value < definition.yMin || value > definition.yMax) throw Error(`${point.sourcePath}: ${definition.series[index].property}=${value} is outside fixed Y bounds [${definition.yMin}, ${definition.yMax}]. Correct the data or explicitly change the limits; no clipping is performed.`);
+    }
+  }
   return { definition, points: selected };
 }

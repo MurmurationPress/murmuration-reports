@@ -48,3 +48,5 @@ Drafts and generation outcomes are session memory; closing the tab or disabling 
 Obsidian provides no exclusive create, external-sync lock or crash-atomic multi-file transaction. Interrupted or ambiguous writes may retain assets, receipts and recovery copies for manual inspection. See [the complete SDK limits and recovery policy](docs/ownership.md). Saved outputs remain usable with both plugins disabled.
 
 See [release preparation and versioning](docs/releasing.md).
+
+The [first milestone development branch](docs/implementation/first-milestone.md) adds explicit publication layout (fixed Y bounds, captions and dash/marker identity) and named observation-pair tables. These changes are pending implementation PR review; the published 0.1.0 release and existing legacy defaults remain unchanged. See [definitions](docs/definitions.md) for opt-in examples and qualification limits.

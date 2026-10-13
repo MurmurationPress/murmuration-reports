@@ -4,6 +4,7 @@ import { ReportEntry } from "./ReportCatalogue";
 import { AdoptionModal } from "../ui/ReportInteractions";
 import { Properties, readEditable } from "./DefinitionEditing";
 export const REPORTS_VIEW = "murmuration-reports-manager";
+const readEditableSafeOriginal = (draft: DefinitionDraft): Properties => draft.original === null ? {} : readEditable(draft.original).data;
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export class ReportsView extends ItemView {
   private instanceId = Math.random().toString(36).slice(2);
@@ -330,6 +331,9 @@ export class ReportsView extends ItemView {
     this.details.createEl("p", {
       text: "Output: " + (e.output || "Not specified"),
     });
+    if (e.type === "line-chart" && e.frontmatter.presentation !== "publication" && ["presentation", "y_min", "y_max", "caption"].some(key => e.frontmatter[key] !== undefined)) {
+      this.details.createEl("p", {text: "Legacy presentation: publication bounds/caption options are not enforced. Existing opaque fields remain preserved; choose publication explicitly to activate them."});
+    }
     const actions = this.details.createDiv({ cls: "mr-actions" });
     this.button(actions, "Edit definition", () => this.edit(e.path));
     this.button(actions, "Generate", () => this.generate(e.path));
@@ -705,6 +709,50 @@ export class ReportsView extends ItemView {
           (v) => (draft.values[property] = v),
         );
     }
+    if (field === "series") {
+      const publication = this.select(form, "Chart presentation", [["legacy", "Legacy (existing layout)"], ["publication", "Publication (print layout)"]], draft.values.presentation === "publication" ? "publication" : "legacy");
+      publication.addEventListener("change", () => {
+        draft.values.presentation = publication.value;
+        this.showEditor(key, draft);
+      });
+      form.createEl("p", {text: draft.values.presentation === "publication"
+        ? "Publication: fixed 32-unit text, dash/marker identities, installed DejaVu/Liberation fonts. Embed at least 3.5 inches wide and check final compiler placement. Bounds apply to selected data; source validation remains whole-folder."
+        : "Legacy: bounds and caption fields are preserved but not enforced. Only explicit publication mode activates them."});
+      if (draft.values.presentation === "publication") {
+        for (const [property,label] of [["y_min", "Fixed Y minimum"], ["y_max", "Fixed Y maximum"]]) {
+          input(label + " (both or neither)", String(draft.values[property] ?? ""), value => {
+            // Empty new fields are omitted; removing an existing option needs a
+            // source-note edit rather than destroying comments/opaque fields.
+            if (!value.trim() && readEditableSafeOriginal(draft)[property] === undefined) delete draft.values[property];
+            else draft.values[property] = value.trim() ? Number(value) : null;
+          });
+        }
+        input("Caption (plain text, up to 240 characters)", String(draft.values.caption ?? ""), value => draft.values.caption = value);
+        form.createEl("p", {text: "Automatic Y range when both limits are absent. To remove existing limits, edit the definition note; blanking a supplied limit is invalid. Long or unsupported text blocks generation with a diagnostic."});
+      }
+    } else {
+      const hasComparison = draft.values.comparison !== undefined;
+      const pair = this.select(form, "Comparison selection", [["canonical", "Canonical predecessor (legacy)"], ["explicit-pair", "Two explicit observations"]], hasComparison ? "explicit-pair" : "canonical");
+      pair.addEventListener("change", () => {
+        if (pair.value === "canonical" && hasComparison) {
+          new Notice("Remove the comparison mapping in the definition note to return to canonical selection; unknown fields/comments are preserved.");
+          pair.value = "explicit-pair"; return;
+        }
+        if (pair.value === "explicit-pair" && !hasComparison) {
+          draft.values.comparison = {mode: "explicit-pair", current: "", previous: ""};
+          this.showEditor(key, draft);
+        }
+      });
+      if (hasComparison) {
+        const comparison = draft.values.comparison;
+        if (!comparison || typeof comparison !== "object" || Array.isArray(comparison) || (comparison as Properties).mode !== "explicit-pair") {
+          form.createEl("p", {text: "Repair comparison in the definition note: it must be a mapping with mode explicit-pair."});
+        } else {
+          for (const [property,label] of [["current","Current observation path"],["previous","Previous observation path"]]) input(label, String((comparison as Properties)[property] ?? ""), value => (comparison as Properties)[property] = value);
+          form.createEl("p", {text: "Both exact .md paths must be inside the dataset. Previous date must be earlier; optional endpoint must equal current date. Missing/renamed paths block and never select a predecessor. Remove the mapping in the definition note to return to legacy comparison."});
+        }
+      }
+    }
     const output = input(
       "Output destination",
       String(draft.values.output ?? ""),
@@ -830,6 +878,8 @@ export function renderSavedTable(content: string, parent: HTMLElement) {
     throw Error(
       "The saved file does not contain a supported state table. Open output to inspect it.",
     );
+  const comparison = content.split(/\r?\n/u).find(line => line.startsWith("Explicit-pair comparison: "));
+  if (comparison) parent.createEl("p", {text: comparison.replace(/\\([\\`*_{}\[\]()<>#!|])/gu, "$1")});
   const table = parent.createEl("table");
   const header = table.createEl("thead").createEl("tr"),
     body = table.createEl("tbody");

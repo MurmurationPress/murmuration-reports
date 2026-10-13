@@ -1,3 +1,4 @@
+import { pathKey, within } from "../reports/PathSafety";
 import { parseIsoDate, StateTableDefinition } from "./DerivedArtefactDefinition";
 import { FrontmatterRecord } from "./LineChartData";
 
@@ -49,12 +50,28 @@ export function normaliseStateTableData(
     left.timestamp - right.timestamp
     || (left.sourcePath < right.sourcePath ? -1 : left.sourcePath > right.sourcePath ? 1 : 0)
   ));
-  if (observations.length === 0) throw new Error("The source folder contains no Markdown observations.");
+  if (observations.length === 0) {
+    if (definition.comparison) throw Error(`comparison.current: ${definition.comparison.current} is missing; source ${definition.source} contains no Markdown observations. The canonical predecessor is never substituted.`);
+    throw new Error("The source folder contains no Markdown observations.");
+  }
   const endpoint = definition.end ?? observations[observations.length - 1].date;
   const available = observations.filter((observation) => observation.date <= endpoint);
-  if (available.length === 0) throw new Error("No current observation exists at or before the configured endpoint.");
-  const current = available[available.length - 1];
-  const previous = available[available.length - 2] ?? null;
+  if (available.length === 0 && !definition.comparison) throw new Error("No current observation exists at or before the configured endpoint.");
+  let current = available[available.length - 1];
+  let previous = available[available.length - 2] ?? null;
+  if (definition.comparison) {
+    const resolve = (field: "current" | "previous") => {
+      const requested = definition.comparison![field];
+      const matches = observations.filter(item => pathKey(item.sourcePath) === pathKey(requested));
+      if (matches.length !== 1) throw Error(`comparison.${field}: ${requested} is ${matches.length ? "ambiguous" : "missing or renamed"}. Edit the exact reference; the canonical predecessor is never substituted.`);
+      if (!within(matches[0].sourcePath, definition.source) || !matches[0].sourcePath.startsWith(`${definition.source}/`)) throw Error(`comparison.${field}: ${requested} is outside source ${definition.source}.`);
+      return matches[0];
+    };
+    current = resolve("current"); previous = resolve("previous");
+    if (pathKey(current.sourcePath) === pathKey(previous.sourcePath)) throw Error("Explicit-pair references resolve to the same observation.");
+    if (previous.date >= current.date) throw Error(`comparison.previous (${previous.date}) must be strictly earlier than comparison.current (${current.date}); no automatic swapping is performed.`);
+    if (definition.end && definition.end !== current.date) throw Error(`end ${definition.end} must equal explicit current date ${current.date}.`);
+  }
   const rows = definition.parameters.map((parameter, index) => ({
     property: parameter.property,
     label: parameter.label,
@@ -62,5 +79,6 @@ export function normaliseStateTableData(
     previous: previous?.values[index] ?? null,
     delta: previous ? current.values[index] - previous.values[index] : null
   }));
+  if (definition.comparison && rows.some(row => row.delta !== null && !Number.isFinite(row.delta))) throw Error("Explicit-pair absolute delta exceeds the finite numeric range; use bounded values.");
   return { definition, observations, current, previous, rows };
 }
