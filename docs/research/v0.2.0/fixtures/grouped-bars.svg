@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480" role="img" aria-labelledby="title desc">
+<title id="title">Grouped comparison</title>
+<desc id="desc">Four ordered categories. Filled and outlined bars distinguish components without colour. See accompanying data alternative.</desc>
+<rect width="720" height="480" fill="white"/>
+<g font-family="DejaVu Sans, sans-serif" font-size="18" fill="#17212b">
+<text x="50" y="36" font-size="24">Grouped comparison</text>
+<line x1="90" y1="80" x2="90" y2="370" stroke="#17212b" stroke-width="2" /><line x1="90" y1="370" x2="650" y2="370" stroke="#17212b" stroke-width="2" /><rect x="130" y="270" width="45" height="100" fill="#555"/><rect x="178" y="320" width="40" height="50" fill="white" stroke="#17212b" stroke-width="2"/><text x="125" y="402" >A</text><rect x="265" y="190" width="45" height="180" fill="#555"/><rect x="313" y="280" width="40" height="90" fill="white" stroke="#17212b" stroke-width="2"/><text x="260" y="402" >B</text><rect x="400" y="230" width="45" height="140" fill="#555"/><rect x="448" y="300" width="40" height="70" fill="white" stroke="#17212b" stroke-width="2"/><text x="395" y="402" >C</text><rect x="535" y="150" width="45" height="220" fill="#555"/><rect x="583" y="260" width="40" height="110" fill="white" stroke="#17212b" stroke-width="2"/><text x="530" y="402" >D</text><text x="90" y="445" >Filled: primary; outlined: comparison/component. Synthetic values.</text>
+</g>
+</svg>

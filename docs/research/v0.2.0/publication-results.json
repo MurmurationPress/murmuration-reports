@@ -1,0 +1,405 @@
+{
+  "pdf": {
+    "outputPath": "Output/Reporting Research Fixtures - Publish KDP.pdf",
+    "workingDirectory": ".codex-pdf/reports-research/publish-kdp",
+    "warnings": [],
+    "validatedTools": [
+      {
+        "executable": "pandoc",
+        "version": "pandoc 3.1.3"
+      },
+      {
+        "executable": "xelatex",
+        "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+      },
+      {
+        "executable": "rsvg-convert",
+        "version": "rsvg-convert version 2.58.0"
+      }
+    ],
+    "keptWorkingDirectory": true
+  },
+  "epub": {
+    "outputPath": "Output/Reporting Research Fixtures - Publish.epub",
+    "workingDirectory": ".codex-epub/reports-research/publish",
+    "warnings": [
+      "EPUB validation output:\nValidating using EPUB version 3.3 rules.\nNo errors or warnings detected.\nMessages: 0 fatals / 0 errors / 0 warnings / 0 infos\nEPUBCheck completed"
+    ],
+    "validation": {
+      "status": "passed",
+      "output": "Validating using EPUB version 3.3 rules.\nNo errors or warnings detected.\nMessages: 0 fatals / 0 errors / 0 warnings / 0 infos\nEPUBCheck completed"
+    },
+    "validatedTools": [
+      {
+        "executable": "pandoc",
+        "version": "pandoc 3.1.3"
+      }
+    ],
+    "keptWorkingDirectory": true
+  },
+  "conversionCount": 10,
+  "rowMarkersAllOnce": true,
+  "observedOn": "2026-10-13",
+  "codexPressCommit": "93af44922cdb1b83b6166c4f8429d7d9f5b32c07",
+  "nodeVersion": "v24.19.0",
+  "epubcheckVersion": "5.3.0",
+  "outputs": {
+    "Reporting Research Fixtures - Publish KDP.pdf": {
+      "bytes": 123383,
+      "sha256": "e3deaa162891c6e061e7fbbc17b135fb48d06be6844694f9d16019bae2c19245"
+    },
+    "Reporting Research Fixtures - Publish.epub": {
+      "bytes": 15276,
+      "sha256": "db30b5ef054bac4fe0db3049b9e966fcdbe621cc09c00ffc2d62386fd5094afe"
+    }
+  },
+  "pdfPages": 30,
+  "pdfTagged": false,
+  "tablePages": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "allRowPagesHaveHeadings": true,
+  "visualSpotCheckPages": [
+    7
+  ],
+  "pending": "Full bounds audit, actual-size print proof, reader and assistive-technology checks, locale/timezone/theme matrix.",
+  "epubSvgCount": 10,
+  "epubSvgPayloadsExact": true,
+  "pdfRowCounts": [
+    {
+      "marker": "ROW001",
+      "count": 1
+    },
+    {
+      "marker": "ROW002",
+      "count": 1
+    },
+    {
+      "marker": "ROW003",
+      "count": 1
+    },
+    {
+      "marker": "ROW004",
+      "count": 1
+    },
+    {
+      "marker": "ROW005",
+      "count": 1
+    },
+    {
+      "marker": "ROW006",
+      "count": 1
+    },
+    {
+      "marker": "ROW007",
+      "count": 1
+    },
+    {
+      "marker": "ROW008",
+      "count": 1
+    },
+    {
+      "marker": "ROW009",
+      "count": 1
+    },
+    {
+      "marker": "ROW010",
+      "count": 1
+    },
+    {
+      "marker": "ROW011",
+      "count": 1
+    },
+    {
+      "marker": "ROW012",
+      "count": 1
+    },
+    {
+      "marker": "ROW013",
+      "count": 1
+    },
+    {
+      "marker": "ROW014",
+      "count": 1
+    },
+    {
+      "marker": "ROW015",
+      "count": 1
+    },
+    {
+      "marker": "ROW016",
+      "count": 1
+    },
+    {
+      "marker": "ROW017",
+      "count": 1
+    },
+    {
+      "marker": "ROW018",
+      "count": 1
+    },
+    {
+      "marker": "ROW019",
+      "count": 1
+    },
+    {
+      "marker": "ROW020",
+      "count": 1
+    },
+    {
+      "marker": "ROW021",
+      "count": 1
+    },
+    {
+      "marker": "ROW022",
+      "count": 1
+    },
+    {
+      "marker": "ROW023",
+      "count": 1
+    },
+    {
+      "marker": "ROW024",
+      "count": 1
+    },
+    {
+      "marker": "ROW025",
+      "count": 1
+    },
+    {
+      "marker": "ROW026",
+      "count": 1
+    },
+    {
+      "marker": "ROW027",
+      "count": 1
+    },
+    {
+      "marker": "ROW028",
+      "count": 1
+    },
+    {
+      "marker": "ROW029",
+      "count": 1
+    },
+    {
+      "marker": "ROW030",
+      "count": 1
+    },
+    {
+      "marker": "ROW031",
+      "count": 1
+    },
+    {
+      "marker": "ROW032",
+      "count": 1
+    },
+    {
+      "marker": "ROW033",
+      "count": 1
+    },
+    {
+      "marker": "ROW034",
+      "count": 1
+    },
+    {
+      "marker": "ROW035",
+      "count": 1
+    },
+    {
+      "marker": "ROW036",
+      "count": 1
+    },
+    {
+      "marker": "ROW037",
+      "count": 1
+    },
+    {
+      "marker": "ROW038",
+      "count": 1
+    },
+    {
+      "marker": "ROW039",
+      "count": 1
+    },
+    {
+      "marker": "ROW040",
+      "count": 1
+    },
+    {
+      "marker": "ROW041",
+      "count": 1
+    },
+    {
+      "marker": "ROW042",
+      "count": 1
+    },
+    {
+      "marker": "ROW043",
+      "count": 1
+    },
+    {
+      "marker": "ROW044",
+      "count": 1
+    },
+    {
+      "marker": "ROW045",
+      "count": 1
+    },
+    {
+      "marker": "ROW046",
+      "count": 1
+    },
+    {
+      "marker": "ROW047",
+      "count": 1
+    },
+    {
+      "marker": "ROW048",
+      "count": 1
+    },
+    {
+      "marker": "ROW049",
+      "count": 1
+    },
+    {
+      "marker": "ROW050",
+      "count": 1
+    },
+    {
+      "marker": "ROW051",
+      "count": 1
+    },
+    {
+      "marker": "ROW052",
+      "count": 1
+    },
+    {
+      "marker": "ROW053",
+      "count": 1
+    },
+    {
+      "marker": "ROW054",
+      "count": 1
+    },
+    {
+      "marker": "ROW055",
+      "count": 1
+    },
+    {
+      "marker": "ROW056",
+      "count": 1
+    },
+    {
+      "marker": "ROW057",
+      "count": 1
+    },
+    {
+      "marker": "ROW058",
+      "count": 1
+    },
+    {
+      "marker": "ROW059",
+      "count": 1
+    },
+    {
+      "marker": "ROW060",
+      "count": 1
+    },
+    {
+      "marker": "ROW061",
+      "count": 1
+    },
+    {
+      "marker": "ROW062",
+      "count": 1
+    },
+    {
+      "marker": "ROW063",
+      "count": 1
+    },
+    {
+      "marker": "ROW064",
+      "count": 1
+    },
+    {
+      "marker": "ROW065",
+      "count": 1
+    },
+    {
+      "marker": "ROW066",
+      "count": 1
+    },
+    {
+      "marker": "ROW067",
+      "count": 1
+    },
+    {
+      "marker": "ROW068",
+      "count": 1
+    },
+    {
+      "marker": "ROW069",
+      "count": 1
+    },
+    {
+      "marker": "ROW070",
+      "count": 1
+    },
+    {
+      "marker": "ROW071",
+      "count": 1
+    },
+    {
+      "marker": "ROW072",
+      "count": 1
+    },
+    {
+      "marker": "ROW073",
+      "count": 1
+    },
+    {
+      "marker": "ROW074",
+      "count": 1
+    },
+    {
+      "marker": "ROW075",
+      "count": 1
+    },
+    {
+      "marker": "ROW076",
+      "count": 1
+    },
+    {
+      "marker": "ROW077",
+      "count": 1
+    },
+    {
+      "marker": "ROW078",
+      "count": 1
+    },
+    {
+      "marker": "ROW079",
+      "count": 1
+    },
+    {
+      "marker": "ROW080",
+      "count": 1
+    }
+  ]
+}
