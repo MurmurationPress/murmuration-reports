@@ -9,6 +9,7 @@ for mode,converter,widths in [('reference',args.reference_converter,[3.5,4.1,5.5
             output=args.output/f'{mode}-{width}-{source.stem}.pdf'
             subprocess.run([converter,'--format=pdf','--width',str(width)+'in','--output',str(output),str(source)],check=True)
             page=fitz.open(output)[0];spans=[s for b in page.get_text('dict')['blocks'] for l in b.get('lines',[]) for s in l['spans']]
+            assert abs(page.rect.width-width*72)<.02,(source,width,page.rect.width)
             outside=[s['text'] for s in spans if not page.rect.contains(fitz.Rect(s['bbox']))];minimum=min(s['size'] for s in spans)
             essential=[x['width'] for x in page.get_drawings() if x.get('type') in ['s','fs'] and x.get('width',0)>0]
             assert minimum>=7.99 and not outside and min(essential)>=.499,(source,minimum,outside)
