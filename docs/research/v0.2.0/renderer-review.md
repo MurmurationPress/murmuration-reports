@@ -1,6 +1,6 @@
 # Renderer recommendation for the first milestone
 
-Status: **recommend custom SVG for review**, not ADR acceptance. This comparison decides only fixed Y bounds, plain explanatory captions, four dash/marker identities and explicit-pair Markdown comparisons. It is not a renderer selection for the complete chart/KPI roadmap.
+Status: **custom SVG accepted for the first milestone only**; [review record](p0-acceptance.md). This comparison decides only fixed Y bounds, plain explanatory captions, four dash/marker identities and explicit-pair Markdown comparisons. It is not a renderer selection for the complete chart/KPI roadmap.
 
 ## Evidence and scope
 
@@ -32,4 +32,4 @@ The isolated probe corrects the earlier temptation to treat a standalone engine 
 
 Recommend **custom SVG, with no new chart or scale library**, plus existing Markdown table output. Keep the coordinator/receipts/recovery boundary; add pure validation/selection/presentation helpers as needed without a broad architectural rewrite. Preserve default rendering/selection bytes; new features require explicit opt-in as specified in [first-milestone.md](first-milestone.md).
 
-Remaining start gates are review of that contract and the [publishing width limitation](publishing.md), now [Codex Press #145](https://github.com/MurmurationPress/codex-press/issues/145). Statistical plotting, larger chart-type scope, engine startup benchmarks, copied-plugin licensing and reader/accessibility qualification are later gates unless the chosen scope changes. Compiler accessibility remains separate [#144](https://github.com/MurmurationPress/codex-press/issues/144); no accessible PDF has been established.
+Bounded start gates are satisfied by the explicit contract review and merged [Codex Press #145](https://github.com/MurmurationPress/codex-press/issues/145) evidence in [p0-acceptance.md](p0-acceptance.md). Implementation merge gates remain open in #12. Statistical plotting, larger chart-type scope, engine startup benchmarks, copied-plugin licensing and reader/accessibility qualification are later gates unless the chosen scope changes. Compiler accessibility remains separate [#144](https://github.com/MurmurationPress/codex-press/issues/144); no accessible PDF has been established.

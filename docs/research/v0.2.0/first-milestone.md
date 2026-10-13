@@ -1,6 +1,6 @@
 # Bounded P0 recommendation and first implementation milestone
 
-Status: **proposed for P0 acceptance; not accepted by this document**. Scope: Epic #3, P0 #4/#5/#10 and research/design PR #11. No implementation is included.
+Status: **Accepted for the first milestone only** by the explicit [bounded review](p0-acceptance.md). Scope: Epic #3, P0 #4/#5/#10 and research/design PR #11. No implementation is included.
 
 ## Recommendation
 
@@ -52,8 +52,8 @@ Synthetic acceptance cases: May=10 and June-end=15 give +5; inserting June-middl
 | Renderer choice | Review custom SVG recommendation; no production dependency | Existing byte-stable renderer and narrow required changes avoid an engine migration/ID canonicalisation burden; candidate limitations are recorded |
 | Print/font policy | Review widths, ≥8pt text/≥0.5pt essential strokes, named font/fallback and overflow diagnostics | Mathematical sizing plus all-page digital review in the bounded fixture matrix prevent shipping the known 7.38pt layout |
 | Pair/compatibility contract | Review the rules above, proposed fields and opt-in boundaries | Avoid silent predecessor substitution, rename guessing, endpoint contradictions or changed old bytes |
-| Compiler placement | Resolve #145 or explicitly accept a narrower compiler-default scope | Current width attributes are overridden, so requested width is not an effective-width guarantee; this blocks supported-width P0 publishing acceptance |
-| Scope/review | Explicit review of P0 #4/#5/#10 and proposed ADR | Documents/experiments are evidence, not approval; all three issues remain open until their recommendations are accepted |
+| Compiler placement | Verify merged #145 fix | Satisfied at `394cf109f035194b440e3b37d75de06e49fe074d`: requested widths and final text sizes are measured in actual compiler PDFs |
+| Scope/review | Explicit review of P0 #4/#5/#10 and proposed ADR | Documents/experiments are evidence, not approval; bounded research recommendations accepted in p0-acceptance.md; later qualification remains open in #12 |
 
 Before **merging the future first implementation**, add meaningful tests of new fixed-bound/caption/identity/pair behaviour, legacy byte replay, owner/backup guards and malformed/unsupported option diagnostics; run full existing tests/build/release checks; regenerate publication fixtures from that implementation at supported widths with a verified font; inspect every report-bearing page and confirm portable assets with Reports/MWC disabled. Research specimens do not establish that unimplemented behaviour works.
 
@@ -65,4 +65,4 @@ Log axes, statistical uncertainty, scatter/bars/histograms/pie/radar, many-serie
 
 ## Acceptance assessment
 
-The first milestone is specified sufficiently for technical planning. #4/#5 recommendations are ready for bounded review, but **P0 is not ready for unconditional acceptance**: #10 must first resolve [Codex Press #145](https://github.com/MurmurationPress/codex-press/issues/145), or a reviewer must explicitly accept a narrower compiler-default placement scope. Corrected fixtures pass typography at the measured smaller placement; that does not honour the proposed supported-width contract. Any failing minimum-size, clipping, source-path or compatibility check would block this recommendation; compiler-placement disposition and author review of the contracts are the remaining start gates. The ADR remains Proposed until that review explicitly accepts it.
+The first milestone is sufficiently specified for a later implementation task. All bounded P0 start gates are satisfied by the explicit review and exact-merge evidence in [p0-acceptance.md](p0-acceptance.md). Implementation merge, physical-print, reader and accessibility gates remain outstanding in [#12](https://github.com/MurmurationPress/murmuration-reports/issues/12). No production feature has been implemented.

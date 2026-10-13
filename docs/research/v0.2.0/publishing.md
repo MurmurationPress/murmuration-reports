@@ -1,6 +1,6 @@
 # Bounded publication compatibility review (#10)
 
-Status: **Proposed; authored-width disposition blocks unconditional P0 acceptance.** Reports production code remains at `262f11630da4fd5848ce6e82013c9ad1a0b25b23`; initial research `b1b48e74b86dc84afffe3946588edfa6fd817dba`; revised fixtures/harness `8f47104ca36a66f31554f492640fc56bb0f08f6d`. Codex Press inspected and invoked at [`93af44922cdb1b83b6166c4f8429d7d9f5b32c07`](https://github.com/MurmurationPress/codex-press/tree/93af44922cdb1b83b6166c4f8429d7d9f5b32c07), unchanged.
+Status: **Accepted for the bounded first milestone**, following the independent review in [p0-acceptance.md](p0-acceptance.md). Reports production code remains at `262f11630da4fd5848ce6e82013c9ad1a0b25b23`; initial research `b1b48e74b86dc84afffe3946588edfa6fd817dba`; revised fixtures/harness `8f47104ca36a66f31554f492640fc56bb0f08f6d`. Historical baseline compiler: `93af44922cdb1b83b6166c4f8429d7d9f5b32c07`. Current verified compiler: [`394cf109f035194b440e3b37d75de06e49fe074d`](https://github.com/MurmurationPress/codex-press/tree/394cf109f035194b440e3b37d75de06e49fe074d), merged through PR #146.
 
 ## Publication widths and sizing policy
 
@@ -19,15 +19,17 @@ For a 720-unit SVG printed at width W inches, one unit = `72W/720` PDF pt. These
 | 2-unit essential stroke | 0.70pt | 0.82pt | 1.10pt |
 | Revised 3-unit essential stroke | 1.05pt | 1.23pt | 1.65pt |
 
-The revised specimens use 32-unit labels (36 for the taller four-series figure), 3-unit strokes, wrapped captions, matching legend markers and increased spacing. This larger reserve is necessary under the **current compiler's further height-based reduction**. It is a specimen solution, not a universal production font size: the future layout must compute actual placement/fit, diagnose overflow and never shrink text below the target. Do not convert this into an implicit change to old chart bytes.
+The revised specimens use 32-unit labels (36 for the taller four-series figure), 3-unit strokes, wrapped captions, matching legend markers and increased spacing. This larger reserve is necessary under the **historical compiler's further height-based reduction**. It is a specimen solution, not a universal production font size: the future layout must compute actual placement/fit, diagnose overflow and never shrink text below the target. Do not convert this into an implicit change to old chart bytes.
 
-### Confirmed compiler limitation: requested width is not effective width
+### Historical compiler limitation — resolved by merged #146
+
+The following baseline evidence is retained for provenance, **not current behaviour**. Fresh merged-compiler results in [p0-acceptance.md](p0-acceptance.md) and [merged-compiler-results.json](merged-compiler-results.json) verify distinct requested placements, final text sizes and captions. #145 is resolved; #144 remains separate.
 
 `src/exporters/pdf/asset-plan.ts` preserves authored attributes in the plan, but `src/exporters/pdf/lua-filter.ts` `codex_image_latex` replaces ordinary images with `width=0.92\\linewidth,height=0.33\\textheight,keepaspectratio`, ignoring authored width/height. Requested 3.5in and 4.1in produce pixel-identical report-page renders. The revised tall KDP specimens actually measure **2.68320in**, and the four-series specimen **2.42355in**. A4 also uses its own capped placement rather than the requested 5.5in.
 
 Before correction, 24-unit four-series labels measured **5.81652pt** in KDP. Corrected final PDFs now meet typography minima at those smaller actual widths: minimum label **8.58624pt** and essential stroke **0.727065pt**; A4 minimum figure label **11.76672pt**. Passing typography does **not** establish the 3.5–5.5in placement contract. Separate compiler follow-up: [Codex Press #145 — Respect authored report image sizing in PDF within page constraints](https://github.com/MurmurationPress/codex-press/issues/145).
 
-Direct librsvg conversion **does** honour the three requested widths. [44 exact-width checks](direct-width-results.json) cover all eleven SVGs at 3.5/4.1/5.5in with the reference font and 3.5in with the fallback, including measured labels/strokes and text bounds. They establish standalone SVG-to-PDF sizing, not end-to-end Codex Press sizing. P0 #10 needs #145 resolved in separate work, or an explicitly reviewed narrower compiler-default placement contract, before unconditional acceptance. This research does neither on the reviewer's behalf.
+Direct librsvg conversion **does** honour the three requested widths. [44 exact-width checks](direct-width-results.json) cover all eleven SVGs at 3.5/4.1/5.5in with the reference font and 3.5in with the fallback, including measured labels/strokes and text bounds. They establish standalone SVG-to-PDF sizing, not end-to-end Codex Press sizing. The historical width blocker is now resolved by the independently reviewed merged compiler; standalone conversion remains separate evidence.
 
 ## Practical font and fallback policy
 
@@ -39,7 +41,9 @@ The default local Fontconfig resolver unexpectedly chose an OpenDyslexic-named f
 
 Font use/redistribution remains subject to exact notices: [DejaVu licence](https://dejavu-fonts.github.io/License.html), [Liberation licence](https://github.com/liberationfonts/liberation-fonts/blob/main/LICENSE), and the installed distribution's copyright files. This policy installs/distributes no font. Any future font bundling requires its own licence/notice decision.
 
-## Verified existing pathway and final digital checks
+## Verified existing pathway and historical baseline digital checks
+
+Current final checks are the fresh exact-merge matrix in [p0-acceptance.md](p0-acceptance.md); the baseline table below documents the earlier height-cap behaviour.
 
 Markdown transclusion recognises saved SVG/SVGZ as media and saved Markdown as content. PDF stages/normalises SVG and converts via librsvg before Pandoc/XeLaTeX. EPUB normalises package SVG/SVGZ names/media types without rasterising these reports. PDF table filters measure row packets and use breakable wrappers/repeated continuation headings; [existing table evidence](https://github.com/MurmurationPress/codex-press/blob/93af44922cdb1b83b6166c4f8429d7d9f5b32c07/docs/pdf-table-pagination-validation.md) remains distinct from this research.
 
@@ -58,9 +62,9 @@ Known limits visible in those pages: prose descriptive alternatives can flow ont
 
 ## Bounded acceptance and pending qualification
 
-- **Before implementation starts:** explicit P0 review of custom SVG, proposed fields/legacy compatibility, exact pair semantics, minimum-size/font/overflow policy, plus resolution or explicit narrowing of #145's compiler-placement contract. This last item remains a blocker; the corrected specimen typography does not waive it.
+- **Before implementation starts:** explicit P0 review of custom SVG, proposed fields/legacy compatibility, exact pair semantics, minimum-size/font/overflow policy, and the exact-merge compiler-placement verification. These bounded start gates are satisfied by the recorded review; implementation merge gates below remain outstanding.
 - **Before future implementation merges:** replay old bytes and receipt/safety cases; test all new validation/selection/layout rules; build measurements; render actual implementation outputs at supported widths; review all report pages and saved assets with plugins disabled. No hand-authored specimen proves unimplemented behaviour.
 - **Before print/release claims:** actual-size greyscale physical proof and real publishing/product flows. No physical proof has been performed. Broader chart, uncertainty, KPI, arbitrary glyph, narrow callout, oversized-row and all-reader scenarios have separate later acceptance work.
 - **EPUB/readers/accessibility:** EPUBCheck and exact SVG payloads are digital packaging evidence only. No representative EPUB/Kindle/assistive-technology reader is qualified. [Codex Press #144](https://github.com/MurmurationPress/codex-press/issues/144) remains separate compiler accessibility work. All observed PDFs report **Tagged: no**; accessible PDF output has not been established.
 
-The detailed gate/dependency and explicit-reference contracts are in [first-milestone.md](first-milestone.md). Do not close #10 or mark the ADR Accepted on the strength of this documentation update.
+The detailed gate/dependency and explicit-reference contracts are in [first-milestone.md](first-milestone.md). Bounded research acceptance follows the explicit review and fresh validation in [p0-acceptance.md](p0-acceptance.md), not documentation edits alone. Later qualification is tracked in [#12](https://github.com/MurmurationPress/murmuration-reports/issues/12).

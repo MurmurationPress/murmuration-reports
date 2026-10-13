@@ -45,7 +45,7 @@ Research Python checks used a disposable venv with PyMuPDF 1.26.5 and Pillow 11.
 /tmp/reports-p0-review-venv/bin/python docs/research/v0.2.0/tools/audit-direct-widths.py docs/research/v0.2.0/fixtures /tmp/reports-p0-verified/direct-widths /tmp/reports-rsvg-reference /tmp/reports-rsvg-fallback
 ```
 
-Repeat the publication audit for all four book directories. It checks standalone SVG text presence/bounds, point-size formula, all book page text bounds, observed chart-font minimum, table headings (including dehyphenation), and renders every report-bearing page greyscale. Its bounds checks are not a complete geometry-overlap proof; manually inspect every rendered report page. The direct-width audit measures exact converted PDF width, fonts/text and strokes for all eleven figures at three reference widths and narrow fallback width. Compiler placement must be measured separately because #145 overrides authored widths.
+Repeat the publication audit for all four book directories. It checks standalone SVG text presence/bounds, point-size formula, all book page text bounds, observed chart-font minimum, table headings (including dehyphenation), and renders every report-bearing page greyscale. Its bounds checks are not a complete geometry-overlap proof; manually inspect every rendered report page. The direct-width audit measures exact converted PDF width, fonts/text and strokes for all eleven figures at three reference widths and narrow fallback width. Compiler placement must be measured separately; merged #145 now honours authored widths within local constraints.
 
 Copy `renderer-review.mjs` to the same isolated exact-version engine scratch environment used above, then run:
 
@@ -55,3 +55,13 @@ TZ=Pacific/Auckland LANG=en_GB.UTF-8 REPORTS_RESEARCH_THEME=dark node renderer-r
 ```
 
 The theme flag is metadata, not an Obsidian simulation. Compare the recorded hashes and convert candidate SVGs via the reference wrapper at 3.5in. The unchanged production renderer is bundled into scratch for evidence; candidate configuration is a research experiment. The export-retention coexistence probe does not integrate an engine or measure a real production adapter. See renderer-review.md for exact scope and limitations.
+
+## Exact merged-compiler placement audit
+
+Use Codex Press `394cf109f035194b440e3b37d75de06e49fe074d`, Reports fixtures/harness at `3492e836c0a7e0652c75f17d1d6f99562d2044a7`, and the same pinned tool/font environment above. Run four fresh book profiles, publication audits and direct-width audit as above. Name directories reference-3.5/reference-4.1/reference-5.5/fallback-3.5/direct-conversion. Then:
+
+```bash
+/tmp/reports-p0-review-venv/bin/python docs/research/v0.2.0/tools/audit-compiler-placement.py /tmp/reports-merged-146 /tmp/reports-merged-146/placement-ledger.json
+```
+
+This pinned audit selects each chart's vector background in the final compiler PDF, checks actual requested size/ratio and caption presence, and records fonts/text. It renders contact sheets but does not infer human review. Inspect all report/table pages, including small comparison/KPI tables that the older text-marker page selector may miss. The first milestone's actual renderer output still needs separate implementation qualification.
