@@ -716,7 +716,7 @@ export class ReportsView extends ItemView {
         this.showEditor(key, draft);
       });
       form.createEl("p", {text: draft.values.presentation === "publication"
-        ? "Publication: fixed 32-unit text, dash/marker identities, installed DejaVu/Liberation fonts. Embed at least 3.5 inches wide and check final compiler placement. Bounds apply to selected data; source validation remains whole-folder."
+        ? "Publication: readable labels and dash/marker identities. Publish with installed DejaVu/Liberation fonts, at least 3.5 inches wide, and check final placement. Bounds apply to selected data; source validation remains whole-folder."
         : "Legacy: bounds and caption fields are preserved but not enforced. Only explicit publication mode activates them."});
       if (draft.values.presentation === "publication") {
         for (const [property,label] of [["y_min", "Fixed Y minimum"], ["y_max", "Fixed Y maximum"]]) {
