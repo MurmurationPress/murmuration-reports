@@ -1,0 +1,145 @@
+{
+  "sourceCommit": "8f47104ca36a66f31554f492640fc56bb0f08f6d",
+  "engineDependenciesLockSha256": "054351c59008869452a5e95960577954d6336e19519f197331a7c65287ce365e",
+  "runs": [
+    {
+      "node": "v24.19.0",
+      "environment": {
+        "TZ": "UTC",
+        "LANG": "C",
+        "REPORTS_RESEARCH_THEME": "light"
+      },
+      "scope": "Four synthetic series; fixed domain, caption, marker/dash identity. Legacy renderer is unchanged and lacks new features. Candidate outputs are not adapters or equivalent layouts.",
+      "outputs": {
+        "echarts": {
+          "hashes": [
+            "d61509eadc3cd5af5dde0adc6f3f3172f3b086642f5d13860c8c92703db6abec",
+            "c326470ffbcbdea6ff409d771c2a48776ba6df93ff5c8a58c0d4bbce0caca2cd"
+          ],
+          "sameProcessExact": false
+        },
+        "vega": {
+          "hashes": [
+            "3d7fc8417139cc93e1bacea7f9b5752b15aee963a2a24f4f2f60e5bdaaec156f",
+            "3d7fc8417139cc93e1bacea7f9b5752b15aee963a2a24f4f2f60e5bdaaec156f"
+          ],
+          "sameProcessExact": true
+        },
+        "legacyCustom": {
+          "hashes": [
+            "4ed0a949538b5d0eca0914e959db4495b810eb2c6cebd74dd228453aea8a5e28",
+            "4ed0a949538b5d0eca0914e959db4495b810eb2c6cebd74dd228453aea8a5e28"
+          ],
+          "sameProcessExact": true
+        }
+      },
+      "hypotheticalCoexistenceProbe": {
+        "baseline": {
+          "rawBytes": 164968,
+          "gzipBytes": 51442
+        },
+        "echarts": {
+          "rawBytes": 682495,
+          "gzipBytes": 229293,
+          "rawDelta": 517527
+        },
+        "vega": {
+          "rawBytes": 948840,
+          "gzipBytes": 322307,
+          "rawDelta": 783872
+        }
+      },
+      "integrationCost": "NOT MEASURED: production architecture/schema untouched. Probe includes retained engine exports alongside current code, no migration/adapter/banner. It is not an actual integration delta."
+    },
+    {
+      "node": "v24.19.0",
+      "environment": {
+        "TZ": "Pacific/Auckland",
+        "LANG": "en_GB.UTF-8",
+        "REPORTS_RESEARCH_THEME": "dark"
+      },
+      "scope": "Four synthetic series; fixed domain, caption, marker/dash identity. Legacy renderer is unchanged and lacks new features. Candidate outputs are not adapters or equivalent layouts.",
+      "outputs": {
+        "echarts": {
+          "hashes": [
+            "d61509eadc3cd5af5dde0adc6f3f3172f3b086642f5d13860c8c92703db6abec",
+            "c326470ffbcbdea6ff409d771c2a48776ba6df93ff5c8a58c0d4bbce0caca2cd"
+          ],
+          "sameProcessExact": false
+        },
+        "vega": {
+          "hashes": [
+            "3d7fc8417139cc93e1bacea7f9b5752b15aee963a2a24f4f2f60e5bdaaec156f",
+            "3d7fc8417139cc93e1bacea7f9b5752b15aee963a2a24f4f2f60e5bdaaec156f"
+          ],
+          "sameProcessExact": true
+        },
+        "legacyCustom": {
+          "hashes": [
+            "4ed0a949538b5d0eca0914e959db4495b810eb2c6cebd74dd228453aea8a5e28",
+            "4ed0a949538b5d0eca0914e959db4495b810eb2c6cebd74dd228453aea8a5e28"
+          ],
+          "sameProcessExact": true
+        }
+      },
+      "hypotheticalCoexistenceProbe": {
+        "baseline": {
+          "rawBytes": 164968,
+          "gzipBytes": 51442
+        },
+        "echarts": {
+          "rawBytes": 682495,
+          "gzipBytes": 229293,
+          "rawDelta": 517527
+        },
+        "vega": {
+          "rawBytes": 948840,
+          "gzipBytes": 322307,
+          "rawDelta": 783872
+        }
+      },
+      "integrationCost": "NOT MEASURED: production architecture/schema untouched. Probe includes retained engine exports alongside current code, no migration/adapter/banner. It is not an actual integration delta."
+    }
+  ],
+  "firstOutputCrossEnvironmentEquality": {
+    "echarts": true,
+    "vega": true,
+    "legacyCustom": true
+  },
+  "conversionAt3_5Inches": [
+    {
+      "engine": "echarts",
+      "pdfWidthPt": 252.0,
+      "minimumTextPtObserved": 8.400390625,
+      "textOutsidePage": [],
+      "resolvedFonts": [
+        "DejaVuSans",
+        "DejaVuSans-Bold"
+      ]
+    },
+    {
+      "engine": "vega",
+      "pdfWidthPt": 252.0,
+      "minimumTextPtObserved": 6.559569835662842,
+      "textOutsidePage": [],
+      "resolvedFonts": [
+        "DejaVuSans",
+        "DejaVuSans-Bold"
+      ]
+    },
+    {
+      "engine": "legacyCustom",
+      "pdfWidthPt": 252.0,
+      "minimumTextPtObserved": 2.887695074081421,
+      "textOutsidePage": [
+        "01 Apr 2029"
+      ],
+      "resolvedFonts": [
+        "DejaVuMathTeXGyre-Regula",
+        "DejaVuSans-Bold"
+      ]
+    }
+  ],
+  "initialFontShorthandFailedXml": true,
+  "finalSeparateFontPropertiesConverted": true
+}

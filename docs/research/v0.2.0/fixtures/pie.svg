@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="560" viewBox="0 0 720 560" role="img" aria-labelledby="title desc">
+  <title id="title">Pie: labelled proportions</title>
+  <desc id="desc">Two equal categories, A 50 and B 50, each 50 percent; total 100.</desc>
+  <rect width="720" height="560" fill="white" />
+  <g font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="32" fill="#17212b">
+    <text x="50" y="36" font-size="38">Pie: labelled proportions</text>
+    <path d="M 330 245 L 330 95 A 150 150 0 0 1 330 395 Z" fill="#555" />
+    <path d="M 330 245 L 330 395 A 150 150 0 0 1 330 95 Z" fill="white" stroke="#17212b" stroke-width="3" />
+    <text x="500" y="220">A: 50 (50%)</text>
+    <text x="85" y="260">B: 50 (50%)</text>
+    <text x="90" y="440">
+      <tspan x="90.0" y="440">Total 100; nonnegative values;</tspan>
+      <tspan x="90.0" y="478">direct labels.</tspan>
+    </text>
+  </g>
+</svg>

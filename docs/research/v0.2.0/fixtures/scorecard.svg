@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="560" viewBox="0 0 720 560" role="img" aria-labelledby="title desc">
+  <title id="title">KPI scorecard: June vs May</title>
+  <desc id="desc">Three synthetic KPIs are warning; fourth metric is unavailable with unknown status. See Markdown alternative for directions and periods.</desc>
+  <rect width="720" height="560" fill="white" />
+  <g font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="32" fill="#17212b">
+    <text x="50" y="36" font-size="38">KPI scorecard: June vs May</text>
+    <rect x="45" y="65" width="630" height="85" fill="white" stroke="#555" stroke-width="3" />
+    <text x="60" y="100">Pages completed</text>
+    <text x="400" y="100">150 pages</text>
+    <text x="60" y="140">+30 / +25%; target 160; Warning</text>
+    <rect x="45" y="160" width="630" height="85" fill="white" stroke="#555" stroke-width="3" />
+    <text x="60" y="195">Open defects</text>
+    <text x="400" y="195">8 defects</text>
+    <text x="60" y="235">−4 / −33.33%; target ≤5; Warning</text>
+    <rect x="45" y="255" width="630" height="85" fill="white" stroke="#555" stroke-width="3" />
+    <text x="60" y="290">Nitrate</text>
+    <text x="400" y="290">2.4 mg/L</text>
+    <text x="60" y="330">−0.6 / −20%; target ≤2.0; Warning</text>
+    <rect x="45" y="350" width="630" height="85" fill="white" stroke="#555" stroke-width="3" />
+    <text x="60" y="385">Unavailable metric</text>
+    <text x="400" y="385">Unavailable</text>
+    <text x="60" y="425">Unavailable; target Not set; Unknown</text>
+  </g>
+</svg>

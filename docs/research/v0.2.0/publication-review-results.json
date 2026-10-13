@@ -1,0 +1,1223 @@
+{
+  "observedOn": "2026-10-13",
+  "reportsProductionCommit": "262f11630da4fd5848ce6e82013c9ad1a0b25b23",
+  "initialResearchCommit": "b1b48e74b86dc84afffe3946588edfa6fd817dba",
+  "fixtureAndResearchScriptCommit": "8f47104ca36a66f31554f492640fc56bb0f08f6d",
+  "codexPressCommit": "93af44922cdb1b83b6166c4f8429d7d9f5b32c07",
+  "tools": {
+    "node": "v24.19.0",
+    "python": "Python 3.12.3",
+    "PyMuPDF": "1.26.5",
+    "Pillow": "11.3.0",
+    "Pandoc": "3.1.3",
+    "XeTeX": "3.141592653-2.6-0.999995 / TeX Live 2023 Debian",
+    "librsvg": "2.58.0",
+    "EPUBCheck": "5.3.0",
+    "fontconfig": "2.15.0"
+  },
+  "fontFiles": {
+    "DejaVuSans.ttf": {
+      "sourcePath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+    },
+    "LiberationSans-Regular.ttf": {
+      "sourcePath": "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+      "sha256": "4659bc0c58c5028dd488ec928d41d9265db43d9b669fc14ca8b0832daca7b144"
+    }
+  },
+  "fixtureSha256": {
+    "bar.svg": "5920c838e279d3c4a82246d8e83e23fbbe35ea6f20d66415b72b8ab7983a9d09",
+    "doughnut.svg": "d78c479f02c7a29da84820f09aad0726c4615899a38ec1071d1faee004f7449d",
+    "grouped-bars.svg": "1e07fbb08db1efa4697c5523a0e2b497870d65727a929c94597a6591b6006b39",
+    "histogram.svg": "a5ae6611677e1ce10106cde68dcc5631ce4b5469cf0e2413afa275789cf4e93f",
+    "line-fixed.svg": "c886696098d29862b259d0c2c510bddefbe5139ee51a095f98ef2d435371c676",
+    "line-four-series.svg": "7622df59201fc4f1131ad2399a5e1eb1a5156cedf6aaa3de37ff5eab7f0608c4",
+    "pie.svg": "993c49a3e5696b69987b1b6c8bb3a2179c54ab3e5af5c5cb981cede2fad628c5",
+    "radar.svg": "cfa9c26e354ecdfd9a2a9204d38742a6c86f8a0819dc155e2dfe500926d669bc",
+    "scatter-error.svg": "f61fc605ea46510d03c45312ef183d71d2cdffd378c630bc8b3f79b46042e043",
+    "scorecard.svg": "c3c767b6a5b8a3dadd7f5a5d1da06f2a7d2874380c8926c99b391351e63ee721",
+    "stacked-bars.svg": "7d14c448e6b83bc7d3ae9d3fcb9cfc043c730699fd69d24fdeb6e03c4aadb6c9"
+  },
+  "cases": {
+    "reference-3.5": {
+      "harnessResult": {
+        "pdf": {
+          "outputPath": "Output/Reporting Research Fixtures - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/reports-research/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-reference",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "widthInches": 3.5,
+        "layoutProfile": "kdp_6x9",
+        "conversionCount": 11,
+        "rowMarkersAllOnce": true
+      },
+      "digitalAudit": {
+        "widthInches": 3.5,
+        "profile": "kdp_6x9",
+        "pageCount": 32,
+        "figureChecks": [
+          {
+            "source": "scatter-error.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "stacked-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "line-fixed.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "line-four-series.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 12.6,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "radar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "bar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "grouped-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "histogram.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "pie.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "scorecard.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "doughnut.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          }
+        ],
+        "figurePages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "tablePages": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "renderedForReviewPages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "bookTextOutsidePage": [],
+        "minimumFigureTextPtObserved": 8.586240768432617,
+        "pdfSha256": "d04cf03f2211f392daa8cf3c82626d6d7bbb69ecbe4e6c2cd85fae5c4d43f267",
+        "pdfTagged": false,
+        "limitations": "Text extraction and page/standalone-SVG bounds are checked. This is not complete plot-geometry overlap proof, physical printing, PDF tagging or reader/assistive-technology qualification.",
+        "effectivePlacements": [
+          {
+            "source": "bar.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "doughnut.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "grouped-bars.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "histogram.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "line-fixed.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "line-four-series.svg",
+            "effectiveWidthInches": 2.4235500229729547,
+            "minimumLabelPt": 8.724780082702637,
+            "minimumEssentialStrokePt": 0.7270650068918864
+          },
+          {
+            "source": "pie.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "radar.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "scatter-error.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "scorecard.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "stacked-bars.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          }
+        ],
+        "allRelevantPagesVisuallyReviewed": true,
+        "visualReviewMethod": "Every report-bearing page rendered greyscale; contact sheets reviewed, plus full-size chart examples. Reference 4.1 pages are pixel-identical to the inspected 3.5 pages; verified hashes. No physical or reader proof."
+      },
+      "rowMarkersAllOnce": true
+    },
+    "reference-4.1": {
+      "harnessResult": {
+        "pdf": {
+          "outputPath": "Output/Reporting Research Fixtures - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/reports-research/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-reference",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "epub": {
+          "outputPath": "Output/Reporting Research Fixtures - Publish.epub",
+          "workingDirectory": ".codex-epub/reports-research/publish",
+          "warnings": [
+            "EPUB validation output:\nValidating using EPUB version 3.3 rules.\nNo errors or warnings detected.\nMessages: 0 fatals / 0 errors / 0 warnings / 0 infos\nEPUBCheck completed"
+          ],
+          "validation": {
+            "status": "passed",
+            "output": "Validating using EPUB version 3.3 rules.\nNo errors or warnings detected.\nMessages: 0 fatals / 0 errors / 0 warnings / 0 infos\nEPUBCheck completed"
+          },
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "widthInches": 4.1,
+        "layoutProfile": "kdp_6x9",
+        "conversionCount": 11,
+        "rowMarkersAllOnce": true
+      },
+      "digitalAudit": {
+        "widthInches": 4.1,
+        "profile": "kdp_6x9",
+        "pageCount": 32,
+        "figureChecks": [
+          {
+            "source": "scatter-error.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "stacked-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "line-fixed.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "line-four-series.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 14.759999999999998,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "radar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "bar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "grouped-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "histogram.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "pie.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "scorecard.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          },
+          {
+            "source": "doughnut.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 13.12,
+            "minimumEssentialStrokePtCalculated": 1.23
+          }
+        ],
+        "figurePages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "tablePages": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "renderedForReviewPages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "bookTextOutsidePage": [],
+        "minimumFigureTextPtObserved": 8.586240768432617,
+        "pdfSha256": "5fc1fe4f754b6454ab028e0dbee04922e8481852dda9ffb4cc592d6de4be90ae",
+        "pdfTagged": false,
+        "limitations": "Text extraction and page/standalone-SVG bounds are checked. This is not complete plot-geometry overlap proof, physical printing, PDF tagging or reader/assistive-technology qualification.",
+        "effectivePlacements": [
+          {
+            "source": "bar.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "doughnut.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "grouped-bars.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "histogram.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "line-fixed.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "line-four-series.svg",
+            "effectiveWidthInches": 2.4235500229729547,
+            "minimumLabelPt": 8.724780082702637,
+            "minimumEssentialStrokePt": 0.7270650068918864
+          },
+          {
+            "source": "pie.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "radar.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "scatter-error.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "scorecard.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "stacked-bars.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          }
+        ],
+        "allRelevantPagesVisuallyReviewed": true,
+        "visualReviewMethod": "Every report-bearing page rendered greyscale; contact sheets reviewed, plus full-size chart examples. Reference 4.1 pages are pixel-identical to the inspected 3.5 pages; verified hashes. No physical or reader proof."
+      },
+      "rowMarkersAllOnce": true
+    },
+    "reference-5.5": {
+      "harnessResult": {
+        "pdf": {
+          "outputPath": "Output/Reporting Research Fixtures - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/reports-research/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-reference",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "widthInches": 5.5,
+        "layoutProfile": "draft_a4",
+        "conversionCount": 11,
+        "rowMarkersAllOnce": true
+      },
+      "digitalAudit": {
+        "widthInches": 5.5,
+        "profile": "draft_a4",
+        "pageCount": 20,
+        "figureChecks": [
+          {
+            "source": "scatter-error.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "stacked-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "line-fixed.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "line-four-series.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 19.8,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "radar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "bar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "grouped-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "histogram.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "pie.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "scorecard.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          },
+          {
+            "source": "doughnut.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "DejaVuSans"
+            ],
+            "minimumLabelPtCalculated": 17.6,
+            "minimumEssentialStrokePtCalculated": 1.65
+          }
+        ],
+        "figurePages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "tablePages": [
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "renderedForReviewPages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "bookTextOutsidePage": [],
+        "minimumFigureTextPtObserved": 11.766719818115234,
+        "pdfSha256": "a9ac369d74a6e18eae533efd7d848e350d9387eed50d5cd9c520a6f6316c7303",
+        "pdfTagged": false,
+        "limitations": "Text extraction and page/standalone-SVG bounds are checked. This is not complete plot-geometry overlap proof, physical printing, PDF tagging or reader/assistive-technology qualification.",
+        "effectivePlacements": [
+          {
+            "source": "bar.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "doughnut.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "grouped-bars.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "histogram.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "line-fixed.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "line-four-series.svg",
+            "effectiveWidthInches": 3.321224848429362,
+            "minimumLabelPt": 11.956409454345703,
+            "minimumEssentialStrokePt": 0.9963674545288086
+          },
+          {
+            "source": "pie.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "radar.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "scatter-error.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "scorecard.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          },
+          {
+            "source": "stacked-bars.svg",
+            "effectiveWidthInches": 3.6771001313862044,
+            "minimumLabelPt": 11.766720420435854,
+            "minimumEssentialStrokePt": 1.1031300394158614
+          }
+        ],
+        "allRelevantPagesVisuallyReviewed": true,
+        "visualReviewMethod": "Every report-bearing page rendered greyscale; contact sheets reviewed, plus full-size chart examples. Reference 4.1 pages are pixel-identical to the inspected 3.5 pages; verified hashes. No physical or reader proof."
+      },
+      "rowMarkersAllOnce": true
+    },
+    "fallback-3.5": {
+      "harnessResult": {
+        "pdf": {
+          "outputPath": "Output/Reporting Research Fixtures - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/reports-research/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-fallback",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "widthInches": 3.5,
+        "layoutProfile": "kdp_6x9",
+        "conversionCount": 11,
+        "rowMarkersAllOnce": true
+      },
+      "digitalAudit": {
+        "widthInches": 3.5,
+        "profile": "kdp_6x9",
+        "pageCount": 32,
+        "figureChecks": [
+          {
+            "source": "scatter-error.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "stacked-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "line-fixed.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "line-four-series.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 12.6,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "radar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "bar.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "grouped-bars.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "histogram.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "pie.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "scorecard.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          },
+          {
+            "source": "doughnut.svg",
+            "allTextPresent": true,
+            "missingText": [],
+            "textOutsideSvgPage": [],
+            "resolvedFonts": [
+              "LiberationSans"
+            ],
+            "minimumLabelPtCalculated": 11.2,
+            "minimumEssentialStrokePtCalculated": 1.05
+          }
+        ],
+        "figurePages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "tablePages": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "renderedForReviewPages": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "bookTextOutsidePage": [],
+        "minimumFigureTextPtObserved": 8.586240768432617,
+        "pdfSha256": "3176cbf080a82c12aa96031d901bf80e3e466bda178f927a6079e4a9b19d5bfe",
+        "pdfTagged": false,
+        "limitations": "Text extraction and page/standalone-SVG bounds are checked. This is not complete plot-geometry overlap proof, physical printing, PDF tagging or reader/assistive-technology qualification.",
+        "effectivePlacements": [
+          {
+            "source": "bar.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "doughnut.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "grouped-bars.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "histogram.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "line-fixed.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "line-four-series.svg",
+            "effectiveWidthInches": 2.4235500229729547,
+            "minimumLabelPt": 8.724780082702637,
+            "minimumEssentialStrokePt": 0.7270650068918864
+          },
+          {
+            "source": "pie.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "radar.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "scatter-error.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "scorecard.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          },
+          {
+            "source": "stacked-bars.svg",
+            "effectiveWidthInches": 2.6832000832808642,
+            "minimumLabelPt": 8.586240266498766,
+            "minimumEssentialStrokePt": 0.8049600249842593
+          }
+        ],
+        "allRelevantPagesVisuallyReviewed": true,
+        "visualReviewMethod": "Every report-bearing page rendered greyscale; contact sheets reviewed, plus full-size chart examples. Reference 4.1 pages are pixel-identical to the inspected 3.5 pages; verified hashes. No physical or reader proof."
+      },
+      "rowMarkersAllOnce": true
+    }
+  },
+  "compilerWidthContractHonoured": false,
+  "compilerWidthIssue": "https://github.com/MurmurationPress/codex-press/issues/145",
+  "pdfAccessibilityEstablished": false,
+  "accessibilityIssue": "https://github.com/MurmurationPress/codex-press/issues/144",
+  "initialFailures": [
+    "FONTCONFIG_FILE applied to whole build hid Latin Modern Mono from XeTeX; scoped the configuration to rsvg-convert through scratch wrappers.",
+    "Rerunning into an existing scratch published output correctly failed overwrite guard; final runs used fresh directories.",
+    "Initial 24-unit specimens failed actual final-PDF size because compiler ignores width and applies a height cap; corrected fixtures to 32/36 units and 3-unit strokes."
+  ],
+  "limitations": [
+    "No physical print proof, EPUB reader or assistive-technology test.",
+    "Assembled synthetic-book harness bypasses vault discovery, manuscript assembly and live Obsidian.",
+    "Text/page/SVG bounds and all-page visual checks are not complete mathematical geometry proof.",
+    "Specimens are hand-authored, not implemented report types or a production schema."
+  ],
+  "epub": {
+    "svgCount": 11,
+    "allSvgPayloadsExact": true,
+    "sha256": "5ce528cd026ff1c028308f948cf389f73ce61ab1568fadf5e5208cf5ba03d9f8",
+    "EPUBCheck": "zero errors and warnings",
+    "readerQualified": false
+  },
+  "fontPackages": {
+    "fonts-dejavu-core": "2.37-8",
+    "fonts-liberation": "1:2.1.5-3"
+  },
+  "researchScriptSha256": {
+    "renderer-review.mjs": "bd204a40345ab044eefad040eeec57f0059517d6dcb0d92e12a18365fcdc103b",
+    "publish-fixtures.ts": "c1f8b0f217a915ebbcb808728bc0af11efeecc1f16f4e1501e7d4bab2fe09aee",
+    "renderer-spike.mjs": "1831cc9e2c814937471e4dd7ab17656304bb55c2aebdfe30a39f595c5ee2e780",
+    "run-publication.mjs": "4382354cffff7e87dfee2f0fea41f9adbb7c366c94daa6110316f92f1ab65607",
+    "audit-publication.py": "354dfae40efcbb990efa5f2a636bacaf38af82b2a4eebb7310a1a0559aa47f39",
+    "prepare-fixtures.py": "514469be2667be67dd233f084cd58db6c43422fcddac493d2b486121a46fdc63",
+    "audit-direct-widths.py": "03e217c69b127e044b8e981da5446ee0536ceb8774ffdab95eeb5b1cf22a29f8"
+  }
+}

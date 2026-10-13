@@ -1,0 +1,574 @@
+[
+  {
+    "source": "bar.svg",
+    "sourceSha256": "5920c838e279d3c4a82246d8e83e23fbbe35ea6f20d66415b72b8ab7983a9d09",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "doughnut.svg",
+    "sourceSha256": "d78c479f02c7a29da84820f09aad0726c4615899a38ec1071d1faee004f7449d",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "grouped-bars.svg",
+    "sourceSha256": "1e07fbb08db1efa4697c5523a0e2b497870d65727a929c94597a6591b6006b39",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "histogram.svg",
+    "sourceSha256": "a5ae6611677e1ce10106cde68dcc5631ce4b5469cf0e2413afa275789cf4e93f",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-fixed.svg",
+    "sourceSha256": "c886696098d29862b259d0c2c510bddefbe5139ee51a095f98ef2d435371c676",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-four-series.svg",
+    "sourceSha256": "7622df59201fc4f1131ad2399a5e1eb1a5156cedf6aaa3de37ff5eab7f0608c4",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 12.599609375,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "pie.svg",
+    "sourceSha256": "993c49a3e5696b69987b1b6c8bb3a2179c54ab3e5af5c5cb981cede2fad628c5",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "radar.svg",
+    "sourceSha256": "cfa9c26e354ecdfd9a2a9204d38742a6c86f8a0819dc155e2dfe500926d669bc",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scatter-error.svg",
+    "sourceSha256": "f61fc605ea46510d03c45312ef183d71d2cdffd378c630bc8b3f79b46042e043",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scorecard.svg",
+    "sourceSha256": "c3c767b6a5b8a3dadd7f5a5d1da06f2a7d2874380c8926c99b391351e63ee721",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "stacked-bars.svg",
+    "sourceSha256": "7d14c448e6b83bc7d3ae9d3fcb9cfc043c730699fd69d24fdeb6e03c4aadb6c9",
+    "fontMode": "reference",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "bar.svg",
+    "sourceSha256": "5920c838e279d3c4a82246d8e83e23fbbe35ea6f20d66415b72b8ab7983a9d09",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "doughnut.svg",
+    "sourceSha256": "d78c479f02c7a29da84820f09aad0726c4615899a38ec1071d1faee004f7449d",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "grouped-bars.svg",
+    "sourceSha256": "1e07fbb08db1efa4697c5523a0e2b497870d65727a929c94597a6591b6006b39",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "histogram.svg",
+    "sourceSha256": "a5ae6611677e1ce10106cde68dcc5631ce4b5469cf0e2413afa275789cf4e93f",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-fixed.svg",
+    "sourceSha256": "c886696098d29862b259d0c2c510bddefbe5139ee51a095f98ef2d435371c676",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-four-series.svg",
+    "sourceSha256": "7622df59201fc4f1131ad2399a5e1eb1a5156cedf6aaa3de37ff5eab7f0608c4",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 14.759765625,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "pie.svg",
+    "sourceSha256": "993c49a3e5696b69987b1b6c8bb3a2179c54ab3e5af5c5cb981cede2fad628c5",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "radar.svg",
+    "sourceSha256": "cfa9c26e354ecdfd9a2a9204d38742a6c86f8a0819dc155e2dfe500926d669bc",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scatter-error.svg",
+    "sourceSha256": "f61fc605ea46510d03c45312ef183d71d2cdffd378c630bc8b3f79b46042e043",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scorecard.svg",
+    "sourceSha256": "c3c767b6a5b8a3dadd7f5a5d1da06f2a7d2874380c8926c99b391351e63ee721",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "stacked-bars.svg",
+    "sourceSha256": "7d14c448e6b83bc7d3ae9d3fcb9cfc043c730699fd69d24fdeb6e03c4aadb6c9",
+    "fontMode": "reference",
+    "widthInchesRequested": 4.1,
+    "widthPtObserved": 295.1999816894531,
+    "minimumTextPtObserved": 13.1201171875,
+    "minimumStrokePtObserved": 1.2300000190734863,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "bar.svg",
+    "sourceSha256": "5920c838e279d3c4a82246d8e83e23fbbe35ea6f20d66415b72b8ab7983a9d09",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "doughnut.svg",
+    "sourceSha256": "d78c479f02c7a29da84820f09aad0726c4615899a38ec1071d1faee004f7449d",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "grouped-bars.svg",
+    "sourceSha256": "1e07fbb08db1efa4697c5523a0e2b497870d65727a929c94597a6591b6006b39",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "histogram.svg",
+    "sourceSha256": "a5ae6611677e1ce10106cde68dcc5631ce4b5469cf0e2413afa275789cf4e93f",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-fixed.svg",
+    "sourceSha256": "c886696098d29862b259d0c2c510bddefbe5139ee51a095f98ef2d435371c676",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-four-series.svg",
+    "sourceSha256": "7622df59201fc4f1131ad2399a5e1eb1a5156cedf6aaa3de37ff5eab7f0608c4",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 19.7998046875,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "pie.svg",
+    "sourceSha256": "993c49a3e5696b69987b1b6c8bb3a2179c54ab3e5af5c5cb981cede2fad628c5",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "radar.svg",
+    "sourceSha256": "cfa9c26e354ecdfd9a2a9204d38742a6c86f8a0819dc155e2dfe500926d669bc",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scatter-error.svg",
+    "sourceSha256": "f61fc605ea46510d03c45312ef183d71d2cdffd378c630bc8b3f79b46042e043",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scorecard.svg",
+    "sourceSha256": "c3c767b6a5b8a3dadd7f5a5d1da06f2a7d2874380c8926c99b391351e63ee721",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "stacked-bars.svg",
+    "sourceSha256": "7d14c448e6b83bc7d3ae9d3fcb9cfc043c730699fd69d24fdeb6e03c4aadb6c9",
+    "fontMode": "reference",
+    "widthInchesRequested": 5.5,
+    "widthPtObserved": 396.0,
+    "minimumTextPtObserved": 17.599609375,
+    "minimumStrokePtObserved": 1.649999976158142,
+    "fontNames": [
+      "DejaVuSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "bar.svg",
+    "sourceSha256": "5920c838e279d3c4a82246d8e83e23fbbe35ea6f20d66415b72b8ab7983a9d09",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "doughnut.svg",
+    "sourceSha256": "d78c479f02c7a29da84820f09aad0726c4615899a38ec1071d1faee004f7449d",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "grouped-bars.svg",
+    "sourceSha256": "1e07fbb08db1efa4697c5523a0e2b497870d65727a929c94597a6591b6006b39",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "histogram.svg",
+    "sourceSha256": "a5ae6611677e1ce10106cde68dcc5631ce4b5469cf0e2413afa275789cf4e93f",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-fixed.svg",
+    "sourceSha256": "c886696098d29862b259d0c2c510bddefbe5139ee51a095f98ef2d435371c676",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "line-four-series.svg",
+    "sourceSha256": "7622df59201fc4f1131ad2399a5e1eb1a5156cedf6aaa3de37ff5eab7f0608c4",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 12.599609375,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "pie.svg",
+    "sourceSha256": "993c49a3e5696b69987b1b6c8bb3a2179c54ab3e5af5c5cb981cede2fad628c5",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "radar.svg",
+    "sourceSha256": "cfa9c26e354ecdfd9a2a9204d38742a6c86f8a0819dc155e2dfe500926d669bc",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scatter-error.svg",
+    "sourceSha256": "f61fc605ea46510d03c45312ef183d71d2cdffd378c630bc8b3f79b46042e043",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "scorecard.svg",
+    "sourceSha256": "c3c767b6a5b8a3dadd7f5a5d1da06f2a7d2874380c8926c99b391351e63ee721",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  },
+  {
+    "source": "stacked-bars.svg",
+    "sourceSha256": "7d14c448e6b83bc7d3ae9d3fcb9cfc043c730699fd69d24fdeb6e03c4aadb6c9",
+    "fontMode": "fallback",
+    "widthInchesRequested": 3.5,
+    "widthPtObserved": 252.0,
+    "minimumTextPtObserved": 11.2001953125,
+    "minimumStrokePtObserved": 1.0499999523162842,
+    "fontNames": [
+      "LiberationSans"
+    ],
+    "textOutsidePage": []
+  }
+]

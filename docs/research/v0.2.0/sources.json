@@ -1,0 +1,97 @@
+{
+  "observed_on": "2026-10-13",
+  "method": "GitHub API repository and latest release metadata; shallow source checkout. Release asset sizes are API metadata, not renderer-only build sizes. Source HEAD may differ from release.",
+  "repositories": [
+    {
+      "repo": "JCF-402/datacharts",
+      "source_commit": "4ac1488b5ac6cf6996b8914941f0e5a310415f2d",
+      "source_url": "https://github.com/JCF-402/datacharts/tree/4ac1488b5ac6cf6996b8914941f0e5a310415f2d",
+      "pushed_at": "2026-09-06T12:53:20Z",
+      "archived": false,
+      "github_detected_license": "MIT",
+      "latest_release": "1.0.7",
+      "release_date": "2026-09-06T12:55:43Z",
+      "release_url": "https://github.com/JCF-402/datacharts/releases/tag/1.0.7",
+      "main_js_bytes": 942815,
+      "assets_api": "https://api.github.com/repos/JCF-402/datacharts/releases/latest"
+    },
+    {
+      "repo": "haiqiang-zhang/obsidian-bases-charts",
+      "source_commit": "f2c94106c46640b71947c40569fb698e66356b6e",
+      "source_url": "https://github.com/haiqiang-zhang/obsidian-bases-charts/tree/f2c94106c46640b71947c40569fb698e66356b6e",
+      "pushed_at": "2026-10-09T09:16:08Z",
+      "archived": false,
+      "github_detected_license": "GPL-3.0",
+      "latest_release": "0.4.1",
+      "release_date": "2026-10-09T09:16:34Z",
+      "release_url": "https://github.com/haiqiang-zhang/obsidian-bases-charts/releases/tag/0.4.1",
+      "main_js_bytes": 1199684,
+      "assets_api": "https://api.github.com/repos/haiqiang-zhang/obsidian-bases-charts/releases/latest"
+    },
+    {
+      "repo": "kevinmcaleer/obsidian-bases-chart",
+      "source_commit": "cb8bc85af28e170f6839bbb2e55db234c886a4c1",
+      "source_url": "https://github.com/kevinmcaleer/obsidian-bases-chart/tree/cb8bc85af28e170f6839bbb2e55db234c886a4c1",
+      "pushed_at": "2026-06-17T14:40:52Z",
+      "archived": false,
+      "github_detected_license": "MIT",
+      "latest_release": "1.4.4",
+      "release_date": "2026-06-17T14:41:24Z",
+      "release_url": "https://github.com/kevinmcaleer/obsidian-bases-chart/releases/tag/1.4.4",
+      "main_js_bytes": 261518,
+      "assets_api": "https://api.github.com/repos/kevinmcaleer/obsidian-bases-chart/releases/latest"
+    },
+    {
+      "repo": "phibr0/obsidian-charts",
+      "source_commit": "663814645bbad2e47df2d151cb982fff24a2a0f7",
+      "source_url": "https://github.com/phibr0/obsidian-charts/tree/663814645bbad2e47df2d151cb982fff24a2a0f7",
+      "pushed_at": "2024-06-19T12:25:23Z",
+      "archived": false,
+      "github_detected_license": "AGPL-3.0",
+      "latest_release": "3.9.0",
+      "release_date": "2024-01-26T10:13:43Z",
+      "release_url": "https://github.com/phibr0/obsidian-charts/releases/tag/3.9.0",
+      "main_js_bytes": 373070,
+      "assets_api": "https://api.github.com/repos/phibr0/obsidian-charts/releases/latest"
+    },
+    {
+      "repo": "pyrochlore/obsidian-tracker",
+      "source_commit": "933fa7537580fe79ecf567e83d5cb45ba18139e0",
+      "source_url": "https://github.com/pyrochlore/obsidian-tracker/tree/933fa7537580fe79ecf567e83d5cb45ba18139e0",
+      "pushed_at": "2026-04-13T14:52:07Z",
+      "archived": false,
+      "github_detected_license": "MIT",
+      "latest_release": "1.19.0",
+      "release_date": "2026-02-21T00:07:44Z",
+      "release_url": "https://github.com/pyrochlore/obsidian-tracker/releases/tag/1.19.0",
+      "main_js_bytes": 1535450,
+      "assets_api": "https://api.github.com/repos/pyrochlore/obsidian-tracker/releases/latest"
+    },
+    {
+      "repo": "robertoallende/fancy-charts",
+      "source_commit": "0509b828f5ff4b2bc5a6b5b0a530cd7830321c33",
+      "source_url": "https://github.com/robertoallende/fancy-charts/tree/0509b828f5ff4b2bc5a6b5b0a530cd7830321c33",
+      "pushed_at": "2026-08-25T13:14:41Z",
+      "archived": false,
+      "github_detected_license": "MIT",
+      "latest_release": "0.2.0",
+      "release_date": "2026-08-24T10:51:09Z",
+      "release_url": "https://github.com/robertoallende/fancy-charts/releases/tag/0.2.0",
+      "main_js_bytes": 1592358,
+      "assets_api": "https://api.github.com/repos/robertoallende/fancy-charts/releases/latest"
+    },
+    {
+      "repo": "zobweyt/obsidian-charts",
+      "source_commit": "45be486f6b373cdf5f0e1b17426609d45c91323e",
+      "source_url": "https://github.com/zobweyt/obsidian-charts/tree/45be486f6b373cdf5f0e1b17426609d45c91323e",
+      "pushed_at": "2026-07-18T14:38:36Z",
+      "archived": false,
+      "github_detected_license": "MIT",
+      "latest_release": "0.9.2",
+      "release_date": "2026-06-21T16:13:09Z",
+      "release_url": "https://github.com/zobweyt/obsidian-charts/releases/tag/0.9.2",
+      "main_js_bytes": 39449,
+      "assets_api": "https://api.github.com/repos/zobweyt/obsidian-charts/releases/latest"
+    }
+  ]
+}
