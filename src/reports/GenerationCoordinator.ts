@@ -231,7 +231,9 @@ export class GenerationCoordinator {
     const records: { path: string; frontmatter: Record<string, unknown> }[] =
       [];
     for (const item of documents
-      .filter((d) => d.path.startsWith(`${definition.source}/`))
+      .filter((d) => definition.artefactType === "state-table" && definition.comparison
+        ? within(d.path, definition.source) && pathKey(d.path) !== pathKey(definition.source)
+        : d.path.startsWith(`${definition.source}/`))
       .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))) {
       await this.snapshot(item.path, snapshots, versions);
       records.push({
@@ -342,7 +344,7 @@ export class GenerationCoordinator {
         );
       if (
         p.definition.artefactType === "state-table" &&
-        !/^\|parameter\|current\|previous\|Δ\|\r?\n\|---\|---:\|---:\|---:\|/.test(
+        !/^\|parameter\|(?:current\|previous|current \(\d{4}-\d{2}-\d{2}\)\|previous \(\d{4}-\d{2}-\d{2}\))\|Δ\|\r?\n\|---\|---:\|---:\|---:\|/.test(
           p.output,
         )
       )

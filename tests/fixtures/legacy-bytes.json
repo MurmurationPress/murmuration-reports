@@ -1,0 +1,449 @@
+{
+  "sourceCommit": "c15efbe2f79809fd0139ea14ed69268862a04543",
+  "cases": [
+    {
+      "name": "ordinary",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "line-chart",
+        "source": "Data",
+        "x": "date",
+        "series": [
+          {
+            "property": "a",
+            "label": "A & response"
+          }
+        ],
+        "title": "Legacy <chart>",
+        "subtitle": "Synthetic",
+        "x_axis_label": "Date",
+        "y_axis_label": "Value",
+        "output": "Output.svg"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        }
+      ],
+      "sha256": "168962a46271edd4c75020003fa57638c1bbc9e5735bf7c3212a01b9842a5554"
+    },
+    {
+      "name": "single",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "line-chart",
+        "source": "Data",
+        "x": "date",
+        "series": [
+          {
+            "property": "a",
+            "label": "A & response"
+          }
+        ],
+        "title": "Legacy <chart>",
+        "subtitle": "Synthetic",
+        "x_axis_label": "Date",
+        "y_axis_label": "Value",
+        "output": "Output.svg"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        }
+      ],
+      "sha256": "a593e76385901e1719a32bf4b1718598f6eb51dece1685d70d23420cca73789e"
+    },
+    {
+      "name": "constant",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "line-chart",
+        "source": "Data",
+        "x": "date",
+        "series": [
+          {
+            "property": "a",
+            "label": "A & response"
+          }
+        ],
+        "title": "Legacy <chart>",
+        "subtitle": "Synthetic",
+        "x_axis_label": "Date",
+        "y_axis_label": "Value",
+        "output": "Output.svg"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": 2,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 2,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 2,
+            "b": -0.5
+          }
+        }
+      ],
+      "sha256": "aeaca4f5455ab1bf785c1ad2663d07c16212466a2894f6c2c6444eab84dc847e"
+    },
+    {
+      "name": "multiple",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "line-chart",
+        "source": "Data",
+        "x": "date",
+        "series": [
+          {
+            "property": "a",
+            "label": "A & response"
+          },
+          {
+            "property": "b",
+            "label": "B"
+          }
+        ],
+        "title": "Legacy <chart>",
+        "subtitle": "Synthetic",
+        "x_axis_label": "Date",
+        "y_axis_label": "Value",
+        "output": "Output.svg"
+      },
+      "records": [
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        }
+      ],
+      "sha256": "70b174486d1903d95216d6697bc7b415b77ddf4feeb12da5409f542ea98276a8"
+    },
+    {
+      "name": "window",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "line-chart",
+        "source": "Data",
+        "x": "date",
+        "series": [
+          {
+            "property": "a",
+            "label": "A & response"
+          }
+        ],
+        "title": "Legacy <chart>",
+        "subtitle": "Synthetic",
+        "x_axis_label": "Date",
+        "y_axis_label": "Value",
+        "output": "Output.svg",
+        "start": "2029-03-01",
+        "window": "4 months",
+        "end": "2029-06-30"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        }
+      ],
+      "sha256": "10f545682e468a681a79f0bb3aa0f9edec61285190fa77fe36239c24382cb3d8"
+    },
+    {
+      "name": "opaque-publication-fields",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "line-chart",
+        "source": "Data",
+        "x": "date",
+        "series": [
+          {
+            "property": "a",
+            "label": "A & response"
+          }
+        ],
+        "title": "Legacy <chart>",
+        "subtitle": "Synthetic",
+        "x_axis_label": "Date",
+        "y_axis_label": "Value",
+        "output": "Output.svg",
+        "presentation": "custom",
+        "y_min": "invalid",
+        "y_max": null,
+        "caption": {
+          "opaque": true
+        }
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        }
+      ],
+      "sha256": "168962a46271edd4c75020003fa57638c1bbc9e5735bf7c3212a01b9842a5554"
+    },
+    {
+      "name": "table",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "state-table",
+        "source": "Data",
+        "x": "date",
+        "parameters": [
+          {
+            "property": "a",
+            "label": "A | value\\name"
+          }
+        ],
+        "output": "Output.md"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        }
+      ],
+      "sha256": "8520ac344d0cb1016a4075f8b67e9e8b0702d7cb79057b10182bcb922f727169"
+    },
+    {
+      "name": "table-no-previous",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "state-table",
+        "source": "Data",
+        "x": "date",
+        "parameters": [
+          {
+            "property": "a",
+            "label": "A | value\\name"
+          }
+        ],
+        "output": "Output.md"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        }
+      ],
+      "sha256": "317d9aff365d64e452d315c13d8e70b231c3b9f99c4c42d02212a49d24cefed0"
+    },
+    {
+      "name": "table-endpoint",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "state-table",
+        "source": "Data",
+        "x": "date",
+        "parameters": [
+          {
+            "property": "a",
+            "label": "A | value\\name"
+          }
+        ],
+        "output": "Output.md",
+        "end": "2029-03-01"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        }
+      ],
+      "sha256": "894a7d86838b1811a8d008b4974e1c636f20c872422d9233be9614a7a374a9f9"
+    },
+    {
+      "name": "table-date-tie",
+      "definition": {
+        "world_entity": "derived-artefact",
+        "artefact_type": "state-table",
+        "source": "Data",
+        "x": "date",
+        "parameters": [
+          {
+            "property": "a",
+            "label": "A | value\\name"
+          }
+        ],
+        "output": "Output.md"
+      },
+      "records": [
+        {
+          "path": "Data/One.md",
+          "frontmatter": {
+            "date": "2029-01-31",
+            "a": -0.5,
+            "b": 0.8
+          }
+        },
+        {
+          "path": "Data/Two.md",
+          "frontmatter": {
+            "date": "2029-03-01",
+            "a": 0.5,
+            "b": -0.4
+          }
+        },
+        {
+          "path": "Data/Three.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.25,
+            "b": -0.5
+          }
+        },
+        {
+          "path": "Data/Z.md",
+          "frontmatter": {
+            "date": "2029-06-30",
+            "a": 0.125,
+            "b": 0
+          }
+        }
+      ],
+      "sha256": "68461ac0e5a85cd96f78dc719cf3e4fc57df1438daa020bc4230f67f3147675a"
+    }
+  ]
+}

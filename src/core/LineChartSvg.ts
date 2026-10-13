@@ -1,3 +1,4 @@
+import { renderPublicationLineChartSvg } from "./PublicationLineChartSvg";
 import { LineChartData } from "./LineChartData";
 
 const WIDTH = 960, HEIGHT = 540, LEFT = 86, RIGHT = 30, TOP = 92, BOTTOM = 76;
@@ -24,6 +25,7 @@ function dateLabel(iso: string): string {
 }
 
 export function renderLineChartSvg(data: LineChartData): string {
+  if (data.definition.presentation === "publication") return renderPublicationLineChartSvg(data);
   const plotWidth = WIDTH - LEFT - RIGHT, plotHeight = HEIGHT - TOP - BOTTOM;
   const all = data.points.flatMap((point) => [...point.values]);
   const yTicks = ticks(Math.min(...all), Math.max(...all));

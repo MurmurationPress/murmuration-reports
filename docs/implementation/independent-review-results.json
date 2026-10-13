@@ -1,0 +1,232 @@
+{
+  "reviewedImplementationHead": "474981fd598602f9e1293b23f3156dae261565d1",
+  "baseline": "c15efbe2f79809fd0139ea14ed69268862a04543",
+  "compiler": "394cf109f035194b440e3b37d75de06e49fe074d",
+  "tests": 129,
+  "nativeFeatureEvidence": "/tmp/murmuration-reports-milestone-zbHWR4/evidence.json",
+  "nativeLifecycleEvidence": "/tmp/murmuration-reports-live-BllRDz/evidence.json",
+  "nativeCompilerEvidence": "/tmp/murmuration-reports-publishing-ui-59ipi6/evidence.json",
+  "publicationAudit": "/tmp/reports-pr13-publication/audit.json",
+  "bundle": {
+    "raw": 179666,
+    "gzip": 57216,
+    "baselineRaw": 166873,
+    "baselineGzip": 52490,
+    "deltaRaw": 12793,
+    "deltaGzip": 4726,
+    "installedRaw": 181617,
+    "installedGzip": 57946,
+    "sha256": "515c7f8d69655c892fb713041c95511595c15fa36b953f946efe1d6021663ffd"
+  },
+  "cases": {
+    "reference-3.5": {
+      "pageCount": 12,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 3.5,
+          "actualWidthPt": 251.99281311035156,
+          "actualHeightPt": 282.4419250488281,
+          "minimumChartTextPt": 8.399760246276855,
+          "minimumChartStrokePt": 0.7874774932861328,
+          "fonts": [
+            "DejaVuSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "47c7b42728c462d47d2a21f7172246984fd03efe70b65e050d4d6c93b9dd6992",
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "reference-4.1": {
+      "pageCount": 12,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 4.1,
+          "actualWidthPt": 295.20001220703125,
+          "actualHeightPt": 330.8699951171875,
+          "minimumChartTextPt": 9.84000015258789,
+          "minimumChartStrokePt": 0.9225000143051147,
+          "fonts": [
+            "DejaVuSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "219cd04878d8baa5c46786ade15b2f3966034728e012fedfa71fd7f6958c194e",
+      "epub": {
+        "EPUBCheck": "zero errors/warnings",
+        "svgPayloadExact": true,
+        "all80RowsPresent": true,
+        "authoredWidthPresent": true,
+        "readerQualified": false,
+        "sha256": "d75b7992d3f6adcc99f6115b1e1b7891f13d0009b95403e273e44f68be944ef7"
+      },
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "reference-5.5": {
+      "pageCount": 10,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 5.5,
+          "actualWidthPt": 396.00000762939453,
+          "actualHeightPt": 443.8500061035156,
+          "minimumChartTextPt": 13.200000762939453,
+          "minimumChartStrokePt": 1.2375000715255737,
+          "fonts": [
+            "DejaVuSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "adf0115e1ad0d8029dc1dca9b1e1bc79e8efb2af000ce78806d6eabb97e5c2dc",
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "fallback-3.5": {
+      "pageCount": 12,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 3.5,
+          "actualWidthPt": 251.99281311035156,
+          "actualHeightPt": 282.4419250488281,
+          "minimumChartTextPt": 8.399760246276855,
+          "minimumChartStrokePt": 0.7874774932861328,
+          "fonts": [
+            "LiberationSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "1422da372fed2f5dfb4abecbc6271f3f2d39c88b55e7887c8ddb4742a2284419",
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    }
+  },
+  "nativeCompilerAudit": {
+    "pageCount": 12,
+    "chartPlacements": [
+      {
+        "page": 7,
+        "actualWidthPt": 295.20001220703125,
+        "actualHeightPt": 330.8699951171875,
+        "minimumChartTextPt": 9.84000015258789,
+        "externalCaptionSamePage": true
+      }
+    ],
+    "all80RowsOnce": true,
+    "all80DeltasPlusFive": true,
+    "textOutsidePages": [],
+    "EPUBCheck": "zero errors/warnings",
+    "svgPayloadExact": true,
+    "all80EpubRowsPresent": true,
+    "readerQualified": false,
+    "visuallyReviewedPages": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "limitations": [
+    "Native compiler automation has intermittent modal timing failures. Successful independent run added a temporary read-only command/focus diagnostic; original driver was restored. Failed attempts are not passes.",
+    "Physical-print, reader/AT and accessible-PDF qualification remain pending.",
+    "No native Windows qualification; CI checks build/tests only."
+  ]
+}

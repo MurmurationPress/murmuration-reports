@@ -1,0 +1,758 @@
+{
+  "compilerCommit": "394cf109f035194b440e3b37d75de06e49fe074d",
+  "cases": {
+    "reference-3.5": {
+      "harness": {
+        "compilerCommit": "394cf109f035194b440e3b37d75de06e49fe074d",
+        "nativeSourceVault": "/tmp/murmuration-reports-milestone-GNUWMQ/vault",
+        "pluginsLoaded": false,
+        "widthInches": 3.5,
+        "layoutProfile": "kdp_6x9",
+        "pdf": {
+          "outputPath": "Output/Generated publication reports - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/first-milestone/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-reference",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "rowMarkersAllOnce": true,
+        "svgPath": "Saved reports \u03a9/Publication.svg",
+        "tablePath": "Saved reports \u03a9/Explicit.md",
+        "inputSha256": {
+          "Publication data/June.md": "4aa8f5d1e5f9bf7ac012e70af52ef59eec9b27229ab6c8d4ba4eecc32c9ec495",
+          "Publication data/May.md": "74fa7fac05f2db4212e2c28c2bc876b41d154eed9718f1b9716346be1156e49c",
+          "Publication data/Middle.md": "37bf865044ebc05c9ce286f82bba224a57323ba64534ccad280836b75393f740",
+          "Definitions/Explicit.md": "9f037fd2251378990507c174e90ccb9da157176945c3fd07f6671cb63f7963ed",
+          "Definitions/Publication.md": "25ee0353800dd1a9b4d007ae5b9f15cba78bfebac8d25985d897214ea48a5556",
+          "Definitions/State.md": "ab4252ebb36be4ff60c30421a7459f7e045a9e7c1598c0e10b2d0c6dd36eba35",
+          "Definitions/Trend.md": "38656d7cf520596fa7fe1ea87e0b7b055d25a74027ff5c10157277131d5545f5",
+          "Saved reports \u03a9/Explicit.md": "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a",
+          "Saved reports \u03a9/Explicit.md.murmuration-report.json": "77bea2d90809b947242db639f27b3d17e0def33e76f31be30228ea175eff55d4",
+          "Saved reports \u03a9/Publication.svg": "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+          "Saved reports \u03a9/Publication.svg.murmuration-report-backup": "a9a0ddaea35a9535a442174422b84e06b8087c1a93aa4b0fe5d42cfdfcf4025d",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json": "4a7feab4c7df957c41d1a7f27ce7d0792212fff99c823a406f5865394f947fd4",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json.murmuration-report-backup": "34fb6b6339c8ac891bfa9a647e6781900c003988e192386025c6b8067afff583",
+          "Saved reports \u03a9/State.md": "3129dd38dab6d49333e45b627034f543774789f3211870cf8e78b50972b5d11c",
+          "Saved reports \u03a9/State.md.murmuration-report.json": "1055380eea4e687a5b2803c0e12ebb78ce92c0207bd78a010c26c4f1f6cf64a2",
+          "Saved reports \u03a9/Trend.svg": "1ad56b746ce01e9d6c6d187d2a27b6c187ac84168fa29ae6cf4fda91c8a1eadf",
+          "Saved reports \u03a9/Trend.svg.murmuration-report.json": "9833925c441e0c32210160acae126ae4edad0052566e302c99f52799ef6e706b"
+        }
+      },
+      "pageCount": 12,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 3.5,
+          "actualWidthPt": 251.99281311035156,
+          "actualHeightPt": 282.4419250488281,
+          "minimumChartTextPt": 8.399760246276855,
+          "minimumChartStrokePt": 0.7874774932861328,
+          "fonts": [
+            "DejaVuSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "734769ccb2d5c46c5f1299de7f3d68dbb1fd96db446140de6be5a9766e075cda",
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "reference-4.1": {
+      "harness": {
+        "compilerCommit": "394cf109f035194b440e3b37d75de06e49fe074d",
+        "nativeSourceVault": "/tmp/murmuration-reports-milestone-GNUWMQ/vault",
+        "pluginsLoaded": false,
+        "widthInches": 4.1,
+        "layoutProfile": "kdp_6x9",
+        "pdf": {
+          "outputPath": "Output/Generated publication reports - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/first-milestone/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-reference",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "epub": {
+          "outputPath": "Output/Generated publication reports - Publish.epub",
+          "workingDirectory": ".codex-epub/first-milestone/publish",
+          "warnings": [
+            "EPUB validation output:\nValidating using EPUB version 3.3 rules.\nNo errors or warnings detected.\nMessages: 0 fatals / 0 errors / 0 warnings / 0 infos\nEPUBCheck completed"
+          ],
+          "validation": {
+            "status": "passed",
+            "output": "Validating using EPUB version 3.3 rules.\nNo errors or warnings detected.\nMessages: 0 fatals / 0 errors / 0 warnings / 0 infos\nEPUBCheck completed"
+          },
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "rowMarkersAllOnce": true,
+        "svgPath": "Saved reports \u03a9/Publication.svg",
+        "tablePath": "Saved reports \u03a9/Explicit.md",
+        "inputSha256": {
+          "Publication data/June.md": "4aa8f5d1e5f9bf7ac012e70af52ef59eec9b27229ab6c8d4ba4eecc32c9ec495",
+          "Publication data/May.md": "74fa7fac05f2db4212e2c28c2bc876b41d154eed9718f1b9716346be1156e49c",
+          "Publication data/Middle.md": "37bf865044ebc05c9ce286f82bba224a57323ba64534ccad280836b75393f740",
+          "Definitions/Explicit.md": "9f037fd2251378990507c174e90ccb9da157176945c3fd07f6671cb63f7963ed",
+          "Definitions/Publication.md": "25ee0353800dd1a9b4d007ae5b9f15cba78bfebac8d25985d897214ea48a5556",
+          "Definitions/State.md": "ab4252ebb36be4ff60c30421a7459f7e045a9e7c1598c0e10b2d0c6dd36eba35",
+          "Definitions/Trend.md": "38656d7cf520596fa7fe1ea87e0b7b055d25a74027ff5c10157277131d5545f5",
+          "Saved reports \u03a9/Explicit.md": "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a",
+          "Saved reports \u03a9/Explicit.md.murmuration-report.json": "77bea2d90809b947242db639f27b3d17e0def33e76f31be30228ea175eff55d4",
+          "Saved reports \u03a9/Publication.svg": "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+          "Saved reports \u03a9/Publication.svg.murmuration-report-backup": "a9a0ddaea35a9535a442174422b84e06b8087c1a93aa4b0fe5d42cfdfcf4025d",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json": "4a7feab4c7df957c41d1a7f27ce7d0792212fff99c823a406f5865394f947fd4",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json.murmuration-report-backup": "34fb6b6339c8ac891bfa9a647e6781900c003988e192386025c6b8067afff583",
+          "Saved reports \u03a9/State.md": "3129dd38dab6d49333e45b627034f543774789f3211870cf8e78b50972b5d11c",
+          "Saved reports \u03a9/State.md.murmuration-report.json": "1055380eea4e687a5b2803c0e12ebb78ce92c0207bd78a010c26c4f1f6cf64a2",
+          "Saved reports \u03a9/Trend.svg": "1ad56b746ce01e9d6c6d187d2a27b6c187ac84168fa29ae6cf4fda91c8a1eadf",
+          "Saved reports \u03a9/Trend.svg.murmuration-report.json": "9833925c441e0c32210160acae126ae4edad0052566e302c99f52799ef6e706b"
+        }
+      },
+      "pageCount": 12,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 4.1,
+          "actualWidthPt": 295.20001220703125,
+          "actualHeightPt": 330.8699951171875,
+          "minimumChartTextPt": 9.84000015258789,
+          "minimumChartStrokePt": 0.9225000143051147,
+          "fonts": [
+            "DejaVuSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "c212451dcf8304f78f059fb8c7656212788bcab75bada7bb1f890e72e58b588c",
+      "epub": {
+        "EPUBCheck": "zero errors/warnings",
+        "svgPayloadExact": true,
+        "all80RowsPresent": true,
+        "authoredWidthPresent": true,
+        "readerQualified": false,
+        "sha256": "ad76e6e7bdaca29f603acc955b2e48d347e3ed5d4fe7555b184237771faae203"
+      },
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "reference-5.5": {
+      "harness": {
+        "compilerCommit": "394cf109f035194b440e3b37d75de06e49fe074d",
+        "nativeSourceVault": "/tmp/murmuration-reports-milestone-GNUWMQ/vault",
+        "pluginsLoaded": false,
+        "widthInches": 5.5,
+        "layoutProfile": "draft_a4",
+        "pdf": {
+          "outputPath": "Output/Generated publication reports - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/first-milestone/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-reference",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "rowMarkersAllOnce": true,
+        "svgPath": "Saved reports \u03a9/Publication.svg",
+        "tablePath": "Saved reports \u03a9/Explicit.md",
+        "inputSha256": {
+          "Publication data/June.md": "4aa8f5d1e5f9bf7ac012e70af52ef59eec9b27229ab6c8d4ba4eecc32c9ec495",
+          "Publication data/May.md": "74fa7fac05f2db4212e2c28c2bc876b41d154eed9718f1b9716346be1156e49c",
+          "Publication data/Middle.md": "37bf865044ebc05c9ce286f82bba224a57323ba64534ccad280836b75393f740",
+          "Definitions/Explicit.md": "9f037fd2251378990507c174e90ccb9da157176945c3fd07f6671cb63f7963ed",
+          "Definitions/Publication.md": "25ee0353800dd1a9b4d007ae5b9f15cba78bfebac8d25985d897214ea48a5556",
+          "Definitions/State.md": "ab4252ebb36be4ff60c30421a7459f7e045a9e7c1598c0e10b2d0c6dd36eba35",
+          "Definitions/Trend.md": "38656d7cf520596fa7fe1ea87e0b7b055d25a74027ff5c10157277131d5545f5",
+          "Saved reports \u03a9/Explicit.md": "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a",
+          "Saved reports \u03a9/Explicit.md.murmuration-report.json": "77bea2d90809b947242db639f27b3d17e0def33e76f31be30228ea175eff55d4",
+          "Saved reports \u03a9/Publication.svg": "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+          "Saved reports \u03a9/Publication.svg.murmuration-report-backup": "a9a0ddaea35a9535a442174422b84e06b8087c1a93aa4b0fe5d42cfdfcf4025d",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json": "4a7feab4c7df957c41d1a7f27ce7d0792212fff99c823a406f5865394f947fd4",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json.murmuration-report-backup": "34fb6b6339c8ac891bfa9a647e6781900c003988e192386025c6b8067afff583",
+          "Saved reports \u03a9/State.md": "3129dd38dab6d49333e45b627034f543774789f3211870cf8e78b50972b5d11c",
+          "Saved reports \u03a9/State.md.murmuration-report.json": "1055380eea4e687a5b2803c0e12ebb78ce92c0207bd78a010c26c4f1f6cf64a2",
+          "Saved reports \u03a9/Trend.svg": "1ad56b746ce01e9d6c6d187d2a27b6c187ac84168fa29ae6cf4fda91c8a1eadf",
+          "Saved reports \u03a9/Trend.svg.murmuration-report.json": "9833925c441e0c32210160acae126ae4edad0052566e302c99f52799ef6e706b"
+        }
+      },
+      "pageCount": 10,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 5.5,
+          "actualWidthPt": 396.00000762939453,
+          "actualHeightPt": 443.8500061035156,
+          "minimumChartTextPt": 13.200000762939453,
+          "minimumChartStrokePt": 1.2375000715255737,
+          "fonts": [
+            "DejaVuSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "a3647d5d559f8c90dc13d47b619b4b8716f50acb4d14a9f1af77e35e7ce1ceb5",
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "fallback-3.5": {
+      "harness": {
+        "compilerCommit": "394cf109f035194b440e3b37d75de06e49fe074d",
+        "nativeSourceVault": "/tmp/murmuration-reports-milestone-GNUWMQ/vault",
+        "pluginsLoaded": false,
+        "widthInches": 3.5,
+        "layoutProfile": "kdp_6x9",
+        "pdf": {
+          "outputPath": "Output/Generated publication reports - Publish KDP.pdf",
+          "workingDirectory": ".codex-pdf/first-milestone/publish-kdp",
+          "warnings": [],
+          "validatedTools": [
+            {
+              "executable": "pandoc",
+              "version": "pandoc 3.1.3"
+            },
+            {
+              "executable": "xelatex",
+              "version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023/Debian)"
+            },
+            {
+              "executable": "/tmp/reports-rsvg-fallback",
+              "version": "rsvg-convert version 2.58.0"
+            }
+          ],
+          "keptWorkingDirectory": true
+        },
+        "rowMarkersAllOnce": true,
+        "svgPath": "Saved reports \u03a9/Publication.svg",
+        "tablePath": "Saved reports \u03a9/Explicit.md",
+        "inputSha256": {
+          "Publication data/June.md": "4aa8f5d1e5f9bf7ac012e70af52ef59eec9b27229ab6c8d4ba4eecc32c9ec495",
+          "Publication data/May.md": "74fa7fac05f2db4212e2c28c2bc876b41d154eed9718f1b9716346be1156e49c",
+          "Publication data/Middle.md": "37bf865044ebc05c9ce286f82bba224a57323ba64534ccad280836b75393f740",
+          "Definitions/Explicit.md": "9f037fd2251378990507c174e90ccb9da157176945c3fd07f6671cb63f7963ed",
+          "Definitions/Publication.md": "25ee0353800dd1a9b4d007ae5b9f15cba78bfebac8d25985d897214ea48a5556",
+          "Definitions/State.md": "ab4252ebb36be4ff60c30421a7459f7e045a9e7c1598c0e10b2d0c6dd36eba35",
+          "Definitions/Trend.md": "38656d7cf520596fa7fe1ea87e0b7b055d25a74027ff5c10157277131d5545f5",
+          "Saved reports \u03a9/Explicit.md": "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a",
+          "Saved reports \u03a9/Explicit.md.murmuration-report.json": "77bea2d90809b947242db639f27b3d17e0def33e76f31be30228ea175eff55d4",
+          "Saved reports \u03a9/Publication.svg": "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+          "Saved reports \u03a9/Publication.svg.murmuration-report-backup": "a9a0ddaea35a9535a442174422b84e06b8087c1a93aa4b0fe5d42cfdfcf4025d",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json": "4a7feab4c7df957c41d1a7f27ce7d0792212fff99c823a406f5865394f947fd4",
+          "Saved reports \u03a9/Publication.svg.murmuration-report.json.murmuration-report-backup": "34fb6b6339c8ac891bfa9a647e6781900c003988e192386025c6b8067afff583",
+          "Saved reports \u03a9/State.md": "3129dd38dab6d49333e45b627034f543774789f3211870cf8e78b50972b5d11c",
+          "Saved reports \u03a9/State.md.murmuration-report.json": "1055380eea4e687a5b2803c0e12ebb78ce92c0207bd78a010c26c4f1f6cf64a2",
+          "Saved reports \u03a9/Trend.svg": "1ad56b746ce01e9d6c6d187d2a27b6c187ac84168fa29ae6cf4fda91c8a1eadf",
+          "Saved reports \u03a9/Trend.svg.murmuration-report.json": "9833925c441e0c32210160acae126ae4edad0052566e302c99f52799ef6e706b"
+        }
+      },
+      "pageCount": 12,
+      "chartPlacements": [
+        {
+          "page": 7,
+          "requestedWidthInches": 3.5,
+          "actualWidthPt": 251.99281311035156,
+          "actualHeightPt": 282.4419250488281,
+          "minimumChartTextPt": 8.399760246276855,
+          "minimumChartStrokePt": 0.7874774932861328,
+          "fonts": [
+            "LiberationSans"
+          ],
+          "allVisibleTextPresent": true,
+          "externalCaptionSamePage": true
+        }
+      ],
+      "all80RowsOnce": true,
+      "all80DeltasPlusFive": true,
+      "tablePages": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "renderedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "textOutsidePages": [],
+      "pdfTagged": false,
+      "pdfSha256": "3937fb757c48dd19c6b334c6e819d198446d315927427cda1dc1bfc5d0748cc0",
+      "visuallyReviewedPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    }
+  },
+  "limitations": [
+    "No physical proof or reader/AT/accessibility qualification.",
+    "Feature-generated SVG/table came from isolated native Obsidian manager/capability generation.",
+    "Codex harness uses static transclusion plus assembled-book planners/executors, not the compiler UI.",
+    "No standalone conversion result is substituted for final compiler placement."
+  ],
+  "nativeCompilerUi": {
+    "evidence": {
+      "checks": [
+        "native Codex Press PDF command: actual project discovery/assembly, options/preflight/confirm and publication with Reports/MWC absent",
+        "native Codex Press EPUB command: actual project discovery/assembly, options/preflight/confirm and publication with Reports/MWC absent",
+        "native compiler PDF preserves all 80 generated rows/deltas and input assets unchanged"
+      ],
+      "root": "/tmp/murmuration-reports-publishing-ui-Y2NQXR",
+      "compilerCommit": "394cf109f035194b440e3b37d75de06e49fe074d",
+      "compilerBundleSha256": "8ec8e95aec79acbb3d4f403acadc176db3593bf7e97503d2dcaeec504916758f",
+      "sourceAssetSha256": [
+        "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+        "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a"
+      ],
+      "pdf": "Native Output/Native publishing reports - Publish KDP.pdf",
+      "epub": "Native Output/Native publishing reports - Publish.epub",
+      "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) obsidian/1.13.7 Chrome/150.0.7871.212 Electron/43.3.0 Safari/537.36"
+    },
+    "pageCount": 12,
+    "chartPlacements": [
+      {
+        "page": 7,
+        "actualWidthPt": 295.20001220703125,
+        "actualHeightPt": 330.8699951171875,
+        "minimumChartTextPt": 9.84000015258789,
+        "externalCaptionSamePage": true
+      }
+    ],
+    "all80RowsOnce": true,
+    "all80DeltasPlusFive": true,
+    "textOutsidePages": [],
+    "EPUBCheck": "zero errors/warnings",
+    "svgPayloadExact": true,
+    "all80EpubRowsPresent": true,
+    "readerQualified": false,
+    "visuallyReviewedPages": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "productionCandidate": "f6f5b75f68ca2de474d08c08121b6f83eb6bea6e",
+  "researchMerge": "c15efbe2f79809fd0139ea14ed69268862a04543",
+  "researchReviewedHead": "20cc914c762857bdb98b72db27fd220cbab79565",
+  "researchReviewedAndMergedTree": "d04d10cdc5cdfd7804e92d1be7731f682aa74ee8",
+  "validatedOn": "2026-10-13",
+  "tools": {
+    "node": "v24.19.0",
+    "TypeScript": "5.9.3",
+    "esbuild": "0.23.1",
+    "Python": "3.12.3",
+    "PyMuPDF": "1.26.5",
+    "Pillow": "11.3.0",
+    "Pandoc": "3.1.3",
+    "XeTeX": "3.141592653-2.6-0.999995 / TeX Live 2023/Debian",
+    "librsvg": "2.58.0",
+    "Fontconfig": "2.15.0",
+    "EPUBCheck": "5.3.0",
+    "Obsidian": "1.13.7 / Electron 43.3.0 / Chromium 150.0.7871.212 / Linux",
+    "CI": "Node 22, Ubuntu/Windows"
+  },
+  "fontCoverageAudit": {
+    "DejaVu": {
+      "file": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+      "allAllowedGlyphsPresent": true,
+      "allowedCodepointCount": 675,
+      "maximumSingleGlyphAdvanceEm": 1.421875,
+      "widthBoundsPass": true,
+      "limits": "Single-glyph installed-font coverage/advance check; no full shaping/platform/reader qualification."
+    },
+    "Liberation": {
+      "file": "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+      "sha256": "4659bc0c58c5028dd488ec928d41d9265db43d9b669fc14ca8b0832daca7b144",
+      "allAllowedGlyphsPresent": true,
+      "allowedCodepointCount": 675,
+      "maximumSingleGlyphAdvanceEm": 1.3330078125,
+      "widthBoundsPass": true,
+      "limits": "Single-glyph installed-font coverage/advance check; no full shaping/platform/reader qualification."
+    }
+  },
+  "nativeFeatureEvidence": {
+    "checks": [
+      "native manager publication opt-in, fixed bounds, caption and four identities; saved preview; comments/body/unknown fields retained",
+      "native explicit-pair manager controls, 80 rows/provenance preview, intermediate insertion unchanged, renamed reference fails without asset/receipt writes",
+      "native disabled-plugin SVG and Markdown transclusion retain generated bytes and all 80 rows",
+      "disabled restart reopens persisted generated SVG and table without Reports/MWC"
+    ],
+    "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) obsidian/1.13.7 Chrome/150.0.7871.212 Electron/43.3.0 Safari/537.36",
+    "bundles": {
+      "reports": "515c7f8d69655c892fb713041c95511595c15fa36b953f946efe1d6021663ffd"
+    },
+    "root": "/tmp/murmuration-reports-milestone-kX5v61",
+    "generatedAssets": [
+      "Saved reports \u03a9/Publication.svg",
+      "Saved reports \u03a9/Explicit.md"
+    ]
+  },
+  "sameGeneratedBytesAcrossCandidates": {
+    "earlierNativeRoot": "/tmp/murmuration-reports-milestone-GNUWMQ",
+    "finalNativeRoot": "/tmp/murmuration-reports-milestone-kX5v61",
+    "svgSha256": "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+    "tableSha256": "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a",
+    "reason": "Later production change only clarified a manager hint; core/selection/rendering code unchanged. Final native generation and fresh-process checks reproduce identical saved bytes used in the matrix."
+  },
+  "determinism": {
+    "environments": [
+      "TZ=UTC LANG=C",
+      "TZ=Pacific/Auckland LANG=en_GB.UTF-8"
+    ],
+    "savedAssetHashes": {
+      "Saved reports \u03a9/Publication.svg": "8ad020ffb9ef64740d83e2656ecd28a818ca796e52db304dec106e2d2a39ede3",
+      "Saved reports \u03a9/Explicit.md": "4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a"
+    },
+    "resultsMatch": true,
+    "limits": "Two fresh processes/locales only; no all-platform or arbitrary-input proof."
+  },
+  "legacyNativeLifecycle": {
+    "checks": [
+      "Reports-only startup performs no regeneration",
+      "standalone active command and structured result",
+      "native XML parser rejects malformed adoption candidates",
+      "native adoption Cancel preserves legacy output",
+      "concurrent change expires native adoption consent",
+      "native adoption regenerates byte-compatible SVG with receipt and recovery",
+      "saved source change while native write awaits its callback invalidates generation",
+      "unload during native conditional write cancels its callback; re-enabled generation waits for the old barrier",
+      "Reports-first then MWC bridge",
+      "MWC-only unavailable capability notice",
+      "MWC-first then Reports re-enable and batch bridge",
+      "observed definition move preserves assets until explicit path repair",
+      "move while disabled is discovered on re-enable without guessing ownership",
+      "both plugins disabled: native SVG/table embeds render",
+      "disabled restart preserves sources and assets"
+    ],
+    "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) obsidian/1.13.7 Chrome/150.0.7871.212 Electron/43.3.0 Safari/537.36",
+    "bundles": {
+      "reports": "79cd2677d2d3558379b52a977e76341b322bb04a6e64eb4cea39c08f3b330d31",
+      "mwc": "c9075b64c8072ceece140ceb482ee765a9fee2c376c471c799cc7e5159d22604"
+    },
+    "apiEvidence": {
+      "create": "function(e,t,n){return y(this,void 0,Promise,(function(){var i,r;return b(this,(function(o){switch(o.label){case 0:return i=Nl(e),this.checkPath(i),[4,this.adapter.exists(i)];case 1:if(o.sent())throw new Error(\"File already exists.\");return[4,this.adapter.write(i,t,n)];case 2:return o.sent(),(r=this.getAbstractFileByPath(i))instanceof GD?[2,r]:[2,null]}}))}))}",
+      "process": "function(e,t,n){return y(this,void 0,Promise,(function(){var i;return b(this,(function(r){switch(r.label){case 0:e.saving++,r.label=1;case 1:return r.trys.push([1,,3,4]),(n=n||{}).immediate=function(){return e.cache(null)},[4,this.adapter.process(e.path,t,n)];case 2:return i=r.sent(),e.cache(i),[2,i];case 3:return e.saving--,[7];case 4:return[2]}}))}))}"
+    },
+    "root": "/tmp/murmuration-reports-live-TLlbwr"
+  },
+  "legacyNativeManager": {
+    "checks": [
+      "reusable populated tab and saved image preview never regenerate",
+      "static table preview without Markdown processors",
+      "ordinary empty state and create action",
+      "guided chart save-only writes definition, not observations or outputs",
+      "chart explicit generation and definition/output/folder navigation",
+      "external edit preserves draft; explicit reconciliation preserves comments, unknowns and body",
+      "rename while editing retains draft and requires explicit former-path repair",
+      "guided state-table creation, editing and explicit regeneration",
+      "individual and batch failure retain externally changed assets and persistent outcomes",
+      "invalid definition and missing-source diagnostics retain repair navigation",
+      "malformed YAML remains discoverable and guided editing offers source repair",
+      "first pointer click focuses editor; keyboard navigation and refresh retain draft",
+      "narrow desktop layout stacks list and details",
+      "disable disposes manager tab/listeners; re-enable reconstructs Markdown catalogue",
+      "all dataset observations remain byte-identical"
+    ],
+    "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) obsidian/1.13.7 Chrome/150.0.7871.212 Electron/43.3.0 Safari/537.36",
+    "bundles": {
+      "reports": "79cd2677d2d3558379b52a977e76341b322bb04a6e64eb4cea39c08f3b330d31"
+    },
+    "root": "/tmp/murmuration-reports-manager-iNvMKX"
+  },
+  "legacyExports": {
+    "codexPressSource": "394cf109f035194b440e3b37d75de06e49fe074d",
+    "outputs": [
+      "Output/Persistent Reports Fixture - Draft KDP.pdf",
+      "Output/Persistent Reports Fixture - Draft.epub",
+      "Output/Persistent Reports Fixture - Draft.docx"
+    ],
+    "checks": [
+      "PDF vector chart text and numeric table",
+      "EPUB SVG and table",
+      "DOCX drawing and table",
+      "missing chart blocks all three plans",
+      "missing table blocks transclusion",
+      "Unicode and spaces",
+      "all original sources/assets/receipts byte-preserved",
+      "no plugins loaded"
+    ],
+    "root": "/tmp/murmuration-reports-exports-ZRM367"
+  },
+  "checks": {
+    "tests": "129/129; strict typecheck passes",
+    "build": "179666 raw / 57216 gzip JavaScript bytes; only YAML bundled, Obsidian external",
+    "packaging": "Pass: versions/attribution/dependency boundary; no release metadata changes",
+    "researchHeadCi": [
+      38443629042,
+      38443635423
+    ],
+    "researchMergeCi": 38443904405,
+    "implementationCandidateCi": [
+      38448871364,
+      38448873831
+    ],
+    "platforms": "Ubuntu and Windows successful on each recorded exact head"
+  },
+  "bundle": {
+    "rawBytes": 179666,
+    "gzipBytes": 57216,
+    "installed": {
+      "javascript": {
+        "raw": 179666,
+        "gzip": 57216
+      },
+      "styles": {
+        "raw": 1685,
+        "gzip": 543
+      },
+      "manifest": {
+        "raw": 266,
+        "gzip": 187
+      },
+      "total": {
+        "raw": 181617,
+        "gzip": 57946
+      }
+    },
+    "thirdPartyInputs": [
+      "node_modules/yaml/browser/dist/nodes/identity.js",
+      "node_modules/yaml/browser/dist/visit.js",
+      "node_modules/yaml/browser/dist/doc/directives.js",
+      "node_modules/yaml/browser/dist/doc/anchors.js",
+      "node_modules/yaml/browser/dist/doc/applyReviver.js",
+      "node_modules/yaml/browser/dist/nodes/toJS.js",
+      "node_modules/yaml/browser/dist/nodes/Node.js",
+      "node_modules/yaml/browser/dist/nodes/Alias.js",
+      "node_modules/yaml/browser/dist/nodes/Scalar.js",
+      "node_modules/yaml/browser/dist/doc/createNode.js",
+      "node_modules/yaml/browser/dist/nodes/Collection.js",
+      "node_modules/yaml/browser/dist/stringify/stringifyComment.js",
+      "node_modules/yaml/browser/dist/stringify/foldFlowLines.js",
+      "node_modules/yaml/browser/dist/stringify/stringifyString.js",
+      "node_modules/yaml/browser/dist/stringify/stringify.js",
+      "node_modules/yaml/browser/dist/stringify/stringifyPair.js",
+      "node_modules/yaml/browser/dist/log.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/merge.js",
+      "node_modules/yaml/browser/dist/nodes/addPairToJSMap.js",
+      "node_modules/yaml/browser/dist/nodes/Pair.js",
+      "node_modules/yaml/browser/dist/stringify/stringifyCollection.js",
+      "node_modules/yaml/browser/dist/nodes/YAMLMap.js",
+      "node_modules/yaml/browser/dist/schema/common/map.js",
+      "node_modules/yaml/browser/dist/nodes/YAMLSeq.js",
+      "node_modules/yaml/browser/dist/schema/common/seq.js",
+      "node_modules/yaml/browser/dist/schema/common/string.js",
+      "node_modules/yaml/browser/dist/schema/common/null.js",
+      "node_modules/yaml/browser/dist/schema/core/bool.js",
+      "node_modules/yaml/browser/dist/stringify/stringifyNumber.js",
+      "node_modules/yaml/browser/dist/schema/core/float.js",
+      "node_modules/yaml/browser/dist/schema/core/int.js",
+      "node_modules/yaml/browser/dist/schema/core/schema.js",
+      "node_modules/yaml/browser/dist/schema/json/schema.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/binary.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/pairs.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/omap.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/bool.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/float.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/int.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/set.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/timestamp.js",
+      "node_modules/yaml/browser/dist/schema/yaml-1.1/schema.js",
+      "node_modules/yaml/browser/dist/schema/tags.js",
+      "node_modules/yaml/browser/dist/schema/Schema.js",
+      "node_modules/yaml/browser/dist/stringify/stringifyDocument.js",
+      "node_modules/yaml/browser/dist/doc/Document.js",
+      "node_modules/yaml/browser/dist/errors.js",
+      "node_modules/yaml/browser/dist/compose/resolve-props.js",
+      "node_modules/yaml/browser/dist/compose/util-contains-newline.js",
+      "node_modules/yaml/browser/dist/compose/util-flow-indent-check.js",
+      "node_modules/yaml/browser/dist/compose/util-map-includes.js",
+      "node_modules/yaml/browser/dist/compose/resolve-block-map.js",
+      "node_modules/yaml/browser/dist/compose/resolve-block-seq.js",
+      "node_modules/yaml/browser/dist/compose/resolve-end.js",
+      "node_modules/yaml/browser/dist/compose/resolve-flow-collection.js",
+      "node_modules/yaml/browser/dist/compose/compose-collection.js",
+      "node_modules/yaml/browser/dist/compose/resolve-block-scalar.js",
+      "node_modules/yaml/browser/dist/compose/resolve-flow-scalar.js",
+      "node_modules/yaml/browser/dist/compose/compose-scalar.js",
+      "node_modules/yaml/browser/dist/compose/util-empty-scalar-position.js",
+      "node_modules/yaml/browser/dist/compose/compose-node.js",
+      "node_modules/yaml/browser/dist/compose/compose-doc.js",
+      "node_modules/yaml/browser/dist/compose/composer.js",
+      "node_modules/yaml/browser/dist/parse/cst-scalar.js",
+      "node_modules/yaml/browser/dist/parse/cst-stringify.js",
+      "node_modules/yaml/browser/dist/parse/cst-visit.js",
+      "node_modules/yaml/browser/dist/parse/cst.js",
+      "node_modules/yaml/browser/dist/parse/lexer.js",
+      "node_modules/yaml/browser/dist/parse/line-counter.js",
+      "node_modules/yaml/browser/dist/parse/parser.js",
+      "node_modules/yaml/browser/dist/public-api.js",
+      "node_modules/yaml/browser/dist/index.js",
+      "node_modules/yaml/browser/index.js"
+    ],
+    "imports": [
+      {
+        "path": "obsidian",
+        "kind": "require-call",
+        "external": true
+      },
+      {
+        "path": "obsidian",
+        "kind": "require-call",
+        "external": true
+      },
+      {
+        "path": "obsidian",
+        "kind": "require-call",
+        "external": true
+      },
+      {
+        "path": "obsidian",
+        "kind": "require-call",
+        "external": true
+      },
+      {
+        "path": "obsidian",
+        "kind": "require-call",
+        "external": true
+      }
+    ],
+    "baseline": {
+      "javascript": {
+        "raw": 166873,
+        "gzip": 52490
+      },
+      "installed": {
+        "raw": 168824,
+        "gzip": 53220
+      }
+    },
+    "delta": {
+      "javascriptRaw": 12793,
+      "javascriptGzip": 4726,
+      "installedRaw": 12793,
+      "installedGzip": 4726
+    },
+    "sha256": "515c7f8d69655c892fb713041c95511595c15fa36b953f946efe1d6021663ffd"
+  },
+  "auditScriptsSha256": {
+    "verify-first-milestone-publishing-ui.mjs": "7afde348e773e2abe3a6bd25fef2114564f4c6e734b9ead0a73d3787739dce27",
+    "audit-first-milestone-publication.py": "a54a6d22b8fb6ceb092747aaa5b29bed08dfd86126dc256e38acceedfb58989a",
+    "verify-first-milestone-live.mjs": "1141275309bf5849053992a3e20afa59c74178d37e5295d03567e108681589ff",
+    "verify-first-milestone-publication.mjs": "453ba04c0dd7ed4412f6c3009adddcb42709ba2c920270ab0809932cf4aed000",
+    "verify-first-milestone-publication.ts": "cd0d89e29363a54520dacc8cf7b3a5fe1008539278ee78a79b4042e55105785f",
+    "verify-first-milestone-determinism.mjs": "350ce367f1c808805b9b35384dce6a99b1ad97c44575df1a912d4b1c23391c3d"
+  }
+}

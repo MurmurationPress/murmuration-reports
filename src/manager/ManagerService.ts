@@ -210,6 +210,10 @@ export class ManagerService {
       throw Error(
         "Definition destination must be a portable vault-relative Markdown path.",
       );
+    const previous = draft.original === null ? undefined : readEditable(draft.original).data.presentation;
+    if (data.artefact_type === "line-chart" && data.presentation !== undefined && data.presentation !== "publication" && data.presentation !== "legacy" && JSON.stringify(data.presentation) !== JSON.stringify(previous)) {
+      throw Error("Unsupported requested presentation. Choose publication or preserve the existing legacy settings.");
+    }
     const def = parseDerivedArtefactDefinition(data);
     if (!safePath(def.source) || !safePath(def.output))
       throw Error("Use portable vault-relative source and output paths.");
