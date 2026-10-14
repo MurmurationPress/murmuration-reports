@@ -5,6 +5,11 @@ import { AdoptionModal } from "../ui/ReportInteractions";
 import { Properties, readEditable } from "./DefinitionEditing";
 import { humanisePropertyKey } from "../core/PropertyLabels";
 import { DiscoveredProperty } from "../core/PropertyDiscovery";
+import {
+  chartPresentationStatus,
+  shouldDescribeSavedChartOutput,
+  SAVED_CHART_OUTPUT_STATUS,
+} from "./PresentationStatus";
 export const REPORTS_VIEW = "murmuration-reports-manager";
 const readEditableSafeOriginal = (draft: DefinitionDraft): Properties =>
   draft.original === null ? {} : readEditable(draft.original).data;
@@ -29,8 +34,10 @@ export class ReportsView extends ItemView {
   private editing = false;
   private drafts = new Map<string, DefinitionDraft>();
   private editorKey: string | null = null;
+  private editorGeneration = 0;
+  private discoveryGeneration = 0;
+  private discoveryTimer?: ReturnType<typeof setTimeout>;
   private dialogs = new Set<Modal>();
-  private discovered = new Map<string, DiscoveredProperty[]>();
   private busy = false;
   private actionFocus?: HTMLElement;
   private mutationButtons = new Set([
@@ -318,6 +325,12 @@ export class ReportsView extends ItemView {
     this.previewEl?.empty();
   }
   private showSelected() {
+    this.editorGeneration++;
+    this.discoveryGeneration++;
+    if (this.discoveryTimer !== undefined) {
+      clearTimeout(this.discoveryTimer);
+      this.discoveryTimer = undefined;
+    }
     this.clearPreview();
     this.editing = false;
     this.editorKey = null;
@@ -338,16 +351,16 @@ export class ReportsView extends ItemView {
     this.details.createEl("p", {
       text: "Output: " + (e.output || "Not specified"),
     });
-    if (
-      e.type === "line-chart" &&
-      e.frontmatter.presentation !== "publication" &&
-      ["presentation", "y_min", "y_max", "caption"].some(
-        (key) => e.frontmatter[key] !== undefined,
-      )
-    ) {
+    if (e.type === "line-chart") {
       this.details.createEl("p", {
-        text: "Legacy presentation: publication bounds/caption options are not enforced. Existing opaque fields remain preserved; choose publication explicitly to activate them.",
+        cls: "mr-presentation-status",
+        text: chartPresentationStatus(e.frontmatter),
       });
+      if (shouldDescribeSavedChartOutput(e.output, e.diagnostics))
+        this.details.createEl("p", {
+          cls: "mr-saved-output-note",
+          text: SAVED_CHART_OUTPUT_STATUS,
+        });
     }
     const actions = this.details.createDiv({ cls: "mr-actions" });
     this.button(actions, "Edit definition", () => this.edit(e.path));
@@ -502,6 +515,7 @@ export class ReportsView extends ItemView {
           x: "date",
           series: [{ property: "", label: "" }],
           output: "Reports/Outputs/Untitled report.svg",
+          presentation: "publication-v2",
         },
       };
       this.drafts.set(key, draft);
@@ -521,6 +535,12 @@ export class ReportsView extends ItemView {
     }
   }
   private showEditor(key: string, draft: DefinitionDraft, focusField?: string) {
+    const editorGeneration = ++this.editorGeneration;
+    this.discoveryGeneration++;
+    if (this.discoveryTimer !== undefined) {
+      clearTimeout(this.discoveryTimer);
+      this.discoveryTimer = undefined;
+    }
     this.clearPreview();
     this.editing = true;
     this.editorKey = key;
@@ -530,6 +550,26 @@ export class ReportsView extends ItemView {
     });
     const form = this.details.createEl("form");
     form.addEventListener("submit", (e) => e.preventDefault());
+    const input = (
+      label: string,
+      value: string,
+      change: (v: string) => void,
+      type = "text",
+    ) => {
+      const wrap = form.createEl("label", { cls: "mr-field" });
+      wrap.createSpan({ text: label });
+      const el = wrap.createEl("input", { type, value });
+      el.addEventListener("input", () => {
+        el.removeAttribute("aria-invalid");
+        change(el.value);
+      });
+      return el;
+    };
+    const titleGroup = form.createDiv({ cls: "mr-chart-title-control" });
+    titleGroup.createEl("p", {
+      text: "This title also names the report in the manager. The definition and output destinations are configured separately below.",
+      cls: "mr-muted-note",
+    });
     const groups = {
       data: form.createEl("fieldset", { cls: "mr-editor-group" }),
       axes: form.createEl("fieldset", { cls: "mr-editor-group" }),
@@ -552,21 +592,6 @@ export class ReportsView extends ItemView {
       definition: draft.original !== null,
       output: draft.original !== null,
     });
-    const input = (
-      label: string,
-      value: string,
-      change: (v: string) => void,
-      type = "text",
-    ) => {
-      const wrap = form.createEl("label", { cls: "mr-field" });
-      wrap.createSpan({ text: label });
-      const el = wrap.createEl("input", { type, value });
-      el.addEventListener("input", () => {
-        el.removeAttribute("aria-invalid");
-        change(el.value);
-      });
-      return el;
-    };
     const type = this.select(
       form,
       "Report type",
@@ -594,7 +619,9 @@ export class ReportsView extends ItemView {
       this.showEditor(key, draft, "Report type");
     });
     const name = input(
-      "Name / title",
+      draft.values.artefact_type === "line-chart"
+        ? "Chart title / report name"
+        : "Report name",
       String(draft.values.title ?? ""),
       (v) => {
         draft.values.title = v;
@@ -614,6 +641,7 @@ export class ReportsView extends ItemView {
         }
       },
     );
+    titleGroup.insertBefore(name.parentElement!, titleGroup.firstChild);
     const destination = input("Definition destination", draft.path, (v) => {
       touched.definition = true;
       draft.path = v;
@@ -631,7 +659,7 @@ export class ReportsView extends ItemView {
       folderList.createEl("option", { value: folder });
     source.setAttribute("list", folderList.id);
     form.createEl("p", {
-      text: "Sources are discovered recursively. Generation validates every observation, including observations outside the chosen dates. Suggestions use up to 200 cached notes and may be incomplete.",
+      text: "Property choices inspect the full recursive dataset. Values are never coerced; generation performs fresh whole-source validation.",
     });
     const date = input(
       "X property (independent variable; currently ISO date)",
@@ -645,49 +673,37 @@ export class ReportsView extends ItemView {
       attr: { id: "mr-numeric-" + this.instanceId },
     });
     date.setAttribute("list", propertyList.id);
-    const suggestions = form.createEl("p", {
+    date.placeholder = "Search by display name or exact key";
+    const discoveryPanel = form.createDiv({ cls: "mr-property-discovery" });
+    const discoveryStatus = discoveryPanel.createEl("p", {
+      cls: "mr-property-discovery-status",
       attr: { role: "status", "aria-live": "polite" },
     });
-    this.button(form, "Discover dataset properties", async () => {
-      const sourceAtStart = String(draft.values.source ?? ""),
-        signature = JSON.stringify(draft.values.series);
-      try {
-        const properties = await this.service.discover(sourceAtStart);
-        if (
-          this.uiClosed ||
-          this.editorKey !== key ||
-          String(draft.values.source ?? "") !== sourceAtStart ||
-          JSON.stringify(draft.values.series) !== signature
-        )
-          return;
-        this.discovered.set(key, properties);
-        propertyList.empty();
-        numericList.empty();
-        for (const p of properties) {
-          const option = propertyList.createEl("option", { value: p.key });
-          option.setAttribute(
-            "label",
-            `${p.label} — ${p.key} (${p.types.join("/") || "no values"}; ${p.missing} missing${p.types.length > 1 ? "; mixed types" : ""}${p.invalid.length ? `; ${p.invalid.length} invalid` : ""})`,
-          );
-          if (
-            p.types.length === 1 &&
-            p.types[0] === "number" &&
-            p.missing === 0 &&
-            !p.invalid.length
-          )
-            numericList.createEl("option", { value: p.key });
-        }
-        suggestions.textContent =
-          properties
-            .map(
-              (p) =>
-                `${p.label} — ${p.key}: ${p.types.join(" / ") || "no values"}; ${p.missing} missing${p.types.length > 1 ? "; mixed types" : ""}${p.invalid.length ? `; ${p.invalid.join(" ")}` : ""}`,
-            )
-            .join("\n") || "No properties found in this dataset subtree.";
-      } catch (error) {
-        suggestions.textContent = message(error);
-      }
+    const propertyDetails = discoveryPanel.createEl("details", {
+      cls: "mr-property-details",
     });
+    propertyDetails.createEl("summary", { text: "Property details" });
+    const propertyTable = propertyDetails.createEl("table", {
+      cls: "mr-property-table",
+    });
+    const propertyTableHead = propertyTable.createEl("thead").createEl("tr");
+    for (const header of [
+      "Display name",
+      "Exact key",
+      "Observed type",
+      "Missing",
+      "Suitability",
+      "Diagnostics",
+    ])
+      propertyTableHead.createEl("th", { text: header, attr: { scope: "col" } });
+    const propertyTableBody = propertyTable.createEl("tbody");
+    let loadProperties: (sourceValue: string) => Promise<void> = async () => {};
+    let lastAutoDiscoveryFolder: string | undefined;
+    const refreshPropertiesButton = this.button(
+      discoveryPanel,
+      "Refresh properties",
+      () => void loadProperties(String(draft.values.source ?? "").trim()),
+    );
     const field =
       draft.values.artefact_type === "line-chart" ? "series" : "parameters";
     const rows = Array.isArray(draft.values[field])
@@ -696,6 +712,7 @@ export class ReportsView extends ItemView {
     const generatedLabels = (draft.generatedLabels ??= new Map());
     const fields = form.createDiv({ cls: "mr-series" });
     const labelFields = form.createDiv({ cls: "mr-series-labels" });
+    let updateConfiguredStatus = () => {};
     let addButton: HTMLButtonElement | undefined;
     const focusRow = (index: number) => {
       if (index < 0) {
@@ -744,8 +761,13 @@ export class ReportsView extends ItemView {
                 ? "Y series property "
                 : "Parameter property ") +
               (i + 1),
-            list: numericList.id,
+            list: field === "series" ? numericList.id : propertyList.id,
           },
+        });
+        propertyControl.placeholder = "Search display name or exact key";
+        group.createEl("small", {
+          cls: "mr-configured-property-status",
+          attr: { "aria-live": "polite", "data-property-index": String(i) },
         });
         const labelControl = labelGroup.createEl("input", {
           value: String(row.label ?? ""),
@@ -769,6 +791,7 @@ export class ReportsView extends ItemView {
           }
           if (!generated?.overridden)
             labelControl.value = String(row.label ?? "");
+          updateConfiguredStatus();
         });
         labelControl.addEventListener("input", () => {
           labelControl.removeAttribute("aria-invalid");
@@ -791,6 +814,208 @@ export class ReportsView extends ItemView {
     };
     draft.values[field] = rows;
     renderRows();
+    let discoveredProperties: DiscoveredProperty[] | undefined;
+    const xStatus = date.parentElement!.createEl("small", {
+      cls: "mr-configured-property-status",
+      attr: { "aria-live": "polite" },
+    });
+    const numericSuitable = (property: DiscoveredProperty) =>
+      property.types.length === 1 &&
+      property.types[0] === "number" &&
+      property.missing === 0 &&
+      property.invalid.length === 0;
+    const dateSuitable = (property: DiscoveredProperty) =>
+      property.types.length === 1 &&
+      property.types[0] === "date/string" &&
+      property.missing === 0;
+    const optionLabel = (property: DiscoveredProperty) =>
+      `${property.label} — ${property.key} (${property.types.join(" / ") || "no values"}; ${property.missing} missing; date-X ${dateSuitable(property) ? "suitable" : "check values"}; numeric Y ${numericSuitable(property) ? "suitable" : "not suitable"})`;
+    const configuredStatus = (
+      propertyKey: string,
+      suitability: "date" | "numeric" | "any",
+    ) => {
+      if (!propertyKey) return "Choose a property.";
+      if (!discoveredProperties)
+        return `“${propertyKey}” is retained; discovery is not current for this folder.`;
+      const property = discoveredProperties.find((item) => item.key === propertyKey);
+      if (!property)
+        return `“${propertyKey}” is not present in the current dataset; the configured value is retained.`;
+      if (suitability === "any")
+        return `${property.label} — ${property.key} (${property.types.join(" / ") || "no values"}; ${property.missing} missing) is retained for this table parameter.`;
+      const suitable = suitability === "date" ? dateSuitable(property) : numericSuitable(property);
+      if (suitable)
+        return `${property.label} — ${property.key} (${property.types.join(" / ")}) is suitable for ${suitability === "date" ? "date X" : "numeric Y"}.`;
+      return `${property.label} — ${property.key} is not currently suitable for ${suitability === "date" ? "date X" : "numeric Y"}: ${property.types.join(" / ") || "no values"}; ${property.missing} missing; ${property.invalid.length} invalid. The configured key is retained.`;
+    };
+    updateConfiguredStatus = () => {
+      xStatus.textContent = configuredStatus(String(draft.values.x ?? ""), "date");
+      for (const [index, row] of rows.entries()) {
+        const status = fields.querySelector<HTMLElement>(
+          `.mr-configured-property-status[data-property-index="${index}"]`,
+        );
+        if (status && row && typeof row === "object")
+          status.textContent = configuredStatus(
+            String(row.property ?? ""),
+            field === "series" ? "numeric" : "any",
+          );
+      }
+    };
+    date.addEventListener("input", updateConfiguredStatus);
+    const showManualOptions = (properties: readonly DiscoveredProperty[]) => {
+      const keys = new Set(properties.map((property) => property.key));
+      if (draft.values.x && !keys.has(String(draft.values.x))) {
+        const option = propertyList.createEl("option", { value: String(draft.values.x) });
+        option.label = `Currently configured — ${humanisePropertyKey(String(draft.values.x))} — ${String(draft.values.x)} (not found in this dataset)`;
+      }
+      if (field === "series") {
+        for (const row of rows) {
+          const key = String(row?.property ?? "");
+          const property = properties.find((item) => item.key === key);
+          if (key && (!property || !numericSuitable(property))) {
+            const option = numericList.createEl("option", { value: key });
+            option.label = property
+              ? `Currently configured — ${property.label} — ${key} (${property.types.join(" / ") || "no values"}; ${property.missing} missing; incompatible with numeric Y)`
+              : `Currently configured — ${humanisePropertyKey(key)} — ${key} (not found in this dataset)`;
+          }
+        }
+      } else {
+        for (const row of rows) {
+          const key = String(row?.property ?? "");
+          if (key && !keys.has(key)) {
+            const option = propertyList.createEl("option", { value: key });
+            option.label = `Currently configured — ${humanisePropertyKey(key)} — ${key} (not found in this dataset)`;
+          }
+        }
+      }
+    };
+    const updatePropertyPanel = (
+      properties: readonly DiscoveredProperty[] | undefined,
+      state: string,
+    ) => {
+      propertyList.empty();
+      numericList.empty();
+      propertyTableBody.empty();
+      if (properties) {
+        for (const property of properties) {
+          const label = optionLabel(property);
+          const xOption = propertyList.createEl("option", { value: property.key });
+          xOption.label = label;
+          if (numericSuitable(property)) {
+            const yOption = numericList.createEl("option", { value: property.key });
+            yOption.label = label;
+          }
+          const row = propertyTableBody.createEl("tr");
+          row.createEl("th", { text: property.label, attr: { scope: "row" } });
+          row.createEl("td").createEl("code", { text: property.key });
+          row.createEl("td", { text: property.types.join(" / ") || "no values" });
+          row.createEl("td", { text: String(property.missing) });
+          row.createEl("td", {
+            text: `date-X ${dateSuitable(property) ? "yes" : "no"}; numeric Y ${numericSuitable(property) ? "yes" : "no"}`,
+          });
+          const diagnostics = row.createEl("td");
+          const messages = [
+            ...(property.types.length > 1 ? [`Mixed types: ${property.types.join(" / ")}.`] : []),
+            ...(property.missing ? [`Missing from ${property.missing} note(s).`] : []),
+            ...property.invalid,
+          ];
+          if (messages.length) {
+            const list = diagnostics.createEl("ul");
+            for (const diagnostic of messages)
+              list.createEl("li", { text: diagnostic });
+          } else diagnostics.setText("None");
+        }
+        showManualOptions(properties);
+        const dateCount = properties.filter(dateSuitable).length;
+        const numericCount = properties.filter(numericSuitable).length;
+        const missingCount = properties.filter((item) => item.missing > 0).length;
+        const incompatibleCount = properties.filter(
+          (item) => item.types.length > 1 || item.invalid.length > 0,
+        ).length;
+        propertyDetails.querySelector("summary")!.textContent =
+          `Property details (${properties.length})`;
+        discoveryStatus.textContent = properties.length
+          ? `${properties.length} properties found; ${dateCount} suitable for date X; ${numericCount} suitable for numeric Y; ${missingCount} with missing values; ${incompatibleCount} mixed or invalid.`
+          : "No properties found in this dataset subtree.";
+      } else {
+        showManualOptions([]);
+        propertyDetails.querySelector("summary")!.textContent = "Property details (unavailable)";
+        discoveryStatus.textContent = state;
+      }
+      updateConfiguredStatus();
+    };
+    loadProperties = async (sourceValue: string) => {
+      const request = ++this.discoveryGeneration;
+      const folder = sourceValue.trim();
+      discoveredProperties = undefined;
+      if (!folder || !this.service.folders().includes(folder)) {
+        const status = folder
+          ? `Dataset folder “${folder}” is not available. Choose an existing folder to inspect properties.`
+          : "Choose a dataset folder to inspect properties.";
+        updatePropertyPanel(undefined, status);
+        return;
+      }
+      lastAutoDiscoveryFolder = folder;
+      updatePropertyPanel(undefined, `Loading properties from ${folder}…`);
+      refreshPropertiesButton.disabled = true;
+      try {
+        const properties = await this.service.discover(folder);
+        if (
+          this.uiClosed ||
+          this.editorKey !== key ||
+          this.editorGeneration !== editorGeneration ||
+          this.discoveryGeneration !== request ||
+          source.value.trim() !== folder
+        )
+          return;
+        discoveredProperties = properties;
+        updatePropertyPanel(properties, "");
+      } catch (error) {
+        if (
+          this.uiClosed ||
+          this.editorKey !== key ||
+          this.editorGeneration !== editorGeneration ||
+          this.discoveryGeneration !== request ||
+          source.value.trim() !== folder
+        )
+          return;
+        updatePropertyPanel(undefined, `Property discovery failed: ${message(error)}`);
+      } finally {
+        if (
+          !this.uiClosed &&
+          this.editorKey === key &&
+          this.editorGeneration === editorGeneration &&
+          this.discoveryGeneration === request
+        )
+          refreshPropertiesButton.disabled = false;
+      }
+    };
+    const schedulePropertyRefresh = () => {
+      const folder = String(draft.values.source ?? "").trim();
+      if (folder === lastAutoDiscoveryFolder) return;
+      if (this.discoveryTimer !== undefined) clearTimeout(this.discoveryTimer);
+      this.discoveryTimer = setTimeout(() => {
+        this.discoveryTimer = undefined;
+        void loadProperties(folder);
+      }, 150);
+    };
+    source.addEventListener("input", () => {
+      this.discoveryGeneration++;
+      lastAutoDiscoveryFolder = undefined;
+      if (this.discoveryTimer !== undefined) {
+        clearTimeout(this.discoveryTimer);
+        this.discoveryTimer = undefined;
+      }
+      discoveredProperties = undefined;
+      updatePropertyPanel(
+        undefined,
+        "Dataset folder changed. Finish entering or select a valid folder to refresh properties.",
+      );
+      refreshPropertiesButton.disabled = false;
+    });
+    source.addEventListener("change", schedulePropertyRefresh);
+    source.addEventListener("blur", schedulePropertyRefresh);
+    updatePropertyPanel(undefined, "Choose a dataset folder to inspect properties.");
+    void loadProperties(String(draft.values.source ?? ""));
     addButton = this.button(
       form,
       "Add " + (field === "series" ? "series" : "parameter"),
@@ -840,13 +1065,23 @@ export class ReportsView extends ItemView {
           ["legacy", "Legacy (existing layout)"],
           ["publication", "Publication (print layout)"],
           ["publication-v2", "Publication v2 (independent axes)"],
+          ...(draft.values.presentation !== undefined &&
+          draft.values.presentation !== "legacy" &&
+          draft.values.presentation !== "publication" &&
+          draft.values.presentation !== "publication-v2"
+            ? [["__preserve-opaque__", `Unrecognized saved value (preserved): ${JSON.stringify(draft.values.presentation)}`]]
+            : []),
         ],
         draft.values.presentation === "publication" ||
-          draft.values.presentation === "publication-v2"
+        draft.values.presentation === "publication-v2" ||
+        draft.values.presentation === "legacy"
           ? String(draft.values.presentation)
-          : "legacy",
+          : draft.values.presentation === undefined
+            ? "legacy"
+            : "__preserve-opaque__",
       );
       publication.addEventListener("change", () => {
+        if (publication.value === "__preserve-opaque__") return;
         draft.values.presentation = publication.value;
         this.showEditor(key, draft, "Chart presentation");
       });
@@ -856,7 +1091,9 @@ export class ReportsView extends ItemView {
             ? "Publication: readable labels and dash/marker identities. Publish with installed DejaVu/Liberation fonts, at least 3.5 inches wide, and check final placement. Bounds apply to selected data; source validation remains whole-folder."
             : draft.values.presentation === "publication-v2"
               ? "Publication v2: independent Y endpoints, readable tick policies and reserved axis-title layout. Existing paired y_min/y_max remain active until y_axis is edited; explicit endpoints never clip data."
-              : "Legacy: bounds and caption fields are preserved but not enforced. Choose a publication mode to activate them.",
+              : draft.values.presentation === undefined || draft.values.presentation === "legacy"
+                ? "Legacy: an absent or explicit legacy mode keeps existing renderer behavior. Publication-only fields are not activated unless a publication mode is selected."
+                : "This saved presentation value is not recognized by the editor. It is preserved unless you deliberately select a supported mode.",
       });
       if (draft.values.presentation === "publication-v2") {
         form.createEl("p", {
@@ -1068,6 +1305,7 @@ export class ReportsView extends ItemView {
     for (const element of Array.from(form.children)) {
       if (Object.values(groups).includes(element as HTMLFieldSetElement))
         continue;
+      if (element === titleGroup) continue;
       const label = element.textContent ?? "";
       const destination = /^(Output destination|Definition destination)/u.test(
         label,
@@ -1228,9 +1466,15 @@ export class ReportsView extends ItemView {
   }
   async onClose() {
     this.uiClosed = true;
+    this.editorGeneration++;
+    this.discoveryGeneration++;
     if (this.previewTimer !== undefined) {
       clearTimeout(this.previewTimer);
       this.previewTimer = undefined;
+    }
+    if (this.discoveryTimer !== undefined) {
+      clearTimeout(this.discoveryTimer);
+      this.discoveryTimer = undefined;
     }
     this.clearPreview();
     this.unsubscribe?.();
