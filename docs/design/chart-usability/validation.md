@@ -6,6 +6,7 @@ This record covers the bounded date-X chart usability milestone on `feature/char
 
 - Reports baseline: `be6ac624b1f665c6334ca31240bb9624a3429a3f` (merged first milestone, before this branch).
 - Design starting commit: `c38d7aa1628652b71324eb5944cc2fcf0227c6f5`.
+- Independent-review decision update: `89033038acc4bad7affabb7a9aa5e939f6db065a` records Ted's numeric-X duplicate rule. Future numeric-X line charts reject duplicates and identify the value and affected source notes; this does not affect date-X lines or specify scatter behavior. No numeric-X code is included.
 - Codex Press compiler: `394cf109f035194b440e3b37d75de06e49fe074d`.
 - Test host: Linux x86_64; Node `v24.19.0`, npm `11.17.0`, Python `3.12.3`, PyMuPDF `1.26.5`, EPUBCheck `5.3.0`, Pandoc `3.1.3`, XeTeX / TeX Live 2023, `rsvg-convert 2.58.0`.
 - Reports build toolchain: TypeScript `5.9.3`, esbuild `0.23.1`, YAML `2.9.1`.
@@ -14,7 +15,7 @@ This record covers the bounded date-X chart usability milestone on `feature/char
 
 The implementation was checked with:
 
-- `npm test` (typecheck plus all unit suites, including nine focused chart-usability tests).
+- `npm test` (strict typecheck plus 139 unit tests, including ten focused chart-usability tests).
 - `npm run build`.
 - `npm run release:check`.
 - `git diff --check`.
@@ -29,16 +30,16 @@ Production bundles were built from the baseline commit and this candidate using 
 
 | Artifact | Baseline raw / gzip | Candidate raw / gzip | Change raw / gzip |
 | --- | ---: | ---: | ---: |
-| `main.js` | 179,666 / 57,216 bytes | 193,332 / 61,451 bytes | +13,666 / +4,235 bytes |
+| `main.js` | 179,666 / 57,216 bytes | 193,981 / 61,650 bytes | +14,315 / +4,434 bytes |
 | `styles.css` | 1,685 / 543 bytes | 1,955 / 639 bytes | +270 / +96 bytes |
 | `manifest.json` | 266 / 187 bytes | 266 / 187 bytes | 0 / 0 bytes |
-| Installed bundle total | 181,617 / 57,946 bytes | 195,553 / 62,277 bytes | +13,936 / +4,331 bytes |
+| Installed bundle total | 181,617 / 57,946 bytes | 196,202 / 62,476 bytes | +14,585 / +4,530 bytes |
 
 ## Native Obsidian exercise
 
-The disposable Linux vault was opened in Obsidian `1.13.7` (Chrome `150.0.7871.212`, Electron `43.3.0`) with the candidate plugin. The driver exercised the manager with no startup exceptions reported. It verified the grouped editor and visible field labels, recursive discovery under nested folders, exact property keys alongside generated labels/types, mixed and missing-property diagnostics, editable label override retention after a key change, invalid tick feedback/focus, generation and preview, preservation of comments/body/unknown YAML fields, and legacy paired-bound compatibility. It inserted an intermediate observation and confirmed explicit-pair output stability; renaming a referenced note caused an error without rewriting assets or falling back to a predecessor. It then disabled Reports and reopened the saved SVG/Markdown transclusions with the plugin unloaded.
+The disposable Linux vault was opened in Obsidian `1.13.7` (Chrome `150.0.7871.212`, Electron `43.3.0`) with the candidate plugin. The driver exercised the manager with no startup exceptions reported. It verified the grouped editor and visible field labels, recursive discovery under nested folders, exact property keys alongside generated labels/types, mixed and missing-property diagnostics, manually configured unavailable-property retention, invalid tick feedback/focus, generation and preview, preservation of comments/body/unknown YAML fields, and legacy paired-bound compatibility. During independent review, two UI defects were fixed: editor rerenders and series reordering now return keyboard focus to the relevant control, and session-generated labels keep their provenance through rerenders and become explicit after a successful save. The native exercise confirms generated-label refresh across rerender, saved-label retention, and explicit override retention. It inserted an intermediate observation and confirmed explicit-pair output stability; renaming a referenced note caused an error without rewriting assets or falling back to a predecessor. It then disabled Reports and reopened the saved SVG/Markdown transclusions with the plugin unloaded.
 
-The product-generated SVG SHA-256 was `776d2b6b7f8b8eee45d6b868a635d0d3b3dabcc631de991b7440e20b31ed4b00`; the explicit comparison table SHA-256 was `4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a`. These checks use a disposable vault and synthetic notes only. Adapter tests do not establish native Obsidian behavior; the exercise above used the actual desktop application.
+The reviewed-run product-generated SVG SHA-256 was `d9ab91e52c913d1a57787b38f1e82276543e1ae1d52b00197bc5e2e6b32b8c4d`; the explicit comparison table SHA-256 was `4b8e21c850fb9ee2e0110d6b96126a8602fecca691f9056c819ad923517c075a`. These checks use a disposable vault and synthetic notes only. Adapter tests do not establish native Obsidian behavior; the exercise above used the actual desktop application.
 
 ## Compiler publication matrix
 

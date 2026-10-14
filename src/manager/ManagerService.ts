@@ -32,6 +32,8 @@ export interface DefinitionDraft {
   values: Properties;
   conflict?: string;
   manualDestinations?: { definition: boolean; output: boolean };
+  /** Session-only label provenance; never serialized to definition YAML. */
+  generatedLabels?: Map<object, { value: string; overridden: boolean }>;
 }
 export interface SavedPreview {
   state: "available" | "missing" | "unverified" | "error";

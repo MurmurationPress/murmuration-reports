@@ -520,7 +520,7 @@ export class ReportsView extends ItemView {
       this.button(this.details, "Open definition", () => this.openFile(path));
     }
   }
-  private showEditor(key: string, draft: DefinitionDraft) {
+  private showEditor(key: string, draft: DefinitionDraft, focusField?: string) {
     this.clearPreview();
     this.editing = true;
     this.editorKey = key;
@@ -591,7 +591,7 @@ export class ReportsView extends ItemView {
           "Reports/Outputs/" +
           String(draft.values.title) +
           (type.value === "line-chart" ? ".svg" : ".md");
-      this.showEditor(key, draft);
+      this.showEditor(key, draft, "Report type");
     });
     const name = input(
       "Name / title",
@@ -693,12 +693,21 @@ export class ReportsView extends ItemView {
     const rows = Array.isArray(draft.values[field])
       ? (draft.values[field] as Properties[])
       : [];
-    const generatedLabels = new WeakMap<
-      object,
-      { value: string; overridden: boolean }
-    >();
+    const generatedLabels = (draft.generatedLabels ??= new Map());
     const fields = form.createDiv({ cls: "mr-series" });
     const labelFields = form.createDiv({ cls: "mr-series-labels" });
+    let addButton: HTMLButtonElement | undefined;
+    const focusRow = (index: number) => {
+      if (index < 0) {
+        addButton?.focus();
+        return;
+      }
+      const prefix = field === "series" ? "Y series property " : "Parameter property ";
+      const control = fields.querySelector<HTMLInputElement>(
+        `input[aria-label="${prefix}${index + 1}"]`,
+      );
+      (control ?? addButton)?.focus();
+    };
     const renderRows = () => {
       fields.empty();
       labelFields.empty();
@@ -723,6 +732,7 @@ export class ReportsView extends ItemView {
           this.button(group, "Remove invalid entry", () => {
             rows.splice(i, 1);
             renderRows();
+            focusRow(Math.min(i, rows.length - 1));
           });
           return;
         }
@@ -770,16 +780,18 @@ export class ReportsView extends ItemView {
           this.button(group, "Move up", () => {
             [rows[i - 1], rows[i]] = [rows[i], rows[i - 1]];
             renderRows();
+            focusRow(i - 1);
           });
         this.button(group, "Remove", () => {
           rows.splice(i, 1);
           renderRows();
+          focusRow(Math.min(i, rows.length - 1));
         });
       });
     };
     draft.values[field] = rows;
     renderRows();
-    this.button(
+    addButton = this.button(
       form,
       "Add " + (field === "series" ? "series" : "parameter"),
       () => {
@@ -836,7 +848,7 @@ export class ReportsView extends ItemView {
       );
       publication.addEventListener("change", () => {
         draft.values.presentation = publication.value;
-        this.showEditor(key, draft);
+        this.showEditor(key, draft, "Chart presentation");
       });
       form.createEl("p", {
         text:
@@ -1013,7 +1025,7 @@ export class ReportsView extends ItemView {
             current: "",
             previous: "",
           };
-          this.showEditor(key, draft);
+          this.showEditor(key, draft, "Comparison selection");
         }
       });
       if (hasComparison) {
@@ -1139,6 +1151,12 @@ export class ReportsView extends ItemView {
       try {
         const path = await this.service.save(draft);
         if (this.uiClosed) return;
+        // A successful save turns generated spellings into durable labels.
+        // Keep this editor's map marked until it is rebuilt, and do not persist
+        // label provenance into the author's YAML.
+        for (const generated of generatedLabels.values())
+          generated.overridden = true;
+        draft.generatedLabels = undefined;
         destination.disabled = true;
         type.disabled = true;
         this.selected = path;
@@ -1200,7 +1218,13 @@ export class ReportsView extends ItemView {
       });
     }
     this.refreshDiagnostics();
-    name.focus();
+    const focusTarget = focusField
+      ? Array.from(form.querySelectorAll("label.mr-field")).find(
+          (label) =>
+            label.querySelector("span")?.textContent === focusField,
+        )?.querySelector("input,select")
+      : name;
+    (focusTarget as HTMLElement | null)?.focus();
   }
   async onClose() {
     this.uiClosed = true;

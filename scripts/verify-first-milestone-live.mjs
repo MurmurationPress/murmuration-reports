@@ -338,16 +338,31 @@ try {
     await pause(300);await command('murmuration-reports:open-reports');await report('Definitions/PublicationV2.md');await click('Edit definition');
     assert(await ev(String.raw`const legends=[...reportQuery('.mr-editor-group legend')].map(e=>e.textContent);return legends.some(x=>x.startsWith('Data'))&&legends.includes('Axes')&&legends.includes('Appearance')&&legends.includes('Publication')&&legends.includes('Output and definition');`),'grouped editor fields missing');
     assert(await ev(String.raw`return [...reportQuery('.mr-editor-group select')].every(s=>s.closest('label')?.textContent.includes(s.getAttribute('aria-label')));`),'grouped editor selects lack visible labels');
+    await ev(String.raw`const b=reportQuery('.mr-series .mr-series-row button').find(e=>e.textContent==='Move up');b.focus();b.click();return true;`);
+    assert.equal(await ev(String.raw`return document.activeElement?.getAttribute('aria-label');`),'Y series property 1','moving a series did not preserve focus on the moved row');
+    await ev(String.raw`const b=reportQuery('.mr-series .mr-series-row button').find(e=>e.textContent==='Move up');b.click();return true;`);
     await click('Discover dataset properties');await waitText('A — a');await waitText('Metric1 — metric1');await waitText('Deep Only — deepOnly');
     assert(await ev(String.raw`const status=reportQuery('.mr-editor-group [role=status]')[0]?.textContent??'';const lists=[...reportQuery('.mr-editor-group datalist')];return status.includes('Mixed Probe — mixedProbe: number / string')&&status.includes('1 missing')&&lists.every(list=>list.id!==reportQuery('input[aria-label^="Y series property"]')[0]?.list.id||![...list.options].some(o=>o.value==='mixedProbe'));`),'mixed/incompatible property was misreported or offered as a numeric series');
     assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];p.value='completedPages';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Completed Pages');
-    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];l.value='Custom score';l.dispatchEvent(new Event('input',{bubbles:true}));p.value='boundary_orientation';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Custom score');
+    await ev(String.raw`const s=reportQuery('select').find(e=>e.getAttribute('aria-label')==='Chart presentation');s.focus();s.value='publication';s.dispatchEvent(new Event('change',{bubbles:true}));return true;`);
+    assert.equal(await ev(String.raw`return document.activeElement?.getAttribute('aria-label');`),'Chart presentation','presentation changes did not preserve keyboard focus');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];p.value='boundary_orientation';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Boundary Orientation','session-generated series label stopped refreshing after the editor rerendered');
+    await ev(String.raw`const s=reportQuery('select').find(e=>e.getAttribute('aria-label')==='Chart presentation');s.focus();s.value='publication-v2';s.dispatchEvent(new Event('change',{bubbles:true}));return true;`);
+    assert.equal(await ev(String.raw`return document.activeElement?.getAttribute('aria-label');`),'Chart presentation','presentation changes did not preserve keyboard focus');
     await field('Y tick step','0');await click('Save and generate');await waitText('positive finite step');assert(await ev(String.raw`const e=reportQuery('.mr-editor-group label').find(x=>x.textContent.includes('Y tick step'))?.querySelector('input');return !!e&&e.getAttribute('aria-invalid')==='true'&&document.activeElement===e;`),'invalid tick error did not expose/focus its field');
     await field('Y tick step','0.5');
     await click('Save and generate');await waitText('saved output verified');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];p.value='completedPages';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Boundary Orientation','a successfully saved generated label was not retained as an explicit label');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];l.value='Custom score';l.dispatchEvent(new Event('input',{bubbles:true}));p.value='a';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Custom score');
+    await click('Save and generate');
+    for(let i=0;i<100 && !(await readFile(path.join(vault,'Saved reports Ω/PublicationV2.svg'),'utf8')).includes('Custom score');i++)await pause(100);
     const v2Svg=await readFile(path.join(vault,'Saved reports Ω/PublicationV2.svg'),'utf8');
     for(const expected of ['Y range -1 to 1','data-axis-title="x"','data-axis-title="y"','>Boundary</','>Orientation</','>(score)</','>Observation</','>Date</','Custom score','Synthetic values from two dated observations.','solid/circle','dashed/square','dotted/triangle','dash-dot/diamond'])assert(v2Svg.includes(expected),`v2 SVG missing ${expected}`);
     const v2Definition=await readFile(path.join(vault,'Definitions/PublicationV2.md'),'utf8');assert(v2Definition.includes('# usability comment'));assert(v2Definition.includes('custom: "preserved"'));assert(v2Definition.endsWith('Synthetic usability definition body.\n'));
+    await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0];p.value='manuallyConfiguredMissing';p.dispatchEvent(new Event('input',{bubbles:true}));return true;`);
+    await click('Discover dataset properties');await waitText('Deep Only — deepOnly');
+    assert.equal(await ev(String.raw`return reportQuery('input[aria-label="Y series property 1"]')[0].value;`),'manuallyConfiguredMissing','discovery erased a manually configured unavailable property');
+    await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0];p.value='a';p.dispatchEvent(new Event('input',{bubbles:true}));return true;`);
     await copyFile(path.join(vault,'Saved reports Ω/PublicationV2.svg'),path.join(vault,'Saved reports Ω/Publication.svg'));chartHash=await hash('Saved reports Ω/Publication.svg');
     checks.push('native grouped editor fieldsets and visible labels; recursive property discovery; v2 SVG/titles/units/caption/series identity; comments/body/unknown fields retained');
   }
@@ -360,17 +375,19 @@ try {
   assert.equal(await ev('return !!app.murmurationReports;'),false);
   assert.equal(await ev("return !!app.plugins.plugins['murmuration-writing-companion'];"),false);
   await open('Publication view.md');
-  await ev(String.raw`await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(700);
-  assert(await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`));
+  await ev(String.raw`const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Publication view.md');if(!leaf)throw Error('Publication view Markdown leaf missing');await leaf.setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(700);
+  let embedsReady=false;for(let i=0;i<50&&!embedsReady;i++){embedsReady=await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`);if(!embedsReady)await pause(100);}
+  assert(embedsReady,'disabled-plugin SVG/table embeds did not render within five seconds');
   assert.equal(await hash('Saved reports Ω/Publication.svg'),chartHash);assert.equal(await hash('Saved reports Ω/Explicit.md'),savedTable);
   checks.push('native disabled-plugin SVG and Markdown transclusion retain generated bytes and all 80 rows');
   let persistedDisabled=false;
   for(let i=0;i<50;i++){const config=JSON.parse(await readFile(path.join(vault,'.obsidian/community-plugins.json'),'utf8'));if(!config.includes('murmuration-reports')){persistedDisabled=true;break;}await pause(100);}
   assert(persistedDisabled,'Obsidian did not persist disabled plugins before restart');
   await stop();await launch(false);await open('Publication view.md');
-  await ev(String.raw`await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(800);
+  await ev(String.raw`const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Publication view.md');if(!leaf)throw Error('Publication view Markdown leaf missing after restart');await leaf.setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(800);
   assert.equal(await ev('return !!app.murmurationReports;'),false);
-  assert(await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`));
+  embedsReady=false;for(let i=0;i<50&&!embedsReady;i++){embedsReady=await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`);if(!embedsReady)await pause(100);}
+  assert(embedsReady,'disabled-restart SVG/table embeds did not render within five seconds');
   checks.push('disabled restart reopens persisted generated SVG and table without Reports/MWC');
   const screenshot=await send('Page.captureScreenshot',{format:'png'});await writeFile(path.join(root,'disabled-embeds.png'),Buffer.from(screenshot.data,'base64'));
   const environment=await ev('return navigator.userAgent;');const bundles={reports:createHash('sha256').update(await readFile(path.join(reports,'main.js'))).digest('hex')};

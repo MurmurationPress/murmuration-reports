@@ -11,6 +11,7 @@ import { renderLineChartSvg } from "../src/core/LineChartSvg";
 import { readableYAxis, parseYAxis } from "../src/core/ReadableYAxis";
 import { discoverProperties } from "../src/core/PropertyDiscovery";
 import { humanisePropertyKey } from "../src/core/PropertyLabels";
+import { patchDefinition, readEditable } from "../src/manager/DefinitionEditing";
 import { chart } from "./helpers/MemoryVault";
 
 const definition = (extra: Record<string, unknown> = {}) =>
@@ -235,4 +236,15 @@ test("property discovery covers every scoped note and reports missing/mixed/inva
   const date = result.find((p) => p.key === "date")!;
   deep(date.types, ["date/string"]);
   equal(date.compatible, true);
+});
+test("editing a v2 axis leaf preserves YAML comments, extensions and body bytes", () => {
+  const raw = `---\nworld_entity: derived-artefact\nartefact_type: line-chart\npresentation: publication-v2\nsource: Data\nx: date\nseries:\n  - property: value\n    label: Value\ny_axis:\n  minimum: zero # include zero without clipping\n  maximum: auto\n  ticks: {step: 0.2}\n  custom_extension: {keep: yes}\nunknown_top_level: retain\noutput: Charts/value.svg\n---\nBody stays exact.\n`;
+  const values = readEditable(raw).data;
+  (values.y_axis as Record<string, unknown>).maximum = 1;
+  const updated = patchDefinition(raw, values);
+  equal(updated.includes("minimum: zero # include zero without clipping"), true);
+  equal(updated.includes("custom_extension: {keep: yes}"), true);
+  equal(updated.includes("unknown_top_level: retain"), true);
+  equal(updated.endsWith("Body stays exact.\n"), true);
+  equal((readEditable(updated).data.y_axis as Record<string, unknown>).maximum, 1);
 });
