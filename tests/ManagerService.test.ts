@@ -456,3 +456,63 @@ test("guided saves retain an unchanged opaque legacy presentation and caption wi
     deepStrictEqual(readEditable(d.original!).data.caption,{extension:"keep"});
   } finally {f.service.dispose();}
 });
+
+test("unrelated guided saves preserve absent, legacy, publication and v2 presentation state", async () => {
+  const cases: Array<{
+    name: string;
+    fields: Record<string, unknown>;
+    expected: Record<string, unknown>;
+  }> = [
+    {
+      name: "absent",
+      fields: { y_min: "opaque", caption: { keep: true } },
+      expected: { y_min: "opaque", caption: { keep: true } },
+    },
+    {
+      name: "legacy",
+      fields: { presentation: "legacy", y_min: -1, y_max: 1, caption: "Saved" },
+      expected: { presentation: "legacy", y_min: -1, y_max: 1, caption: "Saved" },
+    },
+    {
+      name: "publication",
+      fields: { presentation: "publication", y_min: -1, y_max: 1, caption: "Saved" },
+      expected: { presentation: "publication", y_min: -1, y_max: 1, caption: "Saved" },
+    },
+    {
+      name: "publication-v2",
+      fields: {
+        presentation: "publication-v2",
+        y_axis: { minimum: "zero", maximum: 5, ticks: { step: 0.5 } },
+        x_axis_unit: "months",
+        description: "Saved description",
+      },
+      expected: {
+        presentation: "publication-v2",
+        y_axis: { minimum: "zero", maximum: 5, ticks: { step: 0.5 } },
+        x_axis_unit: "months",
+        description: "Saved description",
+      },
+    },
+  ];
+  for (const item of cases) {
+    const f = fixture();
+    try {
+      const source = { ...values, ...item.fields, output: "Outputs/Keep.svg", custom: "retain" };
+      f.files.set("Definitions/Test.md", newDefinition(source));
+      const draft = await f.service.draft("Definitions/Test.md");
+      draft.values.subtitle = "Unrelated edit";
+      await f.service.save(draft);
+      const saved = readEditable(draft.original!).data;
+      for (const [key, value] of Object.entries(item.expected))
+        deepStrictEqual(saved[key], value, `${item.name} ${key} changed`);
+      if (!Object.prototype.hasOwnProperty.call(item.fields, "presentation"))
+        equal(Object.prototype.hasOwnProperty.call(saved, "presentation"), false, "absent mode was migrated");
+      equal(saved.output, "Outputs/Keep.svg", `${item.name} output path changed`);
+      equal(saved.custom, "retain", `${item.name} extension was lost`);
+      equal(f.counts.generate, 0, `${item.name} unrelated save generated output`);
+      deepStrictEqual(f.writes, ["Definitions/Test.md"]);
+    } finally {
+      f.service.dispose();
+    }
+  }
+});
