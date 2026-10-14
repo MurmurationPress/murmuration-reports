@@ -354,7 +354,7 @@ try {
     await ev(String.raw`const fm=${JSON.stringify(v2)};await app.vault.create('Definitions/PublicationV2.md','---\n# usability comment\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic usability definition body.\n');return true;`);
     await pause(300);await command('murmuration-reports:open-reports');await report('Definitions/PublicationV2.md');
     if(process.env.REPORTS_EDITOR_FOLLOWUP==='1'){
-      assert(await ev(String.raw`return reportQuery('.mr-presentation-status')[0]?.textContent.includes('Publication v2 presentation')&&!reportQuery('.mr-diagnostics p').some(p=>p.textContent.includes('Legacy presentation'))&&reportQuery('.mr-saved-output-note')[0]?.textContent.includes('may be out of date after definition edits');`),'detail view misdescribed publication-v2 or inferred saved-output presentation');
+      assert(await ev(String.raw`return reportQuery('.mr-presentation-status')[0]?.textContent.includes('Publication v2 presentation')&&!reportQuery('.mr-diagnostics p').some(p=>p.textContent.includes('Legacy presentation'))&&reportQuery('.mr-saved-output-note').length===0;`),'detail view misdescribed publication-v2 or described an output before one was saved');
     }
     await click('Edit definition');
     if(process.env.REPORTS_EDITOR_FOLLOWUP==='1'){
@@ -452,6 +452,9 @@ try {
       assert(createdDefinition.includes('presentation: publication-v2'));
       assert(createdDefinition.includes('output: Reports/Outputs/Editor Follow-up Synthetic.svg'));
       assert.equal(await ev(`return !!app.vault.getAbstractFileByPath(${JSON.stringify(defaultOutput)});`),false,'save-only created a chart asset');
+      await click('Back to saved output');await waitText('Saved output is missing.');
+      assert.equal(await ev(String.raw`return reportQuery('.mr-saved-output-note').length;`),0,'missing output was described as a potentially stale saved asset');
+      await click('Edit definition');await waitText('properties found');
       await field('Subtitle (optional)','Unrelated follow-up edit');
       await click('Save definition');await waitText('No output was generated.');
       createdDefinition=await readFile(path.join(vault,definitionPath),'utf8');

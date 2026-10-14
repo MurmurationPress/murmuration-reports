@@ -16,3 +16,17 @@ export function chartPresentationStatus(frontmatter: Properties): string {
 
 export const SAVED_CHART_OUTPUT_STATUS =
   "The saved output is a separate asset and may be out of date after definition edits. Its producing presentation is not recorded; the title and filename do not identify it. Generate explicitly to update it.";
+
+export function shouldDescribeSavedChartOutput(
+  output: string,
+  diagnostics: readonly string[],
+): boolean {
+  return (
+    !!output &&
+    !diagnostics.some(
+      (diagnostic) =>
+        diagnostic.startsWith("Saved output is missing.") ||
+        diagnostic.startsWith("Output collision:"),
+    )
+  );
+}

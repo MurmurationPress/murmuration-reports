@@ -7,6 +7,7 @@ import { humanisePropertyKey } from "../core/PropertyLabels";
 import { DiscoveredProperty } from "../core/PropertyDiscovery";
 import {
   chartPresentationStatus,
+  shouldDescribeSavedChartOutput,
   SAVED_CHART_OUTPUT_STATUS,
 } from "./PresentationStatus";
 export const REPORTS_VIEW = "murmuration-reports-manager";
@@ -355,10 +356,11 @@ export class ReportsView extends ItemView {
         cls: "mr-presentation-status",
         text: chartPresentationStatus(e.frontmatter),
       });
-      this.details.createEl("p", {
-        cls: "mr-saved-output-note",
-        text: SAVED_CHART_OUTPUT_STATUS,
-      });
+      if (shouldDescribeSavedChartOutput(e.output, e.diagnostics))
+        this.details.createEl("p", {
+          cls: "mr-saved-output-note",
+          text: SAVED_CHART_OUTPUT_STATUS,
+        });
     }
     const actions = this.details.createDiv({ cls: "mr-actions" });
     this.button(actions, "Edit definition", () => this.edit(e.path));
