@@ -1,5 +1,7 @@
 # Bounded P0 recommendation and first implementation milestone
 
+Current status: this planning record predates implementation. The specified first milestone and subsequent date-X editor work are merged and positively accepted by Ted; see [the chart/editor closeout](../../closeout/chart-editor-effort.md). Physical-print, reader/AT, accessible-PDF and broader feature qualification remain open.
+
 Status: **Accepted for the first milestone only** by the explicit [bounded review](p0-acceptance.md). Scope: Epic #3, P0 #4/#5/#10 and research/design PR #11. No implementation is included.
 
 ## Recommendation
@@ -65,4 +67,4 @@ Log axes, statistical uncertainty, scatter/bars/histograms/pie/radar, many-serie
 
 ## Acceptance assessment
 
-The first milestone is sufficiently specified for a later implementation task. All bounded P0 start gates are satisfied by the explicit review and exact-merge evidence in [p0-acceptance.md](p0-acceptance.md). Implementation merge, physical-print, reader and accessibility gates remain outstanding in [#12](https://github.com/MurmurationPress/murmuration-reports/issues/12). No production feature has been implemented.
+The first milestone was sufficiently specified for implementation. All bounded P0 start gates were satisfied by the explicit review and exact-merge evidence in [p0-acceptance.md](p0-acceptance.md). The implementation is now merged; physical-print, reader and accessibility gates remain outstanding in [#12](https://github.com/MurmurationPress/murmuration-reports/issues/12).
