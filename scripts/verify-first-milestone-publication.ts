@@ -17,7 +17,8 @@ async function main(){
  assert([3.5,4.1,5.5].includes(width));
  const svgPath='Saved reports Ω/Publication.svg',tablePath='Saved reports Ω/Explicit.md';
  const files=new Map<string,Buffer>();
- for(const directory of ['Publication data','Definitions','Saved reports Ω'])for(const name of await readdir(join(source,directory)))files.set(directory+'/'+name,await readFile(join(source,directory,name)));
+ const collect=async(directory:string):Promise<void>=>{for(const entry of await readdir(join(source,directory),{withFileTypes:true})){const relative=directory+'/'+entry.name;if(entry.isDirectory())await collect(relative);else if(entry.isFile())files.set(relative,await readFile(join(source,relative)));}};
+ for(const directory of ['Publication data','Definitions','Saved reports Ω'])await collect(directory);
  assert(files.get(svgPath)!.toString().includes('data-style="dash-dot/diamond"'));
  assert(files.get(svgPath)!.toString().includes('Y range -1 to 1'));
  assert(files.get(tablePath)!.toString().includes('previous (2029-05-29)'));

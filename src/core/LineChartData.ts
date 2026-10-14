@@ -1,3 +1,4 @@
+import { readableYAxis } from "./ReadableYAxis";
 import { LineChartDefinition, parseIsoDate } from "./DerivedArtefactDefinition";
 
 export interface FrontmatterRecord { readonly path: string; readonly frontmatter: Record<string, unknown>; }
@@ -46,5 +47,7 @@ export function normaliseLineChartData(definition: LineChartDefinition, records:
       if (value < definition.yMin || value > definition.yMax) throw Error(`${point.sourcePath}: ${definition.series[index].property}=${value} is outside fixed Y bounds [${definition.yMin}, ${definition.yMax}]. Correct the data or explicitly change the limits; no clipping is performed.`);
     }
   }
-  return { definition, points: selected };
+  const data = { definition, points: selected };
+  if (definition.presentation === "publication-v2") readableYAxis(data);
+  return data;
 }

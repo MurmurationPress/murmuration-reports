@@ -1,3 +1,4 @@
+import { parseYAxis, YAxisPolicy } from "./ReadableYAxis";
 import { safePath, pathKey, within } from "../reports/PathSafety";
 
 export interface LineChartSeriesDefinition {
@@ -18,7 +19,11 @@ export interface LineChartDefinition {
   readonly xAxisLabel?: string;
   readonly yAxisLabel?: string;
   readonly output: string;
-  readonly presentation?: "publication";
+  readonly presentation?: "publication" | "publication-v2";
+  readonly yAxis?: YAxisPolicy;
+  readonly xAxisUnit?: string;
+  readonly yAxisUnit?: string;
+  readonly description?: string;
   readonly yMin?: number;
   readonly yMax?: number;
   readonly caption?: string;
@@ -88,9 +93,9 @@ export function isDerivedArtefactDefinition(frontmatter: Record<string, unknown>
   return frontmatter?.world_entity === "derived-artefact";
 }
 
-function publicationOptions(frontmatter: Record<string, unknown>): Pick<LineChartDefinition, "presentation" | "yMin" | "yMax" | "caption"> {
+function publicationOptions(frontmatter: Record<string, unknown>): Pick<LineChartDefinition, "presentation" | "yMin" | "yMax" | "caption" | "yAxis" | "xAxisUnit" | "yAxisUnit" | "description"> {
   // Old opaque fields never become active without the exact opt-in.
-  if (frontmatter.presentation !== "publication") return {};
+  if (frontmatter.presentation !== "publication" && frontmatter.presentation !== "publication-v2") return {};
   const min = frontmatter.y_min, max = frontmatter.y_max;
   if ((min === undefined) !== (max === undefined)) throw Error("Publication y_min and y_max must be supplied together.");
   if (min !== undefined && (typeof min !== "number" || typeof max !== "number" || !Number.isFinite(min) || !Number.isFinite(max) || min >= max)) {
@@ -98,7 +103,11 @@ function publicationOptions(frontmatter: Record<string, unknown>): Pick<LineChar
   }
   const caption = text(frontmatter.caption, "caption");
   if (caption && [...caption].length > 240) throw Error("Publication caption must contain at most 240 characters; shorten it.");
-  return { presentation: "publication", yMin: min as number | undefined, yMax: max as number | undefined, caption };
+  const v2 = frontmatter.presentation === "publication-v2";
+  if (v2 && frontmatter.y_axis !== undefined && min !== undefined) throw Error("y_axis conflicts with paired y_min/y_max; remove the old limits deliberately in the source note.");
+  const description = v2 ? text(frontmatter.description, "description") : undefined;
+  if (description && [...description].length > 240) throw Error("description must contain at most 240 characters.");
+  return { presentation: frontmatter.presentation, ...(v2 ? { yAxis: frontmatter.y_axis === undefined && min !== undefined ? undefined : parseYAxis(frontmatter.y_axis), xAxisUnit: text(frontmatter.x_axis_unit,"x_axis_unit"), yAxisUnit: text(frontmatter.y_axis_unit,"y_axis_unit"), description } : {}), yMin: min as number | undefined, yMax: max as number | undefined, caption };
 }
 
 function explicitComparison(frontmatter: Record<string, unknown>, source: string): StateTableDefinition["comparison"] {

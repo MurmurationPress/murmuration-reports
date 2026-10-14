@@ -105,6 +105,34 @@ Both limits must be finite numbers with `y_min < y_max`, or both must be absent 
 
 Publication charts visibly include plain-text captions (up to 240 Unicode code points), deterministic wrapped title/subtitle/axis/legend/caption text and useful SVG title/description. One to four ordered series use solid/circle, dashed/square, dotted/triangle and dash-dot/diamond styles in both chart and legend. Colour is supplemental. ISO endpoint dates label the elapsed-time X axis; they stagger vertically if their conservative width bounds would overlap.
 
+## Publication v2 chart usability (development branch)
+
+The following additive schema is under review on the chart usability branch; it is not part of the published 0.1.0 release. It preserves the existing date-based X property and only activates under the exact `publication-v2` mode:
+
+```yaml
+presentation: publication-v2
+x_axis_label: Observation Date
+y_axis_label: Boundary Orientation
+y_axis_unit: score
+y_axis:
+  minimum: zero       # auto | zero | finite number
+  maximum: auto       # auto | finite number
+  ticks: auto         # auto | integer | {step: positive finite number}
+caption: Assessments are measurements, not probabilities.
+description: Four synthetic monitoring series across the selected dates.
+series:
+  - property: boundary_orientation
+    label: Boundary Orientation
+  - property: completedPages
+    label: Completed Pages
+```
+
+`minimum` and `maximum` are independent. Numeric endpoints are hard limits: selected outliers block generation with note/property/value diagnostics and are never clipped or silently expanded. `zero` includes zero and all data; with mixed-sign data the automatic lower endpoint remains negative, and all-negative data extends the automatic upper endpoint to zero. It does not turn fractional observations into integers. Automatic limits round outward with deterministic 1/2/2.5/5 × power-of-ten steps. Automatic ticks use that readable interval, `integer` uses integer grid values without rounding observations, and `{step: 0.2}` uses a positive zero-anchored grid without inventing off-grid endpoints. More than nine ticks, overlapping labels, invalid domains and unrepresentable magnitudes fail with guidance.
+
+For selected values `.18` and `.96`, `minimum: zero`, automatic maximum and automatic ticks resolve to `[0, 1]` with ticks `0, .2, .4, .6, .8, 1`. Fixed numeric `y_min` and `y_max` from `presentation: publication` remain readable in `publication-v2` when `y_axis` is absent. If both forms are supplied they conflict; remove both legacy fields deliberately in the definition note before editing the new policy. To remove existing optional settings or the `y_axis` mapping, edit their YAML keys in the note; guided editing preserves keys, comments, unknown fields and body rather than deleting author metadata.
+
+The Y title is vertical beside its axis; X title is centred below. Optional units appear beside the corresponding title. A selected property gets an editable humanised series name; changing the key refreshes an untouched session-generated name, while a label edit becomes an override. After save/reopen, labels are explicit and never automatically rewritten. Property discovery is recursive over the actual dataset folder and displays humanised name, exact key, observed types, missing counts and invalid values. It does not coerce mixed or string values. The current X remains an ISO date; numeric-X semantics, ordering/duplicate policy and date-window interaction are tracked separately in #18.
+
 The layout uses fixed 32-unit text and three-unit essential strokes on a 960-unit canvas. Publish at **3.5, 4.1 or 5.5 inches**, where the local page/container can fit. At 3.5in these correspond to 8.4pt and 0.7875pt. Check **actual compiler placement**: an unsized image, narrow callout or height fitting can make labels smaller. Use explicit authored dimensions with merged Codex Press #145, for example:
 
 ```markdown
