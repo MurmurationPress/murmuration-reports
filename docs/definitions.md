@@ -90,9 +90,9 @@ Generation creates missing parent folders and replaces an owned existing project
 
 Markdown state tables can be embedded the same way, using their `.md` path.
 
-## Publication line charts (first milestone, development build)
+## Publication line charts (first milestone)
 
-These additive features are available in the development build; the published 0.1.0 release remains unchanged. See the [independent review](implementation/independent-review.md) for validation and remaining qualification. Choose **Publication** in the manager, or add the exact opt-in:
+These additive features are available in the current main build; the published 0.1.0 release remains unchanged. See the [independent review](implementation/independent-review.md) and [chart/editor closeout](closeout/chart-editor-effort.md) for validation and remaining qualification. Choose **Publication** in the manager, or add the exact opt-in:
 
 ```yaml
 presentation: publication
@@ -105,9 +105,9 @@ Both limits must be finite numbers with `y_min < y_max`, or both must be absent 
 
 Publication charts visibly include plain-text captions (up to 240 Unicode code points), deterministic wrapped title/subtitle/axis/legend/caption text and useful SVG title/description. One to four ordered series use solid/circle, dashed/square, dotted/triangle and dash-dot/diamond styles in both chart and legend. Colour is supplemental. ISO endpoint dates label the elapsed-time X axis; they stagger vertically if their conservative width bounds would overlap.
 
-## Publication v2 chart usability (development branch)
+## Publication v2 chart usability
 
-The following additive schema is under review on the chart usability branch; it is not part of the published 0.1.0 release. It preserves the existing date-based X property and only activates under the exact `publication-v2` mode:
+The following additive schema is available in the current main build; it is not part of the published 0.1.0 release. It preserves the existing date-based X property and only activates under the exact `publication-v2` mode:
 
 ```yaml
 presentation: publication-v2
@@ -141,7 +141,7 @@ The layout uses fixed 32-unit text and three-unit essential strokes on a 960-uni
 
 The operator must verify the installed reference/fallback font: `DejaVu Sans, Liberation Sans, Arial, sans-serif`. DejaVu/Liberation are digitally checked; Arial/generic viewing fallbacks are not print-qualified. No external font or runtime resource is required. Text wraps at whitespace with conservative host-independent bounds; titles allow three lines, subtitles/axis labels/each legend two, captions six, and total height 1200 units. Unsupported glyphs, unbreakable words or unfit content block before writes with shortening/restructuring advice; no silent shrinking/truncation. Supported text is printable ASCII, Latin U+00A0–024F, Greek U+0374–0375/037A–037E/0384–038A/038C/038E–03A1/03A3–03CE/03D0–03FF, punctuation U+2010/2012–2022/2026 and minus/≤/≥. Whitespace is normalised before visible-glyph checks. Other control/format/unassigned/combining code points, emoji, CJK and RTL scripts need separate layout qualification. Numeric labels adapt precision to remain distinct; unusably long tick labels produce a layout diagnostic. The [implementation contract](implementation/first-milestone.md) records these limits.
 
-## Explicit-pair state tables (first milestone, development build)
+## Explicit-pair state tables (first milestone)
 
 ```yaml
 comparison:

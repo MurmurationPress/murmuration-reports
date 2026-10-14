@@ -1,6 +1,8 @@
 # Bounded P0 acceptance — 2026-10-13
 
-Accepted after source/contract/evidence review and fresh merged-compiler validation under the user’s explicit review authorisation. This accepts research/design recommendations for the **first milestone only**, not implementation, release readiness or every proposed chart type. Research PR #11 remains open for review.
+Current status: this is the dated research-decision record. Research PR #11 was subsequently reviewed and merged as `c15efbe2f79809fd0139ea14ed69268862a04543`; implementation and user acceptance are recorded in [the chart/editor closeout](../../closeout/chart-editor-effort.md). The historical “open/unmerged” statements below describe the state at the time they were written.
+
+Accepted after source/contract/evidence review and fresh merged-compiler validation under the user’s explicit review authorisation. This accepts research/design recommendations for the **first milestone only**, not implementation, release readiness or every proposed chart type.
 
 ## Decisions accepted
 

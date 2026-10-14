@@ -36,7 +36,7 @@ Only relevant selected output/receipt/definition changes refresh a preview, with
 
 The [ownership and recovery policy](ownership.md) still applies. No exclusive create, external-sync lock, crash-atomic transaction or atomic compare-delete is claimed. Definition save failures do not attempt speculative rollback; inspect a possibly written definition after an SDK rejection. Saved SVG/Markdown and embeds display and compile with both plugins disabled; receipts and manager catalogue are unnecessary for publication.
 
-## First milestone controls (development branch)
+## Current first-milestone controls
 
 Charts can explicitly choose **Publication** for fixed Y limits, plain explanatory captions and four dash/marker identities. Legacy mode preserves inert/unknown presentation metadata and explains that bounds/captions are not enforced. Both numeric limits are required together, or leave both absent. Fixed bounds outside selected data, unsupported glyphs and overflowing layout fail before asset writes. Save-only changes the definition; Save and generate is explicit. Return **Back to saved output** to inspect the saved result.
 
