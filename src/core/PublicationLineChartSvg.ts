@@ -1,3 +1,4 @@
+import { readableYAxis } from "./ReadableYAxis";
 import { LineChartData } from "./LineChartData";
 
 const WIDTH = 960, FONT = 32, LINE = 40, PAD = 32, MAX_HEIGHT = 1200;
@@ -76,13 +77,18 @@ function tickLabels(values: number[]): string[] {
 }
 export function renderPublicationLineChartSvg(data: LineChartData): string {
   const definition = data.definition;
-  const [min, max] = domain(data);
+  const v2 = definition.presentation === "publication-v2";
+  const resolved = v2 ? readableYAxis(data) : undefined;
+  const [min, max] = resolved ? [resolved.min,resolved.max] : domain(data);
   // Convex interpolation avoids max-min overflow and duplicate machine values.
-  const ticks = [...new Set(Array.from({length:5}, (_,i) => i === 0 ? min : i === 4 ? max : (1-i/4)*min + i/4*max).filter(value => value >= min && value <= max))].sort((a,b)=>a-b);
+  const ticks = resolved?.ticks ?? [...new Set(Array.from({length:5}, (_,i) => i === 0 ? min : i === 4 ? max : (1-i/4)*min + i/4*max).filter(value => value >= min && value <= max))].sort((a,b)=>a-b);
   const labels = tickLabels(ticks);
   const tickWidth = Math.max(...labels.map(widthBound));
   if (tickWidth > 360) layoutError("Y tick labels", "numeric labels exceed 360 units; choose a more readable domain");
-  const left = PAD + tickWidth + 20, right = WIDTH - PAD - 10, plotWidth = right-left;
+  const plotHeight = v2 ? 480 : 300;
+  const axisTitle = (label: string | undefined, unit: string | undefined) => [label,unit ? `(${unit})` : undefined].filter(Boolean).join(" ");
+  const yTitle = v2 ? wrapPublicationText(axisTitle(definition.yAxisLabel,definition.yAxisUnit),"Y axis title",plotHeight-32,4) : [];
+  const left = PAD + tickWidth + 20 + yTitle.length*LINE, right = WIDTH - PAD - 10, plotWidth = right-left;
   const body: string[] = []; let cursor = PAD + FONT;
   const textLine = (text: string, x: number, y: number, attributes = "") =>
     body.push(`<text x="${coordinate(x)}" y="${coordinate(y)}" ${attributes}>${esc(text)}</text>`);
@@ -94,13 +100,14 @@ export function renderPublicationLineChartSvg(data: LineChartData): string {
   paragraph(definition.title,"title",3);
   paragraph(definition.subtitle,"subtitle",2);
   // Horizontal labels reserve their own lines rather than rely on rotated metrics.
-  paragraph(definition.yAxisLabel,"Y axis label",2);
-  const top = cursor + 8, bottom = top + 300;
+  if (!v2) paragraph(definition.yAxisLabel,"Y axis label",2);
+  const top = cursor + 8, bottom = top + plotHeight;
   const xMin = data.points[0].timestamp, xMax = data.points[data.points.length-1].timestamp;
   const x = (stamp: number) => left + (xMax === xMin ? .5 : (stamp-xMin)/(xMax-xMin))*plotWidth;
   const span = max-min;
   const fraction = (value: number) => Number.isFinite(span) ? (value-min)/span : (value/2-min/2)/(max/2-min/2);
-  const y = (value: number) => bottom-fraction(value)*300;
+  const y = (value: number) => bottom-fraction(value)*plotHeight;
+  yTitle.forEach((line,i) => body.push(`<text transform="translate(${PAD+FONT+i*LINE} ${top+plotHeight/2}) rotate(-90)" text-anchor="middle" data-axis-title="y">${esc(line)}</text>`));
   ticks.forEach((value,i) => {
     body.push(`<line x1="${coordinate(left)}" y1="${coordinate(y(value))}" x2="${right}" y2="${coordinate(y(value))}" stroke="#b8bec6" stroke-width="3" stroke-dasharray="3 9"/>`);
     textLine(labels[i],left-16,y(value)+10,'text-anchor="end"');
@@ -118,7 +125,10 @@ export function renderPublicationLineChartSvg(data: LineChartData): string {
     textLine(dates[1],right,cursor,'text-anchor="end"');
   }
   cursor += LINE;
-  paragraph(definition.xAxisLabel,"X axis label",2);
+  if (v2) {
+    for (const line of wrapPublicationText(axisTitle(definition.xAxisLabel,definition.xAxisUnit),"X axis title",plotWidth,2)) {textLine(line,left+plotWidth/2,cursor,'text-anchor="middle" data-axis-title="x"');cursor+=LINE;}
+    cursor+=8;
+  } else paragraph(definition.xAxisLabel,"X axis label",2);
   definition.series.forEach((series,index) => {
     const dash = DASHES[index] ? ` stroke-dasharray="${DASHES[index]}"` : "";
     const attributes = `data-series="${esc(series.property)}" data-style="${IDENTITIES[index]}"`;
@@ -133,8 +143,9 @@ export function renderPublicationLineChartSvg(data: LineChartData): string {
   });
   paragraph(definition.caption,"caption",6);
   const height = cursor+PAD;
-  if (height > MAX_HEIGHT) layoutError("layout", `height ${height} exceeds ${MAX_HEIGHT} units; shorten titles, axes, legends or caption`);
-  const description = `Line chart with ${definition.series.length} series and ${data.points.length} observations from ${data.points[0].date} to ${data.points[data.points.length-1].date}. Y range ${min} to ${max}. Series in order: ${definition.series.map((s,i) => `${s.label} (${IDENTITIES[i]})`).join("; ")}.${definition.caption ? " " + definition.caption : ""}`;
+  const maximumHeight = v2 ? 1440 : MAX_HEIGHT;
+  if (height > maximumHeight) layoutError("layout", `height ${height} exceeds ${maximumHeight} units; shorten titles, axes, legends or caption`);
+  const description = `Line chart with ${definition.series.length} series and ${data.points.length} observations from ${data.points[0].date} to ${data.points[data.points.length-1].date}. Y range ${min} to ${max}. Series in order: ${definition.series.map((s,i) => `${s.label} (${IDENTITIES[i]})`).join("; ")}.${definition.caption ? " " + definition.caption : ""}${v2 && definition.description ? " " + wrapPublicationText(definition.description,"description",WIDTH-2*PAD,12).join(" ") : ""}`;
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${height}" viewBox="0 0 ${WIDTH} ${height}" role="img" aria-labelledby="chart-title chart-desc">`,
     `  <title id="chart-title">${esc(definition.title)}</title>`,

@@ -25,7 +25,7 @@ function dateLabel(iso: string): string {
 }
 
 export function renderLineChartSvg(data: LineChartData): string {
-  if (data.definition.presentation === "publication") return renderPublicationLineChartSvg(data);
+  if (data.definition.presentation === "publication" || data.definition.presentation === "publication-v2") return renderPublicationLineChartSvg(data);
   const plotWidth = WIDTH - LEFT - RIGHT, plotHeight = HEIGHT - TOP - BOTTOM;
   const all = data.points.flatMap((point) => [...point.values]);
   const yTicks = ticks(Math.min(...all), Math.max(...all));

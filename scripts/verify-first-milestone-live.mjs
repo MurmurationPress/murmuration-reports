@@ -283,9 +283,11 @@ try {
       ['May','2029-05-29',10,-.8,-.6,.8,.5],
       ['June','2029-06-30',15,.7,.5,-.5,-.8]
     ]) {
-      const fm={date,value,a,b,c,d};for(let i=1;i<=80;i++)fm['metric'+i]=value+i;
+      const fm={date,value,a,b,c,d,boundary_orientation:a,completedPages:value*10,mixedProbe:name==='May'?4:'4'};for(let i=1;i<=80;i++)fm['metric'+i]=value+i;
       await app.vault.create('Publication data/'+name+'.md','---\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic public observation.\n');
     }
+    const deep={date:'2029-04-29',value:8,a:.2,b:-.1,c:.3,d:-.2,boundary_orientation:.2,completedPages:80,mixedProbe:2,deepOnly:'nested'};for(let i=1;i<=80;i++)deep['metric'+i]=8+i;
+    await app.vault.createFolder('Publication data/Nested');await app.vault.create('Publication data/Nested/Deep.md','---\n'+Object.entries(deep).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic nested observation.\n');
     const chart={world_entity:'derived-artefact',artefact_type:'line-chart',source:'Publication data',x:'date',title:'Publication assessment',subtitle:'Four synthetic series',series:['a','b','c','d'].map((property,i)=>({property,label:'Site '+String.fromCharCode(65+i),unknown:'keep'})),x_axis_label:'Observation date',y_axis_label:'Assessment',output:'Saved reports Ω/Publication.svg',custom:'keep'};
     const table={world_entity:'derived-artefact',artefact_type:'state-table',source:'Publication data',x:'date',parameters:Array.from({length:80},(_,i)=>({property:'metric'+(i+1),label:'ROW'+String(i+1).padStart(3,'0')})),output:'Saved reports Ω/Explicit.md',custom:'keep'};
     for(const [name,fm] of [['Publication',chart],['Explicit',table]])await app.vault.create('Definitions/'+name+'.md','---\n# keep author comment\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nBody remains exact.\n');
@@ -311,7 +313,7 @@ try {
   assert(await ev(String.raw`return reportQuery('.mr-preview tbody tr').length===80 && reportQuery('.mr-preview th').some(e=>e.textContent==='previous (2029-05-29)') && reportQuery('.mr-preview p').some(e=>e.textContent.includes('Publication data/May.md'));`));
   const savedTable=await hash('Saved reports Ω/Explicit.md'),savedReceipt=await hash('Saved reports Ω/Explicit.md.murmuration-report.json');
   const sourcesBefore=await Promise.all(['May','June'].map(name=>hash('Publication data/'+name+'.md')));
-  await ev(String.raw`const fm={date:'2029-06-15',value:12,a:-.3,b:.1,c:.4,d:.2};for(let i=1;i<=80;i++)fm['metric'+i]=12+i;await app.vault.create('Publication data/Middle.md','---\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic inserted observation.\n');return true;`);
+  await ev(String.raw`const fm={date:'2029-06-15',value:12,a:-.3,b:.1,c:.4,d:.2,boundary_orientation:-.3,completedPages:120};for(let i=1;i<=80;i++)fm['metric'+i]=12+i;await app.vault.create('Publication data/Middle.md','---\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic inserted observation.\n');return true;`);
   assert.equal((await ev(String.raw`return await app.murmurationReports.generateDefinition('Definitions/Explicit.md');`)).status,'unchanged');
   assert.equal(await hash('Saved reports Ω/Explicit.md'),savedTable);
   await ev(String.raw`await app.vault.rename(app.vault.getAbstractFileByPath('Publication data/May.md'),'Publication data/Renamed.md');return true;`);
@@ -322,7 +324,48 @@ try {
   checks.push('native explicit-pair manager controls, 80 rows/provenance preview, intermediate insertion unchanged, renamed reference fails without asset/receipt writes');
   // Regenerate chart explicitly to include the intermediate observation, keeping a backup.
   const regeneration=await ev(String.raw`return await app.murmurationReports.generateDefinition('Definitions/Publication.md');`);assert.equal(regeneration.status,'replaced');assert(regeneration.recoveryPaths.length>0);
-  const chartHash=await hash('Saved reports Ω/Publication.svg');
+  let chartHash=await hash('Saved reports Ω/Publication.svg');
+  if(process.env.REPORTS_CHART_USABILITY==='1'){
+    const v2={world_entity:'derived-artefact',artefact_type:'line-chart',source:'Publication data',x:'date',title:'Synthetic chart usability',presentation:'publication-v2',x_axis_label:'Observation Date',y_axis_label:'Boundary Orientation',y_axis_unit:'score',y_axis:{minimum:-1,maximum:1,ticks:{step:.5}},caption:'Synthetic values from two dated observations.',description:'Four measures at two dates.',series:['a','b','c','d'].map((property,i)=>({property,label:i?'Measure '+String.fromCharCode(65+i):''})),output:'Saved reports Ω/PublicationV2.svg',custom:'preserved'};
+    const paired={...v2,title:'Synthetic paired-bound compatibility',output:'Saved reports Ω/PublicationV2Paired.svg',series:v2.series.map(s=>({...s})),y_min:-1,y_max:1};delete paired.y_axis;
+    await ev(String.raw`const fm=${JSON.stringify(paired)};await app.vault.create('Definitions/PublicationV2Paired.md','---\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic paired bounds definition.\n');return true;`);
+    await pause(300);await command('murmuration-reports:open-reports');await report('Definitions/PublicationV2Paired.md');await click('Edit definition');
+    assert(await ev(String.raw`const text=reportQuery('.mr-editor-group').map(e=>e.textContent).join('\n');return text.includes('compatible paired y_min/y_max bounds')&&!reportQuery('.mr-editor-group select').some(e=>e.getAttribute('aria-label')==='Y tick policy');`),'paired y_min/y_max compatibility was not surfaced in the editor');
+    await click('Save and generate');await waitText('saved output verified');
+    const pairedDefinition=await readFile(path.join(vault,'Definitions/PublicationV2Paired.md'),'utf8');assert(pairedDefinition.includes('y_min: -1'));assert(pairedDefinition.includes('y_max: 1'));assert(!pairedDefinition.includes('y_axis:'));
+    checks.push('native v2 editor preserves paired y_min/y_max and requires deliberate source-note removal before independent policy controls appear');
+    await ev(String.raw`const fm=${JSON.stringify(v2)};await app.vault.create('Definitions/PublicationV2.md','---\n# usability comment\n'+Object.entries(fm).map(([k,v])=>k+': '+JSON.stringify(v)).join('\n')+'\n---\nSynthetic usability definition body.\n');return true;`);
+    await pause(300);await command('murmuration-reports:open-reports');await report('Definitions/PublicationV2.md');await click('Edit definition');
+    assert(await ev(String.raw`const legends=[...reportQuery('.mr-editor-group legend')].map(e=>e.textContent);return legends.some(x=>x.startsWith('Data'))&&legends.includes('Axes')&&legends.includes('Appearance')&&legends.includes('Publication')&&legends.includes('Output and definition');`),'grouped editor fields missing');
+    assert(await ev(String.raw`return [...reportQuery('.mr-editor-group select')].every(s=>s.closest('label')?.textContent.includes(s.getAttribute('aria-label')));`),'grouped editor selects lack visible labels');
+    await ev(String.raw`const b=reportQuery('.mr-series .mr-series-row button').find(e=>e.textContent==='Move up');b.focus();b.click();return true;`);
+    assert.equal(await ev(String.raw`return document.activeElement?.getAttribute('aria-label');`),'Y series property 1','moving a series did not preserve focus on the moved row');
+    await ev(String.raw`const b=reportQuery('.mr-series .mr-series-row button').find(e=>e.textContent==='Move up');b.click();return true;`);
+    await click('Discover dataset properties');await waitText('A — a');await waitText('Metric1 — metric1');await waitText('Deep Only — deepOnly');
+    assert(await ev(String.raw`const status=reportQuery('.mr-editor-group [role=status]')[0]?.textContent??'';const lists=[...reportQuery('.mr-editor-group datalist')];return status.includes('Mixed Probe — mixedProbe: number / string')&&status.includes('1 missing')&&lists.every(list=>list.id!==reportQuery('input[aria-label^="Y series property"]')[0]?.list.id||![...list.options].some(o=>o.value==='mixedProbe'));`),'mixed/incompatible property was misreported or offered as a numeric series');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];p.value='completedPages';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Completed Pages');
+    await ev(String.raw`const s=reportQuery('select').find(e=>e.getAttribute('aria-label')==='Chart presentation');s.focus();s.value='publication';s.dispatchEvent(new Event('change',{bubbles:true}));return true;`);
+    assert.equal(await ev(String.raw`return document.activeElement?.getAttribute('aria-label');`),'Chart presentation','presentation changes did not preserve keyboard focus');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];p.value='boundary_orientation';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Boundary Orientation','session-generated series label stopped refreshing after the editor rerendered');
+    await ev(String.raw`const s=reportQuery('select').find(e=>e.getAttribute('aria-label')==='Chart presentation');s.focus();s.value='publication-v2';s.dispatchEvent(new Event('change',{bubbles:true}));return true;`);
+    assert.equal(await ev(String.raw`return document.activeElement?.getAttribute('aria-label');`),'Chart presentation','presentation changes did not preserve keyboard focus');
+    await field('Y tick step','0');await click('Save and generate');await waitText('positive finite step');assert(await ev(String.raw`const e=reportQuery('.mr-editor-group label').find(x=>x.textContent.includes('Y tick step'))?.querySelector('input');return !!e&&e.getAttribute('aria-invalid')==='true'&&document.activeElement===e;`),'invalid tick error did not expose/focus its field');
+    await field('Y tick step','0.5');
+    await click('Save and generate');await waitText('saved output verified');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];p.value='completedPages';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Boundary Orientation','a successfully saved generated label was not retained as an explicit label');
+    assert.equal(await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0],l=reportQuery('input[aria-label="Series label 1"]')[0];l.value='Custom score';l.dispatchEvent(new Event('input',{bubbles:true}));p.value='a';p.dispatchEvent(new Event('input',{bubbles:true}));return l.value;`),'Custom score');
+    await click('Save and generate');
+    for(let i=0;i<100 && !(await readFile(path.join(vault,'Saved reports Ω/PublicationV2.svg'),'utf8')).includes('Custom score');i++)await pause(100);
+    const v2Svg=await readFile(path.join(vault,'Saved reports Ω/PublicationV2.svg'),'utf8');
+    for(const expected of ['Y range -1 to 1','data-axis-title="x"','data-axis-title="y"','>Boundary</','>Orientation</','>(score)</','>Observation</','>Date</','Custom score','Synthetic values from two dated observations.','solid/circle','dashed/square','dotted/triangle','dash-dot/diamond'])assert(v2Svg.includes(expected),`v2 SVG missing ${expected}`);
+    const v2Definition=await readFile(path.join(vault,'Definitions/PublicationV2.md'),'utf8');assert(v2Definition.includes('# usability comment'));assert(v2Definition.includes('custom: "preserved"'));assert(v2Definition.endsWith('Synthetic usability definition body.\n'));
+    await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0];p.value='manuallyConfiguredMissing';p.dispatchEvent(new Event('input',{bubbles:true}));return true;`);
+    await click('Discover dataset properties');await waitText('Deep Only — deepOnly');
+    assert.equal(await ev(String.raw`return reportQuery('input[aria-label="Y series property 1"]')[0].value;`),'manuallyConfiguredMissing','discovery erased a manually configured unavailable property');
+    await ev(String.raw`const p=reportQuery('input[aria-label="Y series property 1"]')[0];p.value='a';p.dispatchEvent(new Event('input',{bubbles:true}));return true;`);
+    await copyFile(path.join(vault,'Saved reports Ω/PublicationV2.svg'),path.join(vault,'Saved reports Ω/Publication.svg'));chartHash=await hash('Saved reports Ω/Publication.svg');
+    checks.push('native grouped editor fieldsets and visible labels; recursive property discovery; v2 SVG/titles/units/caption/series identity; comments/body/unknown fields retained');
+  }
   // Native persisted embeds, with both plugins disabled/absent and no receipt dependency.
   await ev(String.raw`
     await app.vault.create('Publication book.md','---\ntype: book\ntitle: Generated publication reports\n---\n');
@@ -332,17 +375,19 @@ try {
   assert.equal(await ev('return !!app.murmurationReports;'),false);
   assert.equal(await ev("return !!app.plugins.plugins['murmuration-writing-companion'];"),false);
   await open('Publication view.md');
-  await ev(String.raw`await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(700);
-  assert(await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`));
+  await ev(String.raw`const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Publication view.md');if(!leaf)throw Error('Publication view Markdown leaf missing');await leaf.setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(700);
+  let embedsReady=false;for(let i=0;i<50&&!embedsReady;i++){embedsReady=await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`);if(!embedsReady)await pause(100);}
+  assert(embedsReady,'disabled-plugin SVG/table embeds did not render within five seconds');
   assert.equal(await hash('Saved reports Ω/Publication.svg'),chartHash);assert.equal(await hash('Saved reports Ω/Explicit.md'),savedTable);
   checks.push('native disabled-plugin SVG and Markdown transclusion retain generated bytes and all 80 rows');
   let persistedDisabled=false;
   for(let i=0;i<50;i++){const config=JSON.parse(await readFile(path.join(vault,'.obsidian/community-plugins.json'),'utf8'));if(!config.includes('murmuration-reports')){persistedDisabled=true;break;}await pause(100);}
   assert(persistedDisabled,'Obsidian did not persist disabled plugins before restart');
   await stop();await launch(false);await open('Publication view.md');
-  await ev(String.raw`await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(800);
+  await ev(String.raw`const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Publication view.md');if(!leaf)throw Error('Publication view Markdown leaf missing after restart');await leaf.setViewState({type:'markdown',state:{file:'Publication view.md',mode:'preview'}});return true;`);await pause(800);
   assert.equal(await ev('return !!app.murmurationReports;'),false);
-  assert(await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`));
+  embedsReady=false;for(let i=0;i<50&&!embedsReady;i++){embedsReady=await ev(String.raw`return [...document.querySelectorAll('img')].some(i=>i.complete&&i.naturalWidth===960) && [...document.querySelectorAll('table')].some(t=>t.textContent.includes('ROW080'));`);if(!embedsReady)await pause(100);}
+  assert(embedsReady,'disabled-restart SVG/table embeds did not render within five seconds');
   checks.push('disabled restart reopens persisted generated SVG and table without Reports/MWC');
   const screenshot=await send('Page.captureScreenshot',{format:'png'});await writeFile(path.join(root,'disabled-embeds.png'),Buffer.from(screenshot.data,'base64'));
   const environment=await ev('return navigator.userAgent;');const bundles={reports:createHash('sha256').update(await readFile(path.join(reports,'main.js'))).digest('hex')};

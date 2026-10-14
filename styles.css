@@ -9,6 +9,8 @@
 .murmuration-reports-manager .mr-field input {width:100%}
 .murmuration-reports-manager .mr-series-row {display:flex;gap:8px;flex-wrap:wrap;margin-block:8px}
 .murmuration-reports-manager .mr-series-row input {min-width:100px;flex:1}
+.murmuration-reports-manager .mr-editor-group {border:1px solid var(--background-modifier-border);border-radius:var(--radius-m);margin:0 0 1em;min-inline-size:0;padding:0.75em}
+.murmuration-reports-manager .mr-editor-group legend {font-weight:600;padding-inline:0.35em}
 .murmuration-reports-manager .mr-preview {overflow:auto}
 .murmuration-reports-manager .mr-preview img {width:100%;height:auto}
 .murmuration-reports-manager .mr-diagnostics,.murmuration-reports-manager .mr-save-feedback {color:var(--text-muted);white-space:pre-wrap}

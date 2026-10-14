@@ -3,8 +3,11 @@ import { ManagerService, DefinitionDraft } from "./ManagerService";
 import { ReportEntry } from "./ReportCatalogue";
 import { AdoptionModal } from "../ui/ReportInteractions";
 import { Properties, readEditable } from "./DefinitionEditing";
+import { humanisePropertyKey } from "../core/PropertyLabels";
+import { DiscoveredProperty } from "../core/PropertyDiscovery";
 export const REPORTS_VIEW = "murmuration-reports-manager";
-const readEditableSafeOriginal = (draft: DefinitionDraft): Properties => draft.original === null ? {} : readEditable(draft.original).data;
+const readEditableSafeOriginal = (draft: DefinitionDraft): Properties =>
+  draft.original === null ? {} : readEditable(draft.original).data;
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export class ReportsView extends ItemView {
   private instanceId = Math.random().toString(36).slice(2);
@@ -27,6 +30,7 @@ export class ReportsView extends ItemView {
   private drafts = new Map<string, DefinitionDraft>();
   private editorKey: string | null = null;
   private dialogs = new Set<Modal>();
+  private discovered = new Map<string, DiscoveredProperty[]>();
   private busy = false;
   private actionFocus?: HTMLElement;
   private mutationButtons = new Set([
@@ -208,7 +212,10 @@ export class ReportsView extends ItemView {
     options: string[][],
     value: string,
   ) {
-    const el = parent.createEl("select", { attr: { "aria-label": label } });
+    const wrap = parent.createEl("label", { cls: "mr-field" });
+    wrap.createSpan({ text: label });
+    const el = wrap.createEl("select", { attr: { "aria-label": label } });
+    el.addEventListener("change", () => el.removeAttribute("aria-invalid"));
     for (const [v, text] of options) el.createEl("option", { value: v, text });
     el.value = value;
     return el;
@@ -331,8 +338,16 @@ export class ReportsView extends ItemView {
     this.details.createEl("p", {
       text: "Output: " + (e.output || "Not specified"),
     });
-    if (e.type === "line-chart" && e.frontmatter.presentation !== "publication" && ["presentation", "y_min", "y_max", "caption"].some(key => e.frontmatter[key] !== undefined)) {
-      this.details.createEl("p", {text: "Legacy presentation: publication bounds/caption options are not enforced. Existing opaque fields remain preserved; choose publication explicitly to activate them."});
+    if (
+      e.type === "line-chart" &&
+      e.frontmatter.presentation !== "publication" &&
+      ["presentation", "y_min", "y_max", "caption"].some(
+        (key) => e.frontmatter[key] !== undefined,
+      )
+    ) {
+      this.details.createEl("p", {
+        text: "Legacy presentation: publication bounds/caption options are not enforced. Existing opaque fields remain preserved; choose publication explicitly to activate them.",
+      });
     }
     const actions = this.details.createDiv({ cls: "mr-actions" });
     this.button(actions, "Edit definition", () => this.edit(e.path));
@@ -505,7 +520,7 @@ export class ReportsView extends ItemView {
       this.button(this.details, "Open definition", () => this.openFile(path));
     }
   }
-  private showEditor(key: string, draft: DefinitionDraft) {
+  private showEditor(key: string, draft: DefinitionDraft, focusField?: string) {
     this.clearPreview();
     this.editing = true;
     this.editorKey = key;
@@ -515,6 +530,24 @@ export class ReportsView extends ItemView {
     });
     const form = this.details.createEl("form");
     form.addEventListener("submit", (e) => e.preventDefault());
+    const groups = {
+      data: form.createEl("fieldset", { cls: "mr-editor-group" }),
+      axes: form.createEl("fieldset", { cls: "mr-editor-group" }),
+      appearance: form.createEl("fieldset", { cls: "mr-editor-group" }),
+      publication: form.createEl("fieldset", { cls: "mr-editor-group" }),
+      output: form.createEl("fieldset", { cls: "mr-editor-group" }),
+    };
+    for (const [key, title] of [
+      [
+        "data",
+        "Data — X property (independent variable) and Y series (dependent variables)",
+      ],
+      ["axes", "Axes"],
+      ["appearance", "Appearance"],
+      ["publication", "Publication"],
+      ["output", "Output and definition"],
+    ] as const)
+      groups[key].createEl("legend", { text: title });
     const touched = (draft.manualDestinations ??= {
       definition: draft.original !== null,
       output: draft.original !== null,
@@ -528,7 +561,10 @@ export class ReportsView extends ItemView {
       const wrap = form.createEl("label", { cls: "mr-field" });
       wrap.createSpan({ text: label });
       const el = wrap.createEl("input", { type, value });
-      el.addEventListener("input", () => change(el.value));
+      el.addEventListener("input", () => {
+        el.removeAttribute("aria-invalid");
+        change(el.value);
+      });
       return el;
     };
     const type = this.select(
@@ -555,7 +591,7 @@ export class ReportsView extends ItemView {
           "Reports/Outputs/" +
           String(draft.values.title) +
           (type.value === "line-chart" ? ".svg" : ".md");
-      this.showEditor(key, draft);
+      this.showEditor(key, draft, "Report type");
     });
     const name = input(
       "Name / title",
@@ -598,7 +634,7 @@ export class ReportsView extends ItemView {
       text: "Sources are discovered recursively. Generation validates every observation, including observations outside the chosen dates. Suggestions use up to 200 cached notes and may be incomplete.",
     });
     const date = input(
-      "Date property",
+      "X property (independent variable; currently ISO date)",
       String(draft.values.x ?? ""),
       (v) => (draft.values.x = v),
     );
@@ -609,68 +645,153 @@ export class ReportsView extends ItemView {
       attr: { id: "mr-numeric-" + this.instanceId },
     });
     date.setAttribute("list", propertyList.id);
-    const suggestions = form.createEl("p");
-    this.button(form, "Suggest dataset properties", () => {
-      const hints = this.service.suggest(String(draft.values.source));
-      propertyList.empty();
-      numericList.empty();
-      for (const value of hints.all) propertyList.createEl("option", { value });
-      for (const value of hints.numeric)
-        numericList.createEl("option", { value });
-      suggestions.textContent =
-        "Suggestions from " +
-        hints.inspected +
-        " cached notes; not a complete dataset validation.";
+    const suggestions = form.createEl("p", {
+      attr: { role: "status", "aria-live": "polite" },
+    });
+    this.button(form, "Discover dataset properties", async () => {
+      const sourceAtStart = String(draft.values.source ?? ""),
+        signature = JSON.stringify(draft.values.series);
+      try {
+        const properties = await this.service.discover(sourceAtStart);
+        if (
+          this.uiClosed ||
+          this.editorKey !== key ||
+          String(draft.values.source ?? "") !== sourceAtStart ||
+          JSON.stringify(draft.values.series) !== signature
+        )
+          return;
+        this.discovered.set(key, properties);
+        propertyList.empty();
+        numericList.empty();
+        for (const p of properties) {
+          const option = propertyList.createEl("option", { value: p.key });
+          option.setAttribute(
+            "label",
+            `${p.label} — ${p.key} (${p.types.join("/") || "no values"}; ${p.missing} missing${p.types.length > 1 ? "; mixed types" : ""}${p.invalid.length ? `; ${p.invalid.length} invalid` : ""})`,
+          );
+          if (
+            p.types.length === 1 &&
+            p.types[0] === "number" &&
+            p.missing === 0 &&
+            !p.invalid.length
+          )
+            numericList.createEl("option", { value: p.key });
+        }
+        suggestions.textContent =
+          properties
+            .map(
+              (p) =>
+                `${p.label} — ${p.key}: ${p.types.join(" / ") || "no values"}; ${p.missing} missing${p.types.length > 1 ? "; mixed types" : ""}${p.invalid.length ? `; ${p.invalid.join(" ")}` : ""}`,
+            )
+            .join("\n") || "No properties found in this dataset subtree.";
+      } catch (error) {
+        suggestions.textContent = message(error);
+      }
     });
     const field =
       draft.values.artefact_type === "line-chart" ? "series" : "parameters";
     const rows = Array.isArray(draft.values[field])
       ? (draft.values[field] as Properties[])
       : [];
+    const generatedLabels = (draft.generatedLabels ??= new Map());
     const fields = form.createDiv({ cls: "mr-series" });
+    const labelFields = form.createDiv({ cls: "mr-series-labels" });
+    let addButton: HTMLButtonElement | undefined;
+    const focusRow = (index: number) => {
+      if (index < 0) {
+        addButton?.focus();
+        return;
+      }
+      const prefix = field === "series" ? "Y series property " : "Parameter property ";
+      const control = fields.querySelector<HTMLInputElement>(
+        `input[aria-label="${prefix}${index + 1}"]`,
+      );
+      (control ?? addButton)?.focus();
+    };
     const renderRows = () => {
       fields.empty();
+      labelFields.empty();
       rows.forEach((row, i) => {
         const group = fields.createDiv({ cls: "mr-series-row" });
         group.createEl("strong", {
           text: (field === "series" ? "Series " : "Parameter ") + (i + 1),
         });
+        const labelGroup = labelFields.createDiv({ cls: "mr-series-row" });
+        labelGroup.createEl("strong", {
+          text:
+            (field === "series" ? "Series label " : "Parameter label ") +
+            (i + 1),
+        });
         if (!row || typeof row !== "object" || Array.isArray(row)) {
           group.createEl("p", {
             text: "This entry is not a mapping. Open definition to repair it, or explicitly remove it.",
           });
+          labelGroup.createEl("p", {
+            text: "Invalid entry; repair or remove it in Data.",
+          });
           this.button(group, "Remove invalid entry", () => {
             rows.splice(i, 1);
             renderRows();
+            focusRow(Math.min(i, rows.length - 1));
           });
           return;
         }
-        for (const property of ["property", "label"]) {
-          const el = group.createEl("input", {
-            value: String(row[property] ?? ""),
-            attr: {
-              "aria-label":
-                (property === "property" ? "Numeric property " : "Label ") +
-                (i + 1),
-              ...(property === "property" ? { list: numericList.id } : {}),
-            },
-          });
-          el.addEventListener("input", () => (row[property] = el.value));
-        }
+        const propertyControl = group.createEl("input", {
+          value: String(row.property ?? ""),
+          attr: {
+            "aria-label":
+              (field === "series"
+                ? "Y series property "
+                : "Parameter property ") +
+              (i + 1),
+            list: numericList.id,
+          },
+        });
+        const labelControl = labelGroup.createEl("input", {
+          value: String(row.label ?? ""),
+          attr: {
+            "aria-label":
+              (field === "series" ? "Series label " : "Parameter label ") +
+              (i + 1),
+          },
+        });
+        propertyControl.addEventListener("input", () => {
+          propertyControl.removeAttribute("aria-invalid");
+          row.property = propertyControl.value;
+          let generated = generatedLabels.get(row);
+          if (!generated && !row.label) {
+            row.label = humanisePropertyKey(propertyControl.value);
+            generated = { value: String(row.label), overridden: false };
+            generatedLabels.set(row, generated);
+          } else if (generated && !generated.overridden) {
+            row.label = humanisePropertyKey(propertyControl.value);
+            generated.value = String(row.label);
+          }
+          if (!generated?.overridden)
+            labelControl.value = String(row.label ?? "");
+        });
+        labelControl.addEventListener("input", () => {
+          labelControl.removeAttribute("aria-invalid");
+          row.label = labelControl.value;
+          const generated = generatedLabels.get(row);
+          if (generated) generated.overridden = true;
+        });
         if (i)
           this.button(group, "Move up", () => {
             [rows[i - 1], rows[i]] = [rows[i], rows[i - 1]];
             renderRows();
+            focusRow(i - 1);
           });
         this.button(group, "Remove", () => {
           rows.splice(i, 1);
           renderRows();
+          focusRow(Math.min(i, rows.length - 1));
         });
       });
     };
     draft.values[field] = rows;
     renderRows();
-    this.button(
+    addButton = this.button(
       form,
       "Add " + (field === "series" ? "series" : "parameter"),
       () => {
@@ -702,6 +823,8 @@ export class ReportsView extends ItemView {
         ["subtitle", "Subtitle"],
         ["x_axis_label", "X axis label"],
         ["y_axis_label", "Y axis label"],
+        ["x_axis_unit", "X axis unit"],
+        ["y_axis_unit", "Y axis unit"],
       ])
         input(
           label + " (optional)",
@@ -710,46 +833,225 @@ export class ReportsView extends ItemView {
         );
     }
     if (field === "series") {
-      const publication = this.select(form, "Chart presentation", [["legacy", "Legacy (existing layout)"], ["publication", "Publication (print layout)"]], draft.values.presentation === "publication" ? "publication" : "legacy");
+      const publication = this.select(
+        form,
+        "Chart presentation",
+        [
+          ["legacy", "Legacy (existing layout)"],
+          ["publication", "Publication (print layout)"],
+          ["publication-v2", "Publication v2 (independent axes)"],
+        ],
+        draft.values.presentation === "publication" ||
+          draft.values.presentation === "publication-v2"
+          ? String(draft.values.presentation)
+          : "legacy",
+      );
       publication.addEventListener("change", () => {
         draft.values.presentation = publication.value;
-        this.showEditor(key, draft);
+        this.showEditor(key, draft, "Chart presentation");
       });
-      form.createEl("p", {text: draft.values.presentation === "publication"
-        ? "Publication: readable labels and dash/marker identities. Publish with installed DejaVu/Liberation fonts, at least 3.5 inches wide, and check final placement. Bounds apply to selected data; source validation remains whole-folder."
-        : "Legacy: bounds and caption fields are preserved but not enforced. Only explicit publication mode activates them."});
-      if (draft.values.presentation === "publication") {
-        for (const [property,label] of [["y_min", "Fixed Y minimum"], ["y_max", "Fixed Y maximum"]]) {
-          input(label + " (both or neither)", String(draft.values[property] ?? ""), value => {
-            // Empty new fields are omitted; removing an existing option needs a
-            // source-note edit rather than destroying comments/opaque fields.
-            if (!value.trim() && readEditableSafeOriginal(draft)[property] === undefined) delete draft.values[property];
-            else draft.values[property] = value.trim() ? Number(value) : null;
+      form.createEl("p", {
+        text:
+          draft.values.presentation === "publication"
+            ? "Publication: readable labels and dash/marker identities. Publish with installed DejaVu/Liberation fonts, at least 3.5 inches wide, and check final placement. Bounds apply to selected data; source validation remains whole-folder."
+            : draft.values.presentation === "publication-v2"
+              ? "Publication v2: independent Y endpoints, readable tick policies and reserved axis-title layout. Existing paired y_min/y_max remain active until y_axis is edited; explicit endpoints never clip data."
+              : "Legacy: bounds and caption fields are preserved but not enforced. Choose a publication mode to activate them.",
+      });
+      if (draft.values.presentation === "publication-v2") {
+        form.createEl("p", {
+          text: "Publication v2 uses independent automatic/hard endpoints. Include zero preserves negative observations. Ticks never round observations.",
+        });
+        form.createEl("p", {
+          text: "To remove an optional caption, description, unit or y_axis key entirely, edit that YAML key in the definition note. Clearing a text field stores an empty value; source comments and unknown fields are preserved.",
+        });
+        const policy = (
+          draft.values.y_axis &&
+          typeof draft.values.y_axis === "object" &&
+          !Array.isArray(draft.values.y_axis)
+            ? draft.values.y_axis
+            : { minimum: "auto", maximum: "auto", ticks: "auto" }
+        ) as Properties;
+        const persistPolicy = () => {
+          draft.values.y_axis = policy;
+        };
+        const pairedLegacyBounds =
+          draft.values.y_min !== undefined &&
+          draft.values.y_max !== undefined &&
+          !draft.values.y_axis;
+        if (pairedLegacyBounds)
+          form.createEl("p", {
+            text: "This definition still uses its compatible paired y_min/y_max bounds. To use independent endpoints or tick policies, remove both old fields deliberately in the definition note, then reload the editor. Comments and unknown fields are preserved; this editor will not remove those bounds automatically.",
+          });
+        const endpoint = (
+          field: "minimum" | "maximum",
+          title: string,
+          allowZero: boolean,
+        ) => {
+          const modes: [[string, string], ...[string, string][]] = [
+            ["auto", "Automatic"],
+            ...(allowZero
+              ? [
+                  ["zero", "Include zero (preserve negative data)"] as [
+                    string,
+                    string,
+                  ],
+                ]
+              : []),
+            ["value", "Explicit value"],
+          ];
+          const current = policy[field],
+            mode =
+              typeof current === "number" ? "value" : String(current ?? "auto");
+          const control = this.select(form, title + " policy", modes, mode);
+          input(
+            title + " explicit value",
+            typeof current === "number" ? String(current) : "",
+            (v) => {
+              if (control.value !== "value") control.value = "value";
+              policy[field] = v.trim() ? Number(v) : Number.NaN;
+              persistPolicy();
+            },
+          );
+          control.addEventListener("change", () => {
+            if (control.value === "auto" || control.value === "zero")
+              policy[field] = control.value;
+            else if (typeof policy[field] !== "number")
+              policy[field] = Number.NaN;
+            persistPolicy();
+          });
+        };
+        if (!pairedLegacyBounds) {
+          endpoint("minimum", "Minimum", true);
+          endpoint("maximum", "Maximum", false);
+          const tickMode = this.select(
+            form,
+            "Y tick policy",
+            [
+              ["auto", "Automatic readable intervals"],
+              ["integer", "Integer-only tick values"],
+              ["step", "Explicit positive step"],
+            ],
+            typeof policy.ticks === "object"
+              ? "step"
+              : String(policy.ticks ?? "auto"),
+          );
+          input(
+            "Y tick step",
+            typeof policy.ticks === "object"
+              ? String((policy.ticks as Properties).step ?? "")
+              : "",
+            (v) => {
+              tickMode.value = "step";
+              policy.ticks = { step: v.trim() ? Number(v) : Number.NaN };
+              persistPolicy();
+            },
+          );
+          tickMode.addEventListener("change", () => {
+            policy.ticks =
+              tickMode.value === "step"
+                ? {
+                    step:
+                      typeof policy.ticks === "object"
+                        ? Number((policy.ticks as Properties).step)
+                        : Number.NaN,
+                  }
+                : tickMode.value;
+            persistPolicy();
           });
         }
-        input("Caption (plain text, up to 240 characters)", String(draft.values.caption ?? ""), value => draft.values.caption = value);
-        form.createEl("p", {text: "Automatic Y range when both limits are absent. To remove existing limits, edit the definition note; blanking a supplied limit is invalid. Long or unsupported text blocks generation with a diagnostic."});
+        input(
+          "Caption (plain text, up to 240 characters)",
+          String(draft.values.caption ?? ""),
+          (value) => (draft.values.caption = value),
+        );
+        input(
+          "Description (plain text, up to 240 characters)",
+          String(draft.values.description ?? ""),
+          (value) => (draft.values.description = value),
+        );
+      }
+      if (draft.values.presentation === "publication") {
+        for (const [property, label] of [
+          ["y_min", "Fixed Y minimum"],
+          ["y_max", "Fixed Y maximum"],
+        ]) {
+          input(
+            label + " (both or neither)",
+            String(draft.values[property] ?? ""),
+            (value) => {
+              // Empty new fields are omitted; removing an existing option needs a
+              // source-note edit rather than destroying comments/opaque fields.
+              if (
+                !value.trim() &&
+                readEditableSafeOriginal(draft)[property] === undefined
+              )
+                delete draft.values[property];
+              else draft.values[property] = value.trim() ? Number(value) : null;
+            },
+          );
+        }
+        input(
+          "Caption (plain text, up to 240 characters)",
+          String(draft.values.caption ?? ""),
+          (value) => (draft.values.caption = value),
+        );
+        form.createEl("p", {
+          text: "Automatic Y range when both limits are absent. To remove existing limits, edit the definition note; blanking a supplied limit is invalid. Long or unsupported text blocks generation with a diagnostic.",
+        });
       }
     } else {
       const hasComparison = draft.values.comparison !== undefined;
-      const pair = this.select(form, "Comparison selection", [["canonical", "Canonical predecessor (legacy)"], ["explicit-pair", "Two explicit observations"]], hasComparison ? "explicit-pair" : "canonical");
+      const pair = this.select(
+        form,
+        "Comparison selection",
+        [
+          ["canonical", "Canonical predecessor (legacy)"],
+          ["explicit-pair", "Two explicit observations"],
+        ],
+        hasComparison ? "explicit-pair" : "canonical",
+      );
       pair.addEventListener("change", () => {
         if (pair.value === "canonical" && hasComparison) {
-          new Notice("Remove the comparison mapping in the definition note to return to canonical selection; unknown fields/comments are preserved.");
-          pair.value = "explicit-pair"; return;
+          new Notice(
+            "Remove the comparison mapping in the definition note to return to canonical selection; unknown fields/comments are preserved.",
+          );
+          pair.value = "explicit-pair";
+          return;
         }
         if (pair.value === "explicit-pair" && !hasComparison) {
-          draft.values.comparison = {mode: "explicit-pair", current: "", previous: ""};
-          this.showEditor(key, draft);
+          draft.values.comparison = {
+            mode: "explicit-pair",
+            current: "",
+            previous: "",
+          };
+          this.showEditor(key, draft, "Comparison selection");
         }
       });
       if (hasComparison) {
         const comparison = draft.values.comparison;
-        if (!comparison || typeof comparison !== "object" || Array.isArray(comparison) || (comparison as Properties).mode !== "explicit-pair") {
-          form.createEl("p", {text: "Repair comparison in the definition note: it must be a mapping with mode explicit-pair."});
+        if (
+          !comparison ||
+          typeof comparison !== "object" ||
+          Array.isArray(comparison) ||
+          (comparison as Properties).mode !== "explicit-pair"
+        ) {
+          form.createEl("p", {
+            text: "Repair comparison in the definition note: it must be a mapping with mode explicit-pair.",
+          });
         } else {
-          for (const [property,label] of [["current","Current observation path"],["previous","Previous observation path"]]) input(label, String((comparison as Properties)[property] ?? ""), value => (comparison as Properties)[property] = value);
-          form.createEl("p", {text: "Both exact .md paths must be inside the dataset. Previous date must be earlier; optional endpoint must equal current date. Missing/renamed paths block and never select a predecessor. Remove the mapping in the definition note to return to legacy comparison."});
+          for (const [property, label] of [
+            ["current", "Current observation path"],
+            ["previous", "Previous observation path"],
+          ])
+            input(
+              label,
+              String((comparison as Properties)[property] ?? ""),
+              (value) => ((comparison as Properties)[property] = value),
+            );
+          form.createEl("p", {
+            text: "Both exact .md paths must be inside the dataset. Previous date must be earlier; optional endpoint must equal current date. Missing/renamed paths block and never select a predecessor. Remove the mapping in the definition note to return to legacy comparison.",
+          });
         }
       }
     }
@@ -761,14 +1063,86 @@ export class ReportsView extends ItemView {
         draft.values.output = v;
       },
     );
+    // Group the existing labeled controls without rebuilding them. Their
+    // listeners, draft references and focus targets remain intact.
+    for (const element of Array.from(form.children)) {
+      if (Object.values(groups).includes(element as HTMLFieldSetElement))
+        continue;
+      const label = element.textContent ?? "";
+      const destination = /^(Output destination|Definition destination)/u.test(
+        label,
+      )
+        ? groups.output
+        : /Caption|Description|Chart presentation/u.test(label)
+          ? groups.publication
+          : /axis|Minimum|Maximum|tick/u.test(label)
+            ? groups.axes
+            : /Name \/ title|Subtitle|Series label|Parameter label|Chart title/u.test(
+                  label,
+                )
+              ? groups.appearance
+              : groups.data;
+      destination.append(element);
+    }
     const diagnostics = this.details.createDiv({
       cls: "mr-diagnostics",
       attr: { "aria-live": "polite" },
     });
     const feedback = this.details.createDiv({
       cls: "mr-save-feedback",
-      attr: { "aria-live": "polite" },
+      attr: { "aria-live": "polite", role: "alert" },
     });
+    const exposeInvalidField = (error: unknown) => {
+      const text = message(error).toLowerCase();
+      const fieldName = text.includes("minimum")
+        ? "Minimum"
+        : text.includes("maximum")
+          ? "Maximum"
+          : text.includes("ticks") || text.includes("tick")
+            ? "Y tick"
+            : text.includes("caption")
+              ? "Caption"
+              : text.includes("description")
+                ? "Description"
+                : text.includes("source")
+                  ? "Dataset folder"
+                  : text.includes("series[")
+                    ? "Series label"
+                    : text.includes("output")
+                      ? "Output destination"
+                      : text.includes("x_axis_label")
+                        ? "X axis label"
+                        : text.includes("y_axis_label")
+                          ? "Y axis label"
+                          : text.includes(" x ") ||
+                              text.includes("date property")
+                            ? "X property"
+                            : undefined;
+      if (!fieldName) return;
+      const labels = Array.from(form.querySelectorAll("label.mr-field"));
+      const candidates = labels.filter((label) =>
+        (label.querySelector("span")?.textContent ?? "")
+          .toLowerCase()
+          .includes(fieldName.toLowerCase()),
+      );
+      const preferred =
+        fieldName === "Y tick"
+          ? (candidates.find((label) =>
+              (label.querySelector("span")?.textContent ?? "").includes("step"),
+            ) ?? candidates[0])
+          : fieldName === "Minimum" || fieldName === "Maximum"
+            ? (candidates.find((label) =>
+                (label.querySelector("span")?.textContent ?? "").includes(
+                  "explicit value",
+                ),
+              ) ?? candidates[0])
+            : candidates[0];
+      const control = preferred?.querySelector("input,select") as
+        | HTMLElement
+        | undefined;
+      control?.setAttribute("aria-invalid", "true");
+      control?.focus();
+    };
     const actions = this.details.createDiv({ cls: "mr-actions" });
     const save = async (generate: boolean) => {
       if (this.busy || this.uiClosed) return;
@@ -777,6 +1151,12 @@ export class ReportsView extends ItemView {
       try {
         const path = await this.service.save(draft);
         if (this.uiClosed) return;
+        // A successful save turns generated spellings into durable labels.
+        // Keep this editor's map marked until it is rebuilt, and do not persist
+        // label provenance into the author's YAML.
+        for (const generated of generatedLabels.values())
+          generated.overridden = true;
+        draft.generatedLabels = undefined;
         destination.disabled = true;
         type.disabled = true;
         this.selected = path;
@@ -799,7 +1179,10 @@ export class ReportsView extends ItemView {
         }
         this.refreshDiagnostics();
       } catch (error) {
-        if (!this.uiClosed) feedback.textContent = message(error);
+        if (!this.uiClosed) {
+          feedback.textContent = message(error);
+          exposeInvalidField(error);
+        }
       } finally {
         this.setBusy(false);
       }
@@ -835,7 +1218,13 @@ export class ReportsView extends ItemView {
       });
     }
     this.refreshDiagnostics();
-    name.focus();
+    const focusTarget = focusField
+      ? Array.from(form.querySelectorAll("label.mr-field")).find(
+          (label) =>
+            label.querySelector("span")?.textContent === focusField,
+        )?.querySelector("input,select")
+      : name;
+    (focusTarget as HTMLElement | null)?.focus();
   }
   async onClose() {
     this.uiClosed = true;
@@ -878,8 +1267,13 @@ export function renderSavedTable(content: string, parent: HTMLElement) {
     throw Error(
       "The saved file does not contain a supported state table. Open output to inspect it.",
     );
-  const comparison = content.split(/\r?\n/u).find(line => line.startsWith("Explicit-pair comparison: "));
-  if (comparison) parent.createEl("p", {text: comparison.replace(/\\([\\`*_{}\[\]()<>#!|])/gu, "$1")});
+  const comparison = content
+    .split(/\r?\n/u)
+    .find((line) => line.startsWith("Explicit-pair comparison: "));
+  if (comparison)
+    parent.createEl("p", {
+      text: comparison.replace(/\\([\\`*_{}\[\]()<>#!|])/gu, "$1"),
+    });
   const table = parent.createEl("table");
   const header = table.createEl("thead").createEl("tr"),
     body = table.createEl("tbody");

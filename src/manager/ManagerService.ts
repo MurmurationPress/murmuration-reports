@@ -22,12 +22,18 @@ import {
   receiptPath,
 } from "../reports/OutputOwnership";
 import { validateSvgAdoption } from "../obsidian/AssetValidation";
+import {
+  discoverProperties,
+  DiscoveredProperty,
+} from "../core/PropertyDiscovery";
 export interface DefinitionDraft {
   path: string;
   original: string | null;
   values: Properties;
   conflict?: string;
   manualDestinations?: { definition: boolean; output: boolean };
+  /** Session-only label provenance; never serialized to definition YAML. */
+  generatedLabels?: Map<object, { value: string; overridden: boolean }>;
 }
 export interface SavedPreview {
   state: "available" | "missing" | "unverified" | "error";
@@ -172,7 +178,7 @@ export class ManagerService {
     this.ensureActive();
     return { path, original: raw, values: readEditable(raw).data };
   }
-  /** Bounds property suggestions to cached observations; no files read and no completeness claim. */
+  /** Legacy cache-only suggestions; the editor uses discover() for complete read-only inspection. */
   suggest(source: string) {
     const numeric = new Set<string>(),
       all = new Set<string>();
@@ -193,6 +199,51 @@ export class ManagerService {
       inspected: Math.min(inspected, 200),
     };
   }
+  /** Fresh, all-note discovery constrained to the actual recursive dataset folder. */
+  async discover(source: string): Promise<DiscoveredProperty[]> {
+    this.ensureActive();
+    if (!safePath(source) || this.vault.kind(source) !== "folder")
+      throw Error(
+        "Choose an existing dataset folder before discovering properties.",
+      );
+    const files = this.app.vault
+      .getMarkdownFiles()
+      .filter((file) => file.path.startsWith(`${source}/`))
+      .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+    const versions = new Map(
+      files.map((file) => [file.path, this.vault.version?.(file.path) ?? 0]),
+    );
+    const records: { path: string; frontmatter: Record<string, unknown> }[] =
+      [];
+    for (const file of files) {
+      try {
+        const document = await this.vault.readDocument(file.path);
+        records.push({
+          path: document.path,
+          frontmatter: document.frontmatter ?? {},
+        });
+      } catch (error) {
+        throw Error(
+          `${file.path}: cannot inspect dataset properties: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+      this.ensureActive();
+      if (versions.get(file.path) !== (this.vault.version?.(file.path) ?? 0))
+        throw Error(
+          "The dataset changed during property discovery. Retry discovery.",
+        );
+    }
+    const current = this.app.vault
+      .getMarkdownFiles()
+      .filter((file) => file.path.startsWith(`${source}/`))
+      .map((file) => file.path)
+      .sort();
+    if (current.join("\n") !== files.map((file) => file.path).join("\n"))
+      throw Error(
+        "The dataset folder changed during property discovery. Retry discovery.",
+      );
+    return discoverProperties(source, records);
+  }
   folders() {
     return this.app.vault
       .getAllLoadedFiles()
@@ -210,9 +261,21 @@ export class ManagerService {
       throw Error(
         "Definition destination must be a portable vault-relative Markdown path.",
       );
-    const previous = draft.original === null ? undefined : readEditable(draft.original).data.presentation;
-    if (data.artefact_type === "line-chart" && data.presentation !== undefined && data.presentation !== "publication" && data.presentation !== "legacy" && JSON.stringify(data.presentation) !== JSON.stringify(previous)) {
-      throw Error("Unsupported requested presentation. Choose publication or preserve the existing legacy settings.");
+    const previous =
+      draft.original === null
+        ? undefined
+        : readEditable(draft.original).data.presentation;
+    if (
+      data.artefact_type === "line-chart" &&
+      data.presentation !== undefined &&
+      data.presentation !== "publication" &&
+      data.presentation !== "publication-v2" &&
+      data.presentation !== "legacy" &&
+      JSON.stringify(data.presentation) !== JSON.stringify(previous)
+    ) {
+      throw Error(
+        "Unsupported requested presentation. Choose publication or preserve the existing legacy settings.",
+      );
     }
     const def = parseDerivedArtefactDefinition(data);
     if (!safePath(def.source) || !safePath(def.output))
